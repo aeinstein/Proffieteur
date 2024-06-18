@@ -1,0 +1,191 @@
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<link rel="manifest" href="manifest.json" />
+	<title>ProffieOS Diagnostics Tool</title>
+	<script src="src/classes/LineBreakTransformer.js"></script>
+	<script type="text/javascript" src="src/classes/batterychart.js"></script>
+</head>
+<body>
+<header>
+	<div>
+		<button class=mybutton2 id="connect_usb" type=button onclick='RunUSB()'>USB</button><br>
+		<button class=mybutton2 id="connect_serial" type=button onclick='RunSerial()'>Serial</button><br>
+		<button class=mybutton2 id="connect_ble" type=button onclick='Run()'>BLE</button>
+	</div>
+
+	<div>
+		<span>ProffieOS Diagnostics</span>
+		<br>
+		<span id="EMSG"></span>
+	</div>
+
+
+	<div>
+		Volume: <input id=volume type=range min=0 max=2000 class="slider" oninput='UpdateVolume();' onchange='UpdateVolume();'><span id=volume_label>VOL</span><br>
+		Battery: <span id=voltage>---</span> volts.<br>
+		<tm-batterychart id="batteryChart" background="#202020" width="300" height="50"></tm-batterychart>
+	</div>
+
+	<div style="min-width: 220px; font-size: 13px">
+		Manufacturer: <span id="txtManufact">connect USB</span><br>
+		Product: <span id="txtProduct"></span><br>
+		Serial: <span id="txtSerial"></span>
+	</div>
+
+	<div style="min-width: 220px; font-size: 13px">
+		Version: <span id="txtVersion">connect Serial</span><br>
+		Config: <span id="txtConfig"></span><br>
+		Props: <span id="txtProp"></span><br>
+		Num. Buttons: <span id="txtButtons"></span><br>
+		Installed: <span id="txtInstalled"></span>
+	</div>
+
+	<button class="button" id="settingsButton" onclick='ToggleSettingsMode()'>&#x2699;</button>
+</header>
+
+<main>
+	<div id="containerPresets" class="scrollable">
+		<div class=header>
+			<span class=title>Presets</span>
+			<button class="button" id="editbutton" onclick='ToggleEditMode()'>&#x270E;</button>
+		</div>
+		<div id="presets" class="content"></div>
+	</div>
+
+	<div id="containerEdit" class=scrollable style='display:none;'>
+		<div class=header><span class=title>Edit Preset</span></div>
+		<span id=contentEdit class=content>Getting options...</span>
+	</div>
+
+	<div id=settings_pane class=scrollable style='display:none;'>
+		<div class=header><span class=title>Settings</span><br></div>
+		<div id="contentSettings" class=content>Getting settings....</div>
+	</div>
+
+
+	<div id="containerTracks" class="scrollable">
+		<div class=header><span class=title>Tracks</span></div>
+		<div id="tracks" class="content"></div>
+	</div>
+	<div id="containerControls">
+		<div class="scrollable" style="height: 50%">
+			<div class=header><span class=title>USB Commands</span></div>
+			<div id="controls" class="content">
+				<div id=onbutton class=control>
+					<span class=title onclick='On();'>on</span>
+				</div>
+				<div id=offbutton class=control>
+					<span class=title onclick='Off();'>off</span>
+				</div>
+				<div class=control>
+					<span class=title onclick='Send("clash");'>clash</span>
+				</div>
+				<div class=control>
+					<span class=title onclick='Send("blast");'>blast</span>
+				</div>
+				<div class=control>
+					<span class=title onclick='Send("force");'>force</span>
+				</div>
+				<div class=control>
+					<span class=title onclick='Send("lockup");'>lockup</span>
+				</div>
+				<div class=control>
+					<span class=title onclick='Send("drag");'>drag</span>
+				</div>
+				<div class=control>
+					<span class=title onclick='Send("melt");'>melt</span>
+				</div>
+				<div class=control>
+					<span class=title onclick='Send("stab");'>stab</span>
+				</div>
+				<div class=control>
+					<span class=title onclick='Send("lblock");'>lightning</span>
+				</div>
+				<div class=control>
+					<span class=title onclick='Send("stop_track");'>stop track</span>
+				</div>
+				<div class=control>
+					<span class=title onclick='Send("scanid");'>ScanID</span>
+				</div>
+			</div>
+		</div>
+
+		<div class="scrollable" style="height: 50%">
+			<div class=header>
+				<span class=title>Serial Commands</span>
+				<button class="button" id="topbutton" onclick='openTop()'>&#x2661;</button>
+			</div>
+
+			<div class="content">
+				<div class=control><span class=title onclick='SendSerial(this.innerHTML);'>scanid</span></div>
+				<div class=control><span class=title onclick='SendSerial(this.innerHTML);'>id</span></div>
+				<div class=control><span class=title onclick='SendSerial(this.innerHTML);'>dacbuf</span></div>
+				<!--
+				<div class=control><span class=title onclick='SendSerial(this.innerHTML);'>list_named_styles</span></div>-->
+
+				<div class=control><span class=title onclick='SendSerial(this.innerHTML);'>malloc</span></div>
+				<div class=control><span class=title onclick='SendSerial(this.innerHTML);'>whatison</span></div>
+				<div class=control><span class=title onclick='SendSerial(this.innerHTML);'>volumes</span></div>
+				<div class=control><span class=title onclick='SendSerial(this.innerHTML);'>buffered</span></div>
+				<div class=control><span class=title onclick='SendSerial(this.innerHTML);'>get_ble_config</span></div>
+				<div class=control><span class=title onclick='SendSerial(this.innerHTML);'>reset</span></div>
+				<div class=control><span class=title onclick='SendSerial(this.innerHTML);'>ccmode</span></div>
+				<div class=control><span class=title onclick='SendSerial(this.innerHTML);'>pwd</span></div>
+				<div class=control><span class=title onclick='SendSerial(this.innerHTML);'>beep</span></div>
+				<div class=control><span class=title onclick='SendSerial(this.innerHTML);'>effects</span></div>
+				<div class=control><span class=title onclick='SendSerial(this.innerHTML);'>stm32info</span></div>
+				<div class=control><span class=title onclick='SendSerial(this.innerHTML);'>i2cstate</span></div>
+				<div class=control><span class=title onclick='SendSerial(this.innerHTML);'>portstates</span></div>
+				<div class=control><span class=title onclick='SendSerial(this.innerHTML);'>CLK</span></div>
+				<div class=control><span class=title onclick='SendSerial(this.innerHTML);'>whatispowered</span></div>
+				<div class=control><span class=title onclick='SendSerial(this.innerHTML);'>dmamap</span></div>
+				<div class=control><span class=title onclick='SendSerial(this.innerHTML);'>shutdown</span></div>
+				<hr>
+				<div class=control><span class=title onclick='SendSerial(this.innerHTML);'>monitor swings</span></div>
+				<div class=control><span class=title onclick='SendSerial(this.innerHTML);'>monitor gyro</span></div>
+				<div class=control><span class=title onclick='SendSerial(this.innerHTML);'>monitor samples</span></div>
+				<div class=control><span class=title onclick='SendSerial(this.innerHTML);'>monitor touch</span></div>
+				<div class=control><span class=title onclick='SendSerial(this.innerHTML);'>monitor battery</span></div>
+				<div class=control><span class=title onclick='SendSerial(this.innerHTML);'>monitor pwm</span></div>
+				<div class=control><span class=title onclick='SendSerial(this.innerHTML);'>monitor clash</span></div>
+				<div class=control><span class=title onclick='SendSerial(this.innerHTML);'>monitor temp</span></div>
+				<div class=control><span class=title onclick='SendSerial(this.innerHTML);'>monitor strokes</span></div>
+				<div class=control><span class=title onclick='SendSerial(this.innerHTML);'>monitor serial</span></div>
+				<div class=control><span class=title onclick='SendSerial(this.innerHTML);'>monitor fusion</span></div>
+				<div class=control><span class=title onclick='SendSerial(this.innerHTML);'>monitor variation</span></div>
+			</div>
+		</div>
+	</div>
+
+</main>
+
+<footer>
+	<div class="scrollable" id="console_usb">
+		<div class=header>
+			<span class=title>WebUSB Console</span>
+			<button class="button" onclick='closeTop()'>&#x1F5D1;</button>
+		</div>
+		<div id="contentUSB" class="console_content"></div>
+	</div>
+	<div class="scrollable" id="console_serial">
+		<div class=header>
+			<span class=title>WebSerial Console</span>
+			<button class="button" onclick='closeTop()'>&#x1F5D1;</button>
+		</div>
+		<div id="contentSerial" class="console_content"></div>
+	</div>
+</footer>
+
+<div id="top" class="scrollable">
+	<div class=header>
+		<span class=title>ProcessMonitor</span>
+		<button class="button" id="closebutton" onclick='closeTop()'>&#x2715;</button>
+	</div>
+	<div id="contentTop" class="console_content"></div>
+</div>
+
+</body>
+<script src="script.js"></script>
+</html>

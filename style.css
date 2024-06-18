@@ -1,0 +1,248 @@
+body {
+    margin: 0;
+    padding: 5px;
+    font-family: Arial, Sans-Serif, sans-serif;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    height: 100%;
+    overflow: hidden;
+    background: black;
+    color: lightblue;
+    flex-wrap: nowrap;
+}
+
+button {
+    margin: 5px;
+    width: 120px;
+}
+
+header, main, footer {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+}
+
+header {
+    width: 100%;
+    height: 110px;
+    border: 1px solid #373737;
+    padding: 5px;
+}
+
+main, footer {
+    gap: 5px;
+    width: 100%;
+}
+
+main {
+    height: calc(65% - 110px);
+}
+
+footer {
+    height: 35%;
+}
+
+
+.console {
+    height: 100%;
+    width: 100%;
+}
+
+.console_content {
+    white-space: break-spaces;
+    font-family: monospace;
+    height: calc(100% - 35px);
+    overflow-y: auto;
+}
+
+.console_content .receive {
+    color: green;
+}
+
+.console_content .send {
+    color: red;
+}
+
+
+.scrollable {
+    overflow: hidden;
+    width: 100%;
+    border: 1px solid #373737;
+    box-sizing: border-box;
+}
+
+.scrollable .header {
+    background: #151521;
+    color: #FFFFFF;
+    height: 30px;
+    text-align: center;
+    position: relative;
+    text-overflow: clip;
+    overflow: hidden;
+}
+
+.scrollable .header .title {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+}
+
+#containerPresets, #containerTracks {
+    min-width: 310px;
+    width: 310px;
+    flex-grow: 1;
+}
+
+#containerControls {
+    flex-grow: 2;
+}
+
+.content {
+    margin: auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    padding: 5px;
+    height: calc(100% - 35px);
+    align-content: flex-start;
+    overflow-y: auto;
+}
+
+.preset, .track, .control, .setting, .setting_preset {
+    border: 2px solid #6060aa;
+    background: #101040;
+    color: #FFFFFF;
+    width: 116px;
+    height: 23px;
+    text-align: center;
+    padding: 8px;
+    position: relative;
+    text-overflow: clip;
+    overflow: hidden;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.active {
+    background: rgb(80, 80, 128);
+}
+
+.title {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+}
+
+.button{
+    visibility: hidden;
+    border: 1px solid #6060aa;
+    background: #101040;
+    color: #FFFFFF;
+    height: 30px;
+    width: 30px;
+    margin: 0;
+    cursor: pointer;
+    position: relative
+}
+
+#closebutton {
+    visibility: inherit;
+}
+
+#editbutton, #closebutton {
+    float: right;
+}
+
+#topbutton {
+    float: right;
+}
+
+.setting {
+    width: 200px;
+    height: 45px;
+}
+
+.setting_preset {
+    width: 250px;
+    height: initial;
+}
+
+.myinput {
+    background: #20207d;
+    color: #FFFFFF;
+    border: 1px solid #595959;
+    text-align: center;
+    width: 70px;
+    height: 20px;
+}
+
+input[type="color"] {
+    padding: 0;
+    border: none;
+    height: 25px;
+    width: 70px;
+    vertical-align: middle;
+}
+
+.content table {
+    width: 100%;
+}
+
+.myselect {
+    background: #20207d;
+    border: 1px solid #595959;
+    color: #FFFFFF;
+    height: 21px;
+    text-align: center;
+    text-align-last:center;
+}
+
+hr {
+    width: 100%;
+    height: 1px;
+    line-height: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-top: 1px solid;
+}
+
+#top {
+    display: inline-block;
+    visibility: hidden;
+    width: 300px;
+    position: absolute;
+    border: 1px solid #595959;
+    background: #20207d;
+    min-height: 200px;
+    left: 30%;
+    top: 30%;
+}
+
+#top table {
+    font-size: 10px;
+    width: 100%;
+}
+#top table tr td:nth-child(2) {
+    text-align: right;
+}
+
+tm-chart {
+    height: 200px;
+}
+
+tm-chart #container {
+    width: 300px;
+}
+
+
