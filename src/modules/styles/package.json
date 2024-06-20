@@ -1,0 +1,22 @@
+{
+  "name": "styles_editor",
+  "version": "1.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "main": "dist/webrtmp.js",
+  "module": "dist/index.js",
+  "scripts": {
+    "build-develop": "node_modules/.bin/webpack --mode=development",
+    "build-production": "node_modules/.bin/webpack --mode=production"
+  },
+  "repository": {
+    "type": "git",
+    "url": "ssh://develop@mail.itnox.de/home/git/ProffieDiag"
+  },
+
+  "devDependencies": {
+    "webpack": "^5.58.2",
+    "webpack-cli": "*"
+  },
+  "private": true
+}
