@@ -15,7 +15,7 @@ const createWindow = () => {
         },
         //titleBarStyle: 'hidden',
         //titleBarOverlay: true
-        //frame: !isWindows //Remove frame to hide default menu
+        frame: !isWindows //Remove frame to hide default menu
     })
 
     mainWindow.loadFile('index.html')

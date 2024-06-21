@@ -6,11 +6,13 @@
 	<link rel="stylesheet" href="menu.css" />
 	<script src="menu.js"></script>
 </head>
+
 <body>
-<div id="menuCatcher"></div>
+
 <div id="titlebar" class="tb-menu">
 	<button class="tb-menu" data-sub="#submenu1">File</button>
 	<button class="tb-menu" data-sub="#submenu2">Connect</button>
+	<button class="tb-menu" onclick="showDiagnostics()">Diagnostics</button>
 	<button class="tb-menu" onclick="openStyleEditor()">Styles</button>
 	<button class="tb-menu" data-sub="#subConfig">Configuration</button>
 	<button class="tb-menu" data-sub="#subFlash">Flash</button>
@@ -54,6 +56,8 @@
 	<button class="tb-menu" onclick="showAbout()">About</button><br>
 </div>
 
-<iframe id="mainFrame"></iframe>
+<div id="menuCatcher"></div>
+
+<iframe id="mainFrame" src="app.html"></iframe>
 </body>
 </html>
