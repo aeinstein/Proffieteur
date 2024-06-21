@@ -58,7 +58,7 @@ const template = [
         submenu: [
             isMac ? { role: "close" } : { role: "quit" },
             {
-                label: "open",
+                label: "Open",
                 async click() {
                     console.log("open");
                     //mainWindow.webContents.send();
@@ -67,9 +67,51 @@ const template = [
             },
         ]
     },
+
+    {
+        label: "Connect",
+        submenu: [
+            {
+                label: "WebUSB",
+                async click() {
+                    console.log("open");
+                    //mainWindow.webContents.send();
+
+                }
+            },
+            {
+                label: "WebSerial",
+                async click() {
+                    console.log("open");
+                    //mainWindow.webContents.send();
+
+                }
+            },
+            {
+                label: "WebBluetooth",
+                async click() {
+                    console.log("open");
+                    //mainWindow.webContents.send();
+
+                }
+            },
+        ]
+    },
+
+    {
+        label: "Styles",
+
+    },
+
     {
         label: "Configuration",
         submenu: [
+            {
+                label: "General", click() {
+                    console.log("open PresetConfig");
+                }
+            },
+
             {
                 label: "Blades",
                 async click() {
@@ -84,14 +126,38 @@ const template = [
                     console.log("open PresetConfig");
                 }
             },
+
+            {
+                label: "Props", click() {
+                    console.log("open PresetConfig");
+                }
+            },
         ]
     },
 
     {
         label: "Flash",
-        click(){
-            console.log("open flash");
-        }
+        submenu: [
+            {
+                label: "Compile",
+                click(){
+                    console.log("open compile");
+                }
+            },
+            {
+                label: "Upload",
+                click(){
+                    console.log("open upload");
+                }
+            },
+            {
+                label: "Settings",
+                click(){
+                    console.log("open settings");
+                }
+            }
+        ]
+
     },
 
     {
@@ -115,9 +181,3 @@ const template = [
 
 const menu = Menu.buildFromTemplate(template);
 Menu.setApplicationMenu(menu);
-
-
-
-function showBladeConfig(){
-    mainWindow.loadFile('src/modules/baldeconfig/blades.html')
-}

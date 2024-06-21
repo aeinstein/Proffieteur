@@ -4,21 +4,56 @@
 	<meta charset="UTF-8">
 	<title>Proffieboard Adminstration</title>
 	<link rel="stylesheet" href="menu.css" />
-	<script src="https://kit.fontawesome.com/1c9144b004.js" crossorigin="anonymous"></script>
+	<script src="menu.js"></script>
 </head>
 <body>
-<div id="menu-bar">
-	<div class="left" role="menu">
-		<button class="menubar-btn" id="menu-btn"><i class="fas fa-bars"></i></button>
-		<h5>Proffieboard Administration</h5>
-	</div>
-	<div class="right">
-		<button class="menubar-btn" id="minimize-btn"><i class="fas fa-window-minimize"></i></button>
-		<button class="menubar-btn" id="max-unmax-btn"><i class="far fa-square"></i></button>
-		<button class="menubar-btn" id="close-btn"><i class="fas fa-times"></i></button>
-	</div>
+<div id="menuCatcher"></div>
+<div id="titlebar" class="tb-menu">
+	<button class="tb-menu" data-sub="#submenu1">File</button>
+	<button class="tb-menu" data-sub="#submenu2">Connect</button>
+	<button class="tb-menu" onclick="openStyleEditor()">Styles</button>
+	<button class="tb-menu" data-sub="#subConfig">Configuration</button>
+	<button class="tb-menu" data-sub="#subFlash">Flash</button>
+	<button class="tb-menu" data-sub="#subView">View</button>
+	<button class="tb-menu" data-sub="#subHelp">Help</button>
 </div>
+
+<div id="submenu1" class="tb-submenu">
+	<button class="tb-menu" onclick="openFile()">Open</button><br>
+	<button class="tb-menu">Save</button><br>
+	<hr>
+	<button class="tb-menu">Quit</button>
+</div>
+
+<div id="submenu2" class="tb-submenu">
+	<button class="tb-menu" onclick="connect('usb')">WebUSB</button><br>
+	<button class="tb-menu" onclick="connect('serial')">WebSerial</button><br>
+	<button class="tb-menu" onclick="connect('bt')">WebBluetooth</button>
+</div>
+
+<div id="subConfig" class="tb-submenu">
+	<button class="tb-menu" onclick="showModule('general')">General</button><br>
+	<button class="tb-menu" onclick="showModule('bladeconfig')">Blades</button><br>
+	<button class="tb-menu" onclick="showModule('presets')">Presets</button>
+	<button class="tb-menu" onclick="showModule('props')">Props</button>
+</div>
+
+<div id="subFlash" class="tb-submenu">
+	<button class="tb-menu" onclick="showModule('flash_compile')">Compile</button><br>
+	<button class="tb-menu" onclick="showModule('flash_upload')">Upload</button><br>
+	<hr>
+	<button class="tb-menu" onclick="showModule('flash_settings')">Settings</button>
+</div>
+
+<div id="subView" class="tb-submenu">
+	<button class="tb-menu">Maximize</button><br>
+	<button class="tb-menu">Fullscreen</button><br>
+</div>
+
+<div id="subHelp" class="tb-submenu">
+	<button class="tb-menu" onclick="showAbout()">About</button><br>
+</div>
+
 <iframe id="mainFrame"></iframe>
-<script src="./renderer.js"></script>
 </body>
 </html>
