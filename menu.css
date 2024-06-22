@@ -61,6 +61,7 @@ button.tb-menu.selected {
     border-bottom-right-radius: 10px;
     opacity: 0;
     z-index: 1002;
+    box-shadow: 0 0 15px #00000061;
 }
 
 .tb-submenu.shown {
@@ -86,4 +87,101 @@ button.tb-menu.selected {
     height: 100%;
     position: fixed;
     padding-top: 33px;
+}
+
+#statusLine {
+    position: fixed;
+    height: 20px;
+    bottom: 0;
+    width: 100%;
+    background-color: #1f1f1f;
+}
+
+#usb_connected, #serial_connected, #ble_connected {
+    float: right;
+    font-size: 12px;
+    padding-left: 5px;
+    padding-right: 5px;
+    cursor: pointer;
+}
+
+#console_usb, #console_serial {
+    bottom: 0;
+    width: 50%;
+    left: 0;
+    height: 200px;
+    position: fixed;
+}
+
+#console_serial {
+    right: 0;
+    left: initial;
+}
+
+.console {
+    height: 100%;
+    width: 100%;
+}
+
+.console_content {
+    white-space: break-spaces;
+    font-family: monospace;
+    height: calc(100% - 35px);
+    overflow-y: auto;
+}
+
+.console_content .receive {
+    color: green;
+}
+
+.console_content .send {
+    color: red;
+}
+
+
+.scrollable {
+    overflow: hidden;
+    width: 100%;
+    border: 1px solid #373737;
+    box-sizing: border-box;
+}
+
+.scrollable .header {
+    background: #151521;
+    color: #FFFFFF;
+    height: 30px;
+    text-align: center;
+    position: relative;
+    text-overflow: clip;
+    overflow: hidden;
+}
+
+.scrollable .header .title {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+}
+
+.button{
+    visibility: hidden;
+    border: 1px solid #6060aa;
+    background: #101040;
+    color: #FFFFFF;
+    height: 30px;
+    width: 30px;
+    margin: 0;
+    cursor: pointer;
+    position: relative
+}
+
+.error {
+    font-weight: bold;
+    color: red;
+}
+
+.connected {
+    color: green;
 }

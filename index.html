@@ -5,6 +5,9 @@
 	<title>Proffieboard Adminstration</title>
 	<link rel="stylesheet" href="menu.css" />
 	<script src="menu.js"></script>
+	<script src="outer.js"></script>
+	<script src="connection.js"></script>
+	<script src="src/classes/LineBreakTransformer.js"></script>
 </head>
 
 <body>
@@ -58,6 +61,31 @@
 
 <div id="menuCatcher"></div>
 
-<iframe id="mainFrame" src="app.html"></iframe>
+<iframe id="mainFrame" src=""></iframe>
+
+<div class="scrollable" id="console_usb">
+	<div class=header>
+		<span class=title>WebUSB Console</span>
+		<button class="button" onclick='closeTop()'>&#x1F5D1;</button>
+	</div>
+	<div id="contentUSB" class="console_content"></div>
+</div>
+<div class="scrollable" id="console_serial">
+	<div class=header>
+		<span class=title>WebSerial Console</span>
+		<button class="button" onclick='closeTop()'>&#x1F5D1;</button>
+	</div>
+	<div id="contentSerial" class="console_content"></div>
+</div>
+
+<div id="statusLine">
+	<span id="status_text"></span>
+
+	<span id="version"></span>
+
+	<span id="usb_connected" onclick="RunUSB()">USB</span>
+	<span id="serial_connected" onclick="RunSerial()">Serial</span>
+	<span id="ble_connected" onclick="Run()">BLE</span>
+</div>
 </body>
 </html>

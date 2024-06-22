@@ -125,10 +125,7 @@ function closeTop(){
     FIND("top").style.visibility = "hidden";
 }
 
-function getVersion(){
-    versionLoaded = false;
-    SendSerial("version");
-}
+
 
 function addMessage(dest, txt, dir){
     const console = FIND(dest);
@@ -152,22 +149,6 @@ function addMessage(dest, txt, dir){
     }
 
     console.scrollTo(0, console.scrollHeight)
-}
-
-function WatchDog() {
-    watchdog_running = false;
-    if ((Date.now() - last_callback) > 20000) {
-        Die("timeout");
-        setTimeout(DoRunLoop, 10000);
-    }
-    RunWatchDog();
-}
-
-function RunWatchDog() {
-    if (callback_queue.length && !watchdog_running) {
-        watchdog_running = true;
-        setTimeout(WatchDog, 10000);
-    }
 }
 
 function OnStatus(event) {
@@ -1013,3 +994,44 @@ function concatTypedArrays(a, b) { // a, b TypedArray of same type
     return c;
 }
 
+function Init() {
+    console.log("VERSION: $Id: 4edfd53c3b9972c337d0aced34279f3983ca81d4 $");
+    console.log(document.lastModified);
+
+    let err = true;
+
+    if (localStorage.password) {
+        FIND('password').value = localStorage.password;
+    }
+    if (navigator.usb) {
+        FIND('connect_usb').style.visibility = 'visible';
+        err = false;
+    }
+    if (navigator.serial) {
+        FIND('connect_serial').style.visibility = 'visible';
+        err = false;
+    }
+    if (navigator.bluetooth) {
+        FIND('connect_ble').style.visibility = 'visible';
+        err = false;
+    }
+    if (err) {
+        FIND('EMSG').innerHTML = "This browser supports neither webusb nor web bluetooth.";
+    }
+}
+
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js').then(() => {
+        console.log('Service Worker Registered');
+
+        navigator.serviceWorker.addEventListener("message", (evt)=>{
+            console.log(evt);
+            parseMessage(evt);
+        });
+
+        navigator.serviceWorker.startMessages();
+    });
+}
+
+
+window.addEventListener("load", Init);

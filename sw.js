@@ -12,10 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-var cacheName = 'TeensySaberAppCache';
-var filesToCache = [
-    'app.html'
+const cacheName = 'ProffieDiag';
+const filesToCache = [
+    //'app.html'
 ];
+
+self.addEventListener('message', function(e) {
+    let data = e.data;
+
+    console.log(data);
+}, false);
 
 self.addEventListener('install', function(e) {
     console.log('[ServiceWorker] Install');
@@ -53,16 +59,27 @@ self.addEventListener('activate', function(e) {
     return self.clients.claim();
 });
 
-self.addEventListener('fetch', function(e) {
+let current_client;
+
+self.addEventListener('fetch', async function (e) {
     console.log('[Service Worker] Fetch', e.request.url);
     /*
      * The app is asking for app shell files. In this scenario the app uses the
      * "Cache, falling back to the network" offline strategy:
      * https://jakearchibald.com/2014/offline-cookbook/#cache-falling-back-to-network
      */
+
+    if (e.clientId) {
+        current_client = await self.clients.get(e.clientId);
+        current_client.postMessage(["Started"]);
+    }
+
+
     e.respondWith(
-        caches.match(e.request).then(function(response) {
+        caches.match(e.request).then(function (response) {
             return response || fetch(e.request);
         })
     );
 });
+
+

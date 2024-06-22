@@ -13,9 +13,9 @@ const createWindow = () => {
         webPreferences: {
             preload: path.join(app.getAppPath(), 'preload.js')
         },
-        //titleBarStyle: 'hidden',
-        //titleBarOverlay: true
-        frame: !isWindows //Remove frame to hide default menu
+        titleBarStyle: 'hidden',
+        titleBarOverlay: true
+        //frame: !isWindows //Remove frame to hide default menu
     })
 
     mainWindow.loadFile('index.html')

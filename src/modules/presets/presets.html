@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Title</title>
+	<link rel="stylesheet" type="text/css" href="../../../style/style.css">
+	<script src="presets.js"></script>
+</head>
+
+<div style="width: 100%">
+	<div id="cntBlades" class="container">
+		<button onclick="showTemplate('tmpBladeHelp')" style="float: right">Help</button>
+		<legend>Presets</legend>
+		<hr>
+		<table style="width: 100%">
+			<tr>
+				<td>
+					<label for="preset">Preset</label>
+					<select id="preset" onchange="refreshPresets()"></select>
+					<button class="b1" onclick="editPreset()">Edit</button>
+					<button class="b1" onclick="newPreset()">New</button>
+					<button class="b1" onclick="clrPreset()">Delete</button>
+				</td>
+				<td>
+					Number of blades
+					<input style="width: 30px; text-align: center" type="text" id="num_blades" readonly>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+
+				</td>
+			</tr>
+		</table>
+		<hr>
+
+		<table style="width: 100%">
+			<tr>
+				<td style="vertical-align: top">
+					Current<br>Blades
+				</td>
+			</tr>
+		</table>
+	</div>
+</div>
+
+<template id="tmpNewPreset">
+	New Preset<br>
+	<hr>
+	<table>
+		<tr>
+			<td>Preset Array</td>
+			<td><input type="number" id="newBladeID" min="-1" max="700000" value="0" maxlength="6" style="width:65px; text-align: right"></td>
+		</tr>
+		<tr>
+			<td>Presets</td>
+			<td><select id="newBladePresets">
+				<option>presets</option>
+				<option>no_blade</option>
+			</select></td>
+		</tr>
+		<tr>
+			<td>Save Folder</td>
+			<td><input type="text" id="newBladeSaveFolder" placeholder="example: nb_save"></td>
+		</tr>
+		<tr>
+			<td colspan="2"><hr></td>
+		</tr>
+		<tr>
+			<td><button onclick="hideTemplate()">Cancel</button></td>
+			<td style="text-align: right"><button onclick="saveNewBladeID()">Save</button></td>
+		</tr>
+	</table>
+</template>

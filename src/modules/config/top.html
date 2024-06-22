@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Title</title>
+	<link rel="stylesheet" type="text/css" href="../../../style/style.css">
+
+</head>
+
+<body>
+<style>
+    fieldset {
+        max-width: 300px;
+    }
+
+    fieldset table tr td:nth-child(2) {
+        text-align: right;
+    }
+</style>
+
+<div style="display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: stretch;">
+
+	<fieldset style="width: 300px">
+		<legend>General</legend>
+
+		<table style="padding: 0; margin: 0; width: inherit">
+			<tr>
+				<td><label for="ENABLE_MOTION">Enable motion</label></td>
+				<td><input type="checkbox" id="ENABLE_MOTION" checked></td>
+			</tr>
+
+			<tr>
+				<td><label for="ENABLE_WS2811">Enable Neopixel</label></td>
+				<td><input type="checkbox" id="ENABLE_WS2811" checked></td>
+			</tr>
+
+			<tr>
+				<td><label for="EXTRA_COLOR_BUFFER_SPACE">Extra color buffer</label></td>
+				<td><input type="number" id="EXTRA_COLOR_BUFFER_SPACE" min="0" max="60"></td>
+			</tr>
+
+			<tr>
+				<td><label for="ENABLE_SD">Enable SDCard</label></td>
+				<td><input type="checkbox" id="ENABLE_SD" checked></td>
+			</tr>
+
+			<tr>
+				<td><label for="SHARED_POWER_PINS">Shared power pins</label></td>
+				<td><input type="checkbox" id="SHARED_POWER_PINS" checked></td>
+			</tr>
+		</table>
+	</fieldset>
+
+	<fieldset>
+		<legend>Standby</legend>
+		<table>
+			<tr>
+				<td><label for="MOTION_TIMEOUT">Motion timeout in min.</label></td>
+				<td><input type="number" id="MOTION_TIMEOUT" min="0" max="60"></td>
+			</tr>
+
+			<tr>
+				<td><label for="IDLE_OFF_TIME">Idle timeout in min.</label></td>
+				<td><input type="number" id="IDLE_OFF_TIME" min="0" max="60"></td>
+			</tr>
+		</table>
+	</fieldset>
+
+	<fieldset>
+		<legend>Audio</legend>
+		<table>
+			<tr>
+				<td><label for="ENABLE_AUDIO">Audio</label></td>
+				<td><input type="checkbox" id="ENABLE_AUDIO" checked></td>
+			</tr>
+
+			<tr>
+				<td><label for="VOLUME">Volume</label></td>
+				<td><input type="number" id="VOLUME" min="0" max="3500"></td>
+			</tr>
+
+			<tr>
+				<td><label for="BOOT_VOLUME">Boot Volume</label></td>
+				<td><input type="number" id="BOOT_VOLUME" min="0" max="3500"></td>
+			</tr>
+
+			<tr>
+				<td><label for="FILTER_CUTOFF_FREQUENCY">Boot Volume</label></td>
+				<td><input type="number" id="FILTER_CUTOFF_FREQUENCY" min="20" max="1000"></td>
+			</tr>
+
+			<tr>
+				<td><label for="FILTER_ORDER">Boot Volume</label></td>
+				<td><input type="number" id="FILTER_ORDER" min="0" max="10"></td>
+			</tr>
+
+			<tr>
+				<td><label for="KILL_OLD_PLAYERS">Kill old players</label></td>
+				<td><input type="checkbox" id="KILL_OLD_PLAYERS" checked></td>
+			</tr>
+		</table>
+	</fieldset>
+
+	<fieldset>
+		<legend>BladeID</legend>
+
+		<table>
+			<tr>
+				<td><label for="BLADE_ID_SCAN_MILLIS">Scan ms</label></td>
+				<td><input type="number" min="1000" max="100000" id="BLADE_ID_SCAN_MILLIS"></td>
+			</tr>
+
+			<tr>
+				<td><label for="BLADE_ID_TIMES">Scan times</label></td>
+				<td><input type="number" min="1" max="20" id="BLADE_ID_TIMES"></td>
+			</tr>
+
+			<tr>
+				<td><label for="ENABLE_POWER_FOR_ID">Enable Powerpins</label></td>
+				<td><input type="checkbox" id="ENABLE_POWER_FOR_ID"></td>
+			</tr>
+		</table>
+	</fieldset>
+
+	<fieldset>
+		<legend>Buttons</legend>
+		<table>
+			<tr>
+				<td><label for="NUM_BUTTONS">Num. Buttons</label></td>
+				<td><input type="number" min="0" max="3" id="NUM_BUTTONS"></td>
+			</tr>
+		</table>
+	</fieldset>
+
+
+</div>
+
+</body>
+</html>

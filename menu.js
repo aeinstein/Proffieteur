@@ -63,9 +63,23 @@ function openFile(){
 }
 
 function showModule(mod){
+    const container = document.getElementById("mainFrame");
+
     switch(mod){
+        case "general":
+            container.src = "src/modules/config/top.html";
+            break;
+
         case "bladeconfig":
-            document.getElementById("mainFrame").src = "src/modules/bladeconfig/blades.html";
+            container.src = "src/modules/bladeconfig/blades.html";
+            break;
+
+        case "presets":
+            container.src = "src/modules/presets/presets.html";
+            break;
+
+        case "styles":
+            container.src = "src/modules/styles/style_editor.html";
             break;
     }
 }
