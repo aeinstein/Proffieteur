@@ -1,6 +1,9 @@
 let named_styles = {};
 let template_ids = [];
-
+let current_preset_num = -1;
+let currentMode = 'normal';
+let presets = [];
+let dragging = null;
 
 bc = new BroadcastChannel('proffiediag');
 
@@ -19,6 +22,11 @@ bc.onmessage = async (ev) => {
 
     if (ev.data.installdate) {
         document.getElementById("txtInstalled").value = ev.data.installdate;
+    }
+
+    if(ev.data.presets) {
+        presets = ev.data.presets;
+        UpdatePresets();
     }
 
     if (ev.data.current_track) showCurrentTrack(ev.data.current_track);
@@ -44,6 +52,7 @@ bc.onmessage = async (ev) => {
     }
 
     let tmp;
+
 
 
     if(ev.data.named_style) {
@@ -158,6 +167,10 @@ function listTracks(){
 
 function listNamedStyles(){
     bc.postMessage("list_named_styles");
+}
+
+function listPresets(){
+    bc.postMessage("list_presets");
 }
 
 function FIND(id) {
@@ -724,8 +737,8 @@ function concatTypedArrays(a, b) { // a, b TypedArray of same type
 }
 
 
+listPresets();
 
-listTracks();
 
 //document.getElementById("txtVersion").innerHTML = parent.current_board["version"];
 document.getElementById("txtButtons").innerHTML = parent.current_board["buttons"];
@@ -733,4 +746,5 @@ document.getElementById("txtProp").innerHTML = parent.current_board["props"];
 document.getElementById("txtConfig").innerHTML = parent.current_board["config"];
 document.getElementById("txtInstalled").innerHTML = parent.current_board["installdate"];
 
-listNamedStyles();
+//listTracks();
+//listNamedStyles();

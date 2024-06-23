@@ -44,6 +44,10 @@ class USB {
             case "list_named_styles":
                 this.listNamedStyles();
                 break;
+
+            case "list_presets":
+                this.listPresets();
+                break;
             }
         };
     }
@@ -220,6 +224,30 @@ class USB {
 
         console.log("style", desc);
         this.bc.postMessage({"named_style": style, desc: desc});
+    }
+
+    async listPresets() {
+        let preset;
+        let presets = [];
+        let preset_string = await this.send("list_presets");
+
+        const lines = preset_string.split("\n");
+
+        for (let l = 0; l < lines.length; l++) {
+            const tmp = lines[l].split("=");
+
+            if (tmp.length > 1) {
+                if (tmp[0] === "FONT") {
+                    if (preset) presets.push(preset);
+                    preset = {}
+                }
+                preset[tmp[0]] = tmp.slice(1).join("=");
+            }
+        }
+
+        if (preset && Object.keys(preset).length > 0) presets.push(preset);
+
+        this.bc.postMessage({"presets": presets });
     }
 
     async onDisconnected() {
