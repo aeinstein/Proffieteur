@@ -1,0 +1,49 @@
+<div id="titlebar" class="tb-menu">
+	<button class="tb-menu" data-sub="#submenu1">File</button>
+	<button class="tb-menu" data-sub="#submenu2">Connect</button>
+	<button class="tb-menu" onclick="showModule('admin')">Administration</button>
+	<button class="tb-menu" onclick="showModule('styles')">Styles</button>
+	<button class="tb-menu" data-sub="#subConfig">Configuration</button>
+	<button class="tb-menu" data-sub="#subFlash">Flash</button>
+	<button class="tb-menu" data-sub="#subView">View</button>
+	<button class="tb-menu" data-sub="#subHelp">Help</button>
+	<tm-batterychart id="batteryChart" background="#202020" width="300" height="33" style="float: right"></tm-batterychart>
+</div>
+
+<div id="submenu1" class="tb-submenu">
+	<button class="tb-menu" onclick="openFile()">Open</button><br>
+	<button class="tb-menu">Save</button><br>
+	<hr>
+	<button class="tb-menu">Quit</button>
+</div>
+
+<div id="submenu2" class="tb-submenu">
+	<button class="tb-menu" onclick="connectUSB()">WebUSB</button><br>
+	<button class="tb-menu" onclick="connectSerial()">WebSerial</button><br>
+	<button class="tb-menu" onclick="connectBLE()">WebBluetooth</button>
+</div>
+
+<div id="subConfig" class="tb-submenu">
+	<button class="tb-menu" onclick="showModule('general')">General</button><br>
+	<button class="tb-menu" onclick="showModule('bladeconfig')">Blades</button><br>
+	<button class="tb-menu" onclick="showModule('presets')">Presets</button>
+	<button class="tb-menu" onclick="showModule('props')">Props</button>
+</div>
+
+<div id="subFlash" class="tb-submenu">
+	<button class="tb-menu" onclick="showModule('flash_compile')">Compile</button><br>
+	<button class="tb-menu" onclick="showModule('flash_upload')">Upload</button><br>
+	<hr>
+	<button class="tb-menu" onclick="showModule('flash_settings')">Settings</button>
+</div>
+
+<div id="subView" class="tb-submenu">
+	<button class="tb-menu">Maximize</button><br>
+	<button class="tb-menu">Fullscreen</button><br>
+</div>
+
+<div id="subHelp" class="tb-submenu">
+	<button class="tb-menu" onclick="showAbout()">About</button><br>
+</div>
+
+<div id="menuCatcher"></div>

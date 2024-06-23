@@ -3,63 +3,18 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Proffieboard Adminstration</title>
-	<link rel="stylesheet" href="menu.css" />
-	<script src="menu.js"></script>
+	<link rel="stylesheet" href="style/menu.css" />
+
 	<script src="outer.js"></script>
-	<script src="connection.js"></script>
-	<script src="src/classes/LineBreakTransformer.js"></script>
+	<script src="classes/serial.js" async></script>
+	<script src="classes/usb.js" async></script>
+	<script src="classes/LineBreakTransformer.js" async></script>
+	<script src="classes/batterychart.js" async></script>
 </head>
 
 <body>
 
-<div id="titlebar" class="tb-menu">
-	<button class="tb-menu" data-sub="#submenu1">File</button>
-	<button class="tb-menu" data-sub="#submenu2">Connect</button>
-	<button class="tb-menu" onclick="showDiagnostics()">Diagnostics</button>
-	<button class="tb-menu" onclick="openStyleEditor()">Styles</button>
-	<button class="tb-menu" data-sub="#subConfig">Configuration</button>
-	<button class="tb-menu" data-sub="#subFlash">Flash</button>
-	<button class="tb-menu" data-sub="#subView">View</button>
-	<button class="tb-menu" data-sub="#subHelp">Help</button>
-</div>
-
-<div id="submenu1" class="tb-submenu">
-	<button class="tb-menu" onclick="openFile()">Open</button><br>
-	<button class="tb-menu">Save</button><br>
-	<hr>
-	<button class="tb-menu">Quit</button>
-</div>
-
-<div id="submenu2" class="tb-submenu">
-	<button class="tb-menu" onclick="connect('usb')">WebUSB</button><br>
-	<button class="tb-menu" onclick="connect('serial')">WebSerial</button><br>
-	<button class="tb-menu" onclick="connect('bt')">WebBluetooth</button>
-</div>
-
-<div id="subConfig" class="tb-submenu">
-	<button class="tb-menu" onclick="showModule('general')">General</button><br>
-	<button class="tb-menu" onclick="showModule('bladeconfig')">Blades</button><br>
-	<button class="tb-menu" onclick="showModule('presets')">Presets</button>
-	<button class="tb-menu" onclick="showModule('props')">Props</button>
-</div>
-
-<div id="subFlash" class="tb-submenu">
-	<button class="tb-menu" onclick="showModule('flash_compile')">Compile</button><br>
-	<button class="tb-menu" onclick="showModule('flash_upload')">Upload</button><br>
-	<hr>
-	<button class="tb-menu" onclick="showModule('flash_settings')">Settings</button>
-</div>
-
-<div id="subView" class="tb-submenu">
-	<button class="tb-menu">Maximize</button><br>
-	<button class="tb-menu">Fullscreen</button><br>
-</div>
-
-<div id="subHelp" class="tb-submenu">
-	<button class="tb-menu" onclick="showAbout()">About</button><br>
-</div>
-
-<div id="menuCatcher"></div>
+<div id="titlebar" datasrc="titlebar/menu.html"></div>
 
 <iframe id="mainFrame" src=""></iframe>
 
@@ -81,11 +36,24 @@
 <div id="statusLine">
 	<span id="status_text"></span>
 
+	<span id="manufacturerName"></span>
+	<span id="productName"></span>
 	<span id="version"></span>
+	<span id="serialNumber"></span>
 
-	<span id="usb_connected" onclick="RunUSB()">USB</span>
-	<span id="serial_connected" onclick="RunSerial()">Serial</span>
+	<span id="usb_connected" onclick="connectUSB()">USB</span>
+	<span id="serial_connected" onclick="connectSerial()">Serial</span>
 	<span id="ble_connected" onclick="Run()">BLE</span>
 </div>
+
+<div id="top" class="scrollable">
+	<div class=header>
+		<span class=title>ProcessMonitor</span>
+		<button class="button" id="closebutton" onclick='closeTop()'>&#x2715;</button>
+	</div>
+	<div id="contentTop" class="console_content"></div>
+</div>
+
 </body>
+<script src="titlebar/menu.js"></script>
 </html>

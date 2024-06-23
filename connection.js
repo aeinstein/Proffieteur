@@ -1,47 +1,18 @@
+let bc = new BroadcastChannel('proffiediag');
 
+bc.onmessage = function(ev) {
+    console.log(ev);
+
+    switch(ev.data){
+        case "":
+            break;
+    }
+};
 
 let serviceUuid = '713d0000-389c-f637-b1d7-91b361ae7678';
 
 let usbProductId = 0x6668;
 let usbVendorId = 0x1209;
-
-// BT variables
-let device;
-let server;
-let rx;
-let tx;
-let pw;
-let status;
-
-// USB vars
-let usb_device;
-let endpointOut;
-let endpointIn;
-
-// Serial vars
-let serial_port;
-let versionLoaded = false;
-let topCalled = false;
-let processes = {};
-
-let send_buf = [];
-let current_packet;
-let sending = false;
-let callback_queue = [];
-let last_callback;
-
-let buffer = "";
-
-let watchdog_running = false;
-let presets = [];
-let loop_running = false;
-
-const filters = [
-    {
-        usbVendorId
-        //'productId': usbProductId
-    }
-];
 
 const UARTs = {
     '713d0000-389c-f637-b1d7-91b361ae7678': {
@@ -76,6 +47,47 @@ const UARTs = {
         tx: "569a2000-b87f-490c-92cb-11ba5ea5167c"
     },  //Laird BL600 Virtual Serial Port Service
 };
+
+
+
+
+// BT variables
+let device;
+let server;
+let rx;
+let tx;
+let pw;
+let status;
+
+// USB vars
+let usb_device;
+let endpointOut;
+let endpointIn;
+
+// Serial vars
+let serial_port;
+let versionLoaded = false;
+let topCalled = false;
+let processes = {};
+
+let send_buf = [];
+let current_packet;
+let sending = false;
+let callback_queue = [];
+let last_callback;
+
+let buffer = "";
+
+let watchdog_running = false;
+let presets = [];
+let loop_running = false;
+
+const filters = [
+    {
+        'usbVendorId': usbVendorId,
+        'productId': usbProductId
+    }
+];
 
 function addMessage(dest, txt, dir){
     const console = document.getElementById(dest);
@@ -159,7 +171,7 @@ function OnSerialData(data){
 
         if(matches){
             let version = matches[1] + "." + matches[2];
-            document.getElementById("txtVersion").innerHTML = version;
+            document.getElementById("version").innerHTML = version;
         }
 
         if(data.indexOf(": ") > 0) {
@@ -181,7 +193,7 @@ function OnSerialData(data){
         }
 
         if(data.startsWith("config/")){
-            FIND("txtConfig").innerHTML = data;
+            document.getElementById("txtConfig").innerHTML = data;
         }
     }
 
@@ -423,7 +435,7 @@ async function RunSerial() {
         serial_port = ports[0];
     } else {
         console.log(filters);
-        serial_port = await navigator.serial.requestPort({'filters': filters});
+        serial_port = await navigator.serial.requestPort({'filters': filters["usbVendorId"]});
     }
 
     // Wait for the serial port to open.
@@ -438,8 +450,8 @@ async function RunSerial() {
 
     getVersion();
 
+    bc.postMessage("serial_connected");
     document.getElementById("serial_connected").className = "connected";
-
 
     // Listen to data coming from the serial device.
     while (true) {
@@ -520,7 +532,11 @@ async function RunUSB() {
         'index': interfaceNumber
     });
 
+    bc.postMessage("usb_connected");
     document.getElementById("usb_connected").className = "connected";
+    document.getElementById("manufacturerName").innerHTML = currentDevice["manufacturerName"];
+    document.getElementById("productName").innerHTML = currentDevice["productName"];
+    document.getElementById("serialNumber").innerHTML = currentDevice["serialNumber"];
 
     usb_device.transferOut(endpointOut, new TextEncoder('utf-8').encode("\n\n"));
     //Run2();
