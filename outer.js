@@ -1,16 +1,25 @@
 let capabilities = {};
 
+
+var current_board = {};
+
+let version, installdate, prop, buttons;
+
+
 bc = new BroadcastChannel('proffiediag');
 
 bc.onmessage = (ev)=> {
-    console.log(ev);
+    //console.log(ev);
 
-    if(ev.data.prop) console.log("Props: " + ev.data.prop);
-    if(ev.data.buttons) console.log("Buttons: " + ev.data.buttons);
-    if(ev.data.installdate) console.log("Buttons: " + ev.data.installdate);
+    if(ev.data.prop) current_board["props"] = ev.data.prop;
+    if(ev.data.buttons) current_board["buttons"] = ev.data.buttons;
+    if(ev.data.installdate) current_board["installdate"] = ev.data.installdate;
+    if(ev.data.config) current_board["config"] = ev.data.config;
     if(ev.data.battery) batteryMonitor.setValue(ev.data.battery);
     if(ev.data.serial_data) addMessage("contentSerial", ev.data.serial_data + "\n", ev.data.dir);
     if(ev.data.usb_data) addMessage("contentUSB", ev.data.usb_data + "\n", ev.data.dir);
+
+    if(ev.data.version) current_board["version"] = ev.data.version;
 
     if(ev.data.monitor){
         switch(ev.data.monitor){

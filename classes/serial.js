@@ -15,7 +15,7 @@ class Serial {
         this.bc = new BroadcastChannel('proffiediag');
 
         this.bc.onmessage = (ev)=> {
-            console.log(ev);
+            //console.log(ev);
 
             if(ev.data.send_serial) this.send(ev.data.send_serial);
 
@@ -60,8 +60,7 @@ class Serial {
             this.serial_port = ports[0];
 
         } else {
-            console.log(filters);
-            this.serial_port = await navigator.serial.requestPort({'filters': this.usbVendorId});
+            this.serial_port = await navigator.serial.requestPort({'filters': [{ usbVendorId: this.usbVendorId }]});
         }
 
         // Wait for the serial port to open.

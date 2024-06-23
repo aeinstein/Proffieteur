@@ -1,23 +1,29 @@
+let named_styles = {};
+let template_ids = [];
+
+
 bc = new BroadcastChannel('proffiediag');
 
-bc.onmessage = (ev)=> {
+bc.onmessage = async (ev) => {
     console.log(ev);
 
-    if(ev.data.prop) {
+    if (ev.data.prop) {
         console.log("Props: " + ev.data.prop);
         document.getElementById("txtProp").value = ev.data.prop;
     }
 
-    if(ev.data.buttons) {
+    if (ev.data.buttons) {
         console.log("Buttons: " + ev.data.buttons);
         document.getElementById("txtButtons").value = ev.data.buttons;
     }
 
-    if(ev.data.installdate){
+    if (ev.data.installdate) {
         document.getElementById("txtInstalled").value = ev.data.installdate;
     }
 
-    if(ev.data.tracks){
+    if (ev.data.current_track) showCurrentTrack(ev.data.current_track);
+
+    if (ev.data.tracks) {
         let track_string = "";
 
         for (let l = 0; l < ev.data.tracks.length; l++) {
@@ -36,6 +42,106 @@ bc.onmessage = (ev)=> {
 
         FIND('tracks').innerHTML = track_string;
     }
+
+    let tmp;
+
+
+    if(ev.data.named_style) {
+        console.log(ev.data);
+
+        const desc = ev.data.desc;
+        // console.log(desc);
+        // console.log(desc[0]);
+        const arg_string = desc[0];
+
+        const args = arg_string.split(",");
+        for (let j = 1; j < args.length; j++) {
+            args[j] = args[j].trim();
+        }
+
+        let arguments = [];
+        // if (args.length != desc.length) {
+        // console.log("WARNING: "+style_lines[i]+" has wrong number of descriptive arguments");
+        // }
+        for (let j = 1; j < desc.length; j++) {
+            const default_arguments = desc[j].split(" ");
+            // TYPE, DESC, DEFAULT
+            arguments.push([default_arguments[0], args[j], default_arguments[1]]);
+
+            if (args[j]) {
+                const last_word = args[j].split(" ").pop();
+
+                if (last_word === "color" && default_arguments[0] === "INT") {
+                    console.warn("WARNING: " + ev.data.named_style + " argument " + i + " desc says color, but is int.");
+                }
+
+                if (last_word === "time" && default_arguments[0] === "COLOR") {
+                    console.warn("WARNING: " + ev.data.named_style + " argument " + i + " desc says time, but is color.");
+                }
+            }
+        }
+
+        if (ev.data.named_style.split(" ")[0] === "builtin") {
+            arguments = arguments.slice(2);
+        }
+
+        // Group compatible templates for argument saving.
+        let best_matches = -1;
+        const styles_so_far = Object.keys(named_styles);
+        let template_id = styles_so_far.length;
+
+        for (let j = 0; j < template_ids.length; j++) {
+            const tid = template_ids[j];
+            let compatible = true;
+            let matches = 0;
+
+            for (let l = 0; l < styles_so_far.length && compatible; l++) {
+                tmp = named_styles[styles_so_far[l]];
+                if (tmp.TEMPLATE !== tid) continue;
+
+                if (arg_string !== tmp.ARG_STRING) {
+                    compatible = false;
+                    break;
+                }
+
+                let matching_args = 0;
+
+                for (let k = 0; k < Math.min(arguments.length, tmp.ARGS.length); k++) {
+                    if (arguments[k][0] === "VOID") continue;
+                    if (tmp.ARGS[k][0] === "VOID") continue;
+                    if (arguments[k][0] === tmp.ARGS[k][0]) {
+                        matching_args = 0;
+                    } else {
+                        compatible = false;
+                        break;
+                    }
+                }
+
+                matches = Math.max(matches, matching_args);
+            }
+
+            if (compatible && matches > best_matches) {
+                best_matches = matches;
+                template_id = tid;
+            }
+        }
+
+        template_ids.push(template_id);
+
+        named_styles[ev.data.named_style] = {
+            NAME: ev.data.named_style,
+            DESC: args[0],
+            ARG_STRING: arg_string,
+            ARGS: arguments,
+            TEMPLATE: template_id
+        };
+    }
+
+    if (ev.data.named_styles) {
+        for (let i = 0; i < ev.data.named_styles.length; i++) {
+            bc.postMessage({"describe_named_style": ev.data.named_styles[i]});
+        }
+    }
 };
 
 function sendUSB(cmd){
@@ -48,6 +154,10 @@ function sendSerial(cmd){
 
 function listTracks(){
     bc.postMessage("list_tracks");
+}
+
+function listNamedStyles(){
+    bc.postMessage("list_named_styles");
 }
 
 function FIND(id) {
@@ -416,8 +526,7 @@ async function DelConfirm() {
 }
 
 async function PlayTrack(track) {
-    await Send("play_track " + track);
-    showCurrentTrack(track);
+    bc.postMessage({play_track: track});
 }
 
 function sleep(ms) {
@@ -584,26 +693,6 @@ function SaveClashThreshold() {
     threshold_label.innerHTML = threshold;
 }
 
-async function GetList(cmd) {
-    const s = await Send(cmd);
-    if (s.startsWith("Whut?")) {
-        return [];
-    }
-    const ret = s.split("\n");
-    ret.pop();  // remove empty line at end
-    return ret;
-}
-
-async function HasCmd(cmd) {
-    const s = await Send(cmd);
-    return !s.startsWith("Whut?");
-}
-
-async function HasDir(dir) {
-    const entries = await GetList("dir " + dir);
-    return !(entries.length === 1 && entries[0] === "No such directory.");
-}
-
 function from16bitlinear(val) {
     val = parseInt(val);
     val = Math.round(Math.pow(val / 65535.0, 1.0 / 2.2) * 255.0);
@@ -637,3 +726,11 @@ function concatTypedArrays(a, b) { // a, b TypedArray of same type
 
 
 listTracks();
+
+//document.getElementById("txtVersion").innerHTML = parent.current_board["version"];
+document.getElementById("txtButtons").innerHTML = parent.current_board["buttons"];
+document.getElementById("txtProp").innerHTML = parent.current_board["props"];
+document.getElementById("txtConfig").innerHTML = parent.current_board["config"];
+document.getElementById("txtInstalled").innerHTML = parent.current_board["installdate"];
+
+listNamedStyles();

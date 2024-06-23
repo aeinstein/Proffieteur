@@ -26,14 +26,24 @@ class USB {
 
             if (ev.data.send_usb) this.send(ev.data.send_usb);
 
-            switch (ev.data) {
-                case "connect_usb":
-                    this.connect();
-                    break;
+            if(ev.data.play_track) this.send("play_track " + ev.data.play_track);
 
-                case "list_tracks":
-                    this.listTracks();
-                    break;
+            if(ev.data.describe_named_style) {
+                this.describeNamedStyle(ev.data.describe_named_style)
+            }
+
+            switch (ev.data) {
+            case "connect_usb":
+                this.connect();
+                break;
+
+            case "list_tracks":
+                this.listTracks();
+                break;
+
+            case "list_named_styles":
+                this.listNamedStyles();
+                break;
             }
         };
     }
@@ -200,9 +210,22 @@ class USB {
         this.bc.postMessage({"tracks": track_lines});
     }
 
+    async listNamedStyles() {
+        let style_lines = await this.getList("list_named_styles");
+        this.bc.postMessage({"named_styles": style_lines});
+    }
+
+    async describeNamedStyle(style){
+        let desc = await this.getList("describe_named_style " + style);
+
+        console.log("style", desc);
+        this.bc.postMessage({"named_style": style, desc: desc});
+    }
+
     async onDisconnected() {
         console.log("USB DISCONNECTED");
         this.bc.postMessage("usb_disconnected");
         Die();
     }
 }
+
