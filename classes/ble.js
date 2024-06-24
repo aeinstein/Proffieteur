@@ -47,7 +47,6 @@ class BLE {
             switch (ev.data) {
                 case "connect_ble":
                     await this.connect();
-                    this.
                     break;
             }
         };

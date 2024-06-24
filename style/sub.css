@@ -214,3 +214,72 @@ hr {
     border-top: 1px solid;
 }
 
+.inner {
+    width: 100%;
+    height: 100%;
+    font-family: monospace;
+    font-size: 11px;
+    tab-size: 10px;
+}
+
+.container {
+    border: 1px solid black;
+    padding: 5px;
+}
+
+.details {
+    display: none;
+    width: 100%;
+}
+
+.modal {
+    border: 1px solid silver;
+    box-shadow: 0 0 15px black;
+    position: fixed;
+    background-color: #373737;
+    top: 50%;
+    transform: translate(0px, -50%);
+    padding: 5px;
+    color: white;
+    font-family: arial, sans-serif;
+}
+
+
+.modal table tr td:nth-child(2) {
+    padding-right: 5px;
+    width: 50px;
+    text-align: right;
+}
+
+#MaxVolts, #MaxAmps, #P2Amps, #P2Volts, #Resistor, #Color  {
+    width: 50px;
+}
+
+.pin, .led {
+
+}
+
+.pin {
+
+}
+
+#bladeConfig {
+    min-width: 800px;
+    min-height: 250px;
+
+    width: 100%;
+    font-size: 12px;
+}
+
+textarea {
+    box-sizing: border-box;
+}
+
+#lstErrors {
+    color: white;
+    background-color: darkgreen;
+}
+
+#lstErrors.error {
+    background-color: darkred;
+}
