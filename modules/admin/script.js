@@ -4,6 +4,7 @@ let current_preset_num = -1;
 let currentMode = 'normal';
 let presets = [];
 let dragging = null;
+let font_lines;
 
 bc = new BroadcastChannel('proffiediag');
 
@@ -27,9 +28,15 @@ bc.onmessage = async (ev) => {
     if(ev.data.presets) {
         presets = ev.data.presets;
         UpdatePresets();
+
+        listNamedStyles();
     }
 
-    if (ev.data.current_track) showCurrentTrack(ev.data.current_track);
+    if(ev.data.currentPreset) {
+        showCurrentPreset(ev.data.currentPreset);
+    }
+
+    if (ev.data.currentTrack) showCurrentTrack(ev.data.currentTrack);
 
     if (ev.data.tracks) {
         let track_string = "";
@@ -52,8 +59,6 @@ bc.onmessage = async (ev) => {
     }
 
     let tmp;
-
-
 
     if(ev.data.named_style) {
         console.log(ev.data);
@@ -144,13 +149,14 @@ bc.onmessage = async (ev) => {
             ARGS: arguments,
             TEMPLATE: template_id
         };
+
+        if (Object.keys(named_styles).length > 0) {
+            console.log("ENABLING EDITING");
+            FIND("editbutton").style.visibility = 'visible';
+        }
+
     }
 
-    if (ev.data.named_styles) {
-        for (let i = 0; i < ev.data.named_styles.length; i++) {
-            bc.postMessage({"describe_named_style": ev.data.named_styles[i]});
-        }
-    }
 };
 
 function sendUSB(cmd){
@@ -171,6 +177,21 @@ function listNamedStyles(){
 
 function listPresets(){
     bc.postMessage("list_presets");
+}
+
+function UpdateMode() {
+    FIND('containerControls').style.display = currentMode === 'normal' ? 'initial' : 'none'
+    FIND('containerTracks').style.display = currentMode === 'normal' ? 'initial' : 'none'
+    FIND('containerPresets').style.display = currentMode !== 'settings' ? 'initial' : 'none'
+    FIND('containerEdit').style.display = currentMode === 'edit' ? 'initial' : 'none';
+    FIND('settings_pane').style.display = currentMode === 'settings' ? 'initial' : 'none';
+    FIND("editbutton").style.background = currentMode === 'edit' ? '#505080' : '#101040';
+    FIND("settingsButton").style.background = currentMode === 'settings' ? '#505080' : '#101040';
+    if (currentMode === 'settings') {
+        UpdateSettings();
+    } else {
+        UpdatePresets();
+    }
 }
 
 function FIND(id) {
@@ -459,6 +480,7 @@ function showCurrentPreset(preset) {
 
 function updateCurrentPreset() {
     const preset_tags = document.getElementsByClassName('preset');
+
     for (let i = 0; i < preset_tags.length; i++) {
         if (i === current_preset_num) {
             preset_tags[i].style.background = '#505080';
@@ -466,8 +488,8 @@ function updateCurrentPreset() {
             preset_tags[i].style.background = '#101040';
         }
     }
-    if (currentMode === "edit")
-        updateEditPane(current_preset_num);
+
+    if (currentMode === "edit") updateEditPane(current_preset_num);
 }
 
 function showCurrentTrack(track) {
@@ -485,7 +507,7 @@ function showCurrentTrack(track) {
 
 async function SetPreset(n) {
     //  showCurrentPreset(n);
-    await Send("set_preset " + n);
+    bc.postMessage({"send_usb": "set_preset " + n});
     showCurrentPreset(n);
 }
 
@@ -737,14 +759,15 @@ function concatTypedArrays(a, b) { // a, b TypedArray of same type
 }
 
 
-listPresets();
-
-
 //document.getElementById("txtVersion").innerHTML = parent.current_board["version"];
 document.getElementById("txtButtons").innerHTML = parent.current_board["buttons"];
 document.getElementById("txtProp").innerHTML = parent.current_board["props"];
 document.getElementById("txtConfig").innerHTML = parent.current_board["config"];
 document.getElementById("txtInstalled").innerHTML = parent.current_board["installdate"];
 
-//listTracks();
-//listNamedStyles();
+
+listPresets();
+
+
+
+

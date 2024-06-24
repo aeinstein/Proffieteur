@@ -96,13 +96,17 @@ button.tb-menu.selected {
     width: 100%;
     background-color: #1f1f1f;
     font-size: 12px;
+    user-select: none;
 }
 
-#usb_connected, #serial_connected, #ble_connected {
+#manufacturerName, #productName, #serialNumber, #version, #usb_connected, #serial_connected, #ble_connected{
     float: right;
     font-size: 12px;
     padding-left: 5px;
     padding-right: 5px;
+}
+
+#usb_connected, #serial_connected, #ble_connected {
     cursor: pointer;
 }
 

@@ -109,6 +109,11 @@ class Serial {
             this.bc.postMessage({"battery": d[1]});
         }
 
+        if(data.match("BLADE ID: ")){
+            let d = data.split(": ");
+            this.bc.postMessage({"blade_id": d[1]});
+        }
+
         if(!this.versionLoaded) {
             let matches = data.match("v([0-9])*\.([0-9]*)");
 

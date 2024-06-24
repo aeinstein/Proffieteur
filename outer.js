@@ -1,6 +1,6 @@
 let capabilities = {};
 
-
+let serial, usb;
 var current_board = {};
 
 let version, installdate, prop, buttons;
@@ -9,7 +9,7 @@ let version, installdate, prop, buttons;
 bc = new BroadcastChannel('proffiediag');
 
 bc.onmessage = (ev)=> {
-    //console.log(ev);
+    console.log(ev);
 
     if(ev.data.prop) current_board["props"] = ev.data.prop;
     if(ev.data.buttons) current_board["buttons"] = ev.data.buttons;
@@ -20,6 +20,16 @@ bc.onmessage = (ev)=> {
     if(ev.data.usb_data) addMessage("contentUSB", ev.data.usb_data + "\n", ev.data.dir);
 
     if(ev.data.version) current_board["version"] = ev.data.version;
+
+    if(ev.data.currentDevice) {
+        current_board["manufacturerName"] = ev.data.currentDevice.manufacturerName;
+        current_board["productName"] = ev.data.currentDevice.productName;
+        current_board["serialNumber"] = ev.data.currentDevice.serialNumber;
+
+        document.getElementById("manufacturerName").innerHTML = current_board["manufacturerName"];
+        document.getElementById("productName").innerHTML = current_board["productName"];
+        document.getElementById("serialNumber").innerHTML = current_board["serialNumber"];
+    }
 
     if(ev.data.monitor){
         switch(ev.data.monitor){
@@ -110,8 +120,8 @@ function Init() {
 
     if (err) displayError("This browser supports neither webusb nor web bluetooth.", true);
 
-    new Serial();
-    new USB();
+    serial = new Serial();
+    usb = new USB();
 }
 
 function displayError(txt, isError){

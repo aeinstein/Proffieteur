@@ -1,5 +1,3 @@
-let callback_queue = [];
-
 class USB {
     usbProductId = 0x6668;
     usbVendorId = 0x1209;
@@ -22,15 +20,13 @@ class USB {
         this.bc = new BroadcastChannel('proffiediag');
 
         this.bc.onmessage = (ev) => {
-            console.log(ev);
+            //console.log(ev);
 
             if (ev.data.send_usb) this.send(ev.data.send_usb);
 
-            if(ev.data.play_track) this.send("play_track " + ev.data.play_track);
+            if(ev.data.blade_id) this.listPresets();
 
-            if(ev.data.describe_named_style) {
-                this.describeNamedStyle(ev.data.describe_named_style)
-            }
+            if(ev.data.play_track) this.send("play_track " + ev.data.play_track);
 
             switch (ev.data) {
             case "connect_usb":
@@ -47,6 +43,10 @@ class USB {
 
             case "list_presets":
                 this.listPresets();
+                break;
+
+            case "list_fonts":
+                this.listFonts();
                 break;
             }
         };
@@ -107,8 +107,13 @@ class USB {
 
         navigator.usb.ondisconnect = this.onDisconnected;
 
+        console.log("claim");
         await this.usb_device.claimInterface(interfaceNumber);
+
+        console.log("select");
         await this.usb_device.selectAlternateInterface(interfaceNumber, 0);
+
+        console.log("control");
         await this.usb_device.controlTransferOut({
             'requestType': 'class',
             'recipient': 'interface',
@@ -120,12 +125,11 @@ class USB {
 
         this.bc.postMessage({currentDevice: this.currentDevice});
 
-        this.usb_device.transferOut(this.endpointOut, new TextEncoder('utf-8').encode("\n\n"));
-
         setTimeout(()=>{
             this.runLoop();
         }, 10);
 
+        this.usb_device.transferOut(this.endpointOut, new TextEncoder('utf-8').encode("\n\n"));
     }
 
     async runLoop() {
@@ -212,18 +216,32 @@ class USB {
     async listTracks() {
         let track_lines = await this.getList("list_tracks");
         this.bc.postMessage({"tracks": track_lines});
+
+        let current_track = await this.send("get_track");
+        current_track = current_track.split("\n")[0];
+        this.bc.postMessage({"currentTrack": current_track});
     }
 
     async listNamedStyles() {
         let style_lines = await this.getList("list_named_styles");
-        this.bc.postMessage({"named_styles": style_lines});
+
+        for (let i = 0; i < style_lines.length; i++) {
+            let desc = await this.getList("describe_named_style " + style_lines[i]);
+            this.bc.postMessage({"named_style": style_lines[i], desc: desc});
+        }
     }
 
-    async describeNamedStyle(style){
-        let desc = await this.getList("describe_named_style " + style);
+    async listFonts() {
+        const has_common = await this.hasDir("common");
+        let font_lines = await this.getList("list_fonts");
 
-        console.log("style", desc);
-        this.bc.postMessage({"named_style": style, desc: desc});
+        if (has_common) {
+            for (let i = 0; i < font_lines.length; i++) {
+                font_lines[i] += ";common";
+            }
+        }
+
+        this.bc.postMessage({"fonts": font_lines});
     }
 
     async listPresets() {
@@ -248,6 +266,12 @@ class USB {
         if (preset && Object.keys(preset).length > 0) presets.push(preset);
 
         this.bc.postMessage({"presets": presets });
+
+        let current_preset = await this.send("get_preset");
+        current_preset = current_preset.split("\n")[0];
+        this.bc.postMessage({"currentPreset": current_preset});
+
+        await this.listTracks();
     }
 
     async onDisconnected() {
