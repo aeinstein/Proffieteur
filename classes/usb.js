@@ -24,7 +24,7 @@ class USB {
 
             if (ev.data.send_usb) this.send(ev.data.send_usb);
 
-            if(ev.data.blade_id) this.listPresets();
+            if(ev.data.blade_id) this.listPresets();    // refresh presets when blade changed
 
             if(ev.data.play_track) this.send("play_track " + ev.data.play_track);
 
@@ -47,6 +47,10 @@ class USB {
 
             case "list_fonts":
                 this.listFonts();
+                break;
+
+            case "get_presets":
+                this.getPresetSettings();
                 break;
             }
         };
@@ -132,12 +136,21 @@ class USB {
         this.usb_device.transferOut(this.endpointOut, new TextEncoder('utf-8').encode("\n\n"));
     }
 
+    disconnect(){
+        this.usb_device.disconnect();
+    }
+
     async runLoop() {
         this.bc.postMessage("usb_connected");
 
-        while (true) {
-            const data = await this.usb_device.transferIn(this.endpointIn, 64);
-            this.onData(data.data);
+        try {
+            while (true) {
+                const data = await this.usb_device.transferIn(this.endpointIn, 64);
+                this.onData(data.data);
+            }
+
+        } catch(e){
+            this.die();
         }
     }
 
@@ -157,6 +170,9 @@ class USB {
             if (tmp.length > 1) ret = tmp[1];
 
             ret = ret.split("\r").join("");
+
+            // failsave: sometimes there is no empty line at end
+            if(ret.substring(ret.length - 1) !== "\n") ret += "\n";
 
             console.log('> ' + ret);
             this.bc.postMessage({"usb_data": ret, "dir": "in"});
@@ -224,6 +240,8 @@ class USB {
 
     async listNamedStyles() {
         let style_lines = await this.getList("list_named_styles");
+        this.bc.postMessage({"named_styles": style_lines});
+
 
         for (let i = 0; i < style_lines.length; i++) {
             let desc = await this.getList("describe_named_style " + style_lines[i]);
@@ -270,14 +288,27 @@ class USB {
         let current_preset = await this.send("get_preset");
         current_preset = current_preset.split("\n")[0];
         this.bc.postMessage({"currentPreset": current_preset});
+    }
 
+    async getPresetSettings() {
+        await this.listPresets();
         await this.listTracks();
+        await this.listFonts();
+        await this.listNamedStyles();
     }
 
     async onDisconnected() {
         console.log("USB DISCONNECTED");
         this.bc.postMessage("usb_disconnected");
-        Die();
+        this.die();
+    }
+
+    die(e) {
+        for (let i = 0; i < this.callback_queue.length; i++) this.callback_queue[i][1](e);
+        this.callback_queue = [];
+        this.current_packet = null;
+        this.send_buf = [];
+        this.sending = false;
     }
 }
 

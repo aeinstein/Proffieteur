@@ -1,15 +1,12 @@
 let capabilities = {};
-
+let active_reg;
 let serial, usb;
-var current_board = {};
-
-let version, installdate, prop, buttons;
-
+var current_board = {};     // must be var, to allow access from child
 
 bc = new BroadcastChannel('proffiediag');
 
 bc.onmessage = (ev)=> {
-    console.log(ev);
+    console.log(ev.data);
 
     if(ev.data.prop) current_board["props"] = ev.data.prop;
     if(ev.data.buttons) current_board["buttons"] = ev.data.buttons;
@@ -46,6 +43,7 @@ bc.onmessage = (ev)=> {
     switch(ev.data){
         case "serial_connected":
             document.getElementById("serial_connected").className = "connected";
+            document.getElementById("ble_connected").className = "disabled";
             break;
 
         case "usb_connected":
@@ -55,6 +53,7 @@ bc.onmessage = (ev)=> {
 
         case "ble_connected":
             document.getElementById("usb_connected").className = "disabled";
+            document.getElementById("serial_connected").className = "disabled";
             document.getElementById("ble_connected").className = "connected";
             break;
     }
@@ -84,12 +83,9 @@ function addMessage(dest, txt, dir){
     console.scrollTo(0, console.scrollHeight)
 }
 
-function connectSerial(){
-    bc.postMessage("connect_serial")
-}
-
 function connectUSB(){
     bc.postMessage("connect_usb")
+    bc.postMessage("connect_serial")
 }
 
 function sendUSB(cmd){
@@ -107,10 +103,12 @@ function Init() {
 
     if (navigator.usb) {
         capabilities["usb"] = true;
+        usb = new USB();
         err = false;
     }
     if (navigator.serial) {
         capabilities["serial"] = true;
+        serial = new Serial();
         err = false;
     }
     if (navigator.bluetooth) {
@@ -119,9 +117,6 @@ function Init() {
     }
 
     if (err) displayError("This browser supports neither webusb nor web bluetooth.", true);
-
-    serial = new Serial();
-    usb = new USB();
 }
 
 function displayError(txt, isError){
@@ -130,8 +125,6 @@ function displayError(txt, isError){
     if(isError) st.className = "error";
     else st.className = "";
 }
-
-let active_reg;
 
 
 if ('serviceWorker' in navigator) {
@@ -149,14 +142,6 @@ if ('serviceWorker' in navigator) {
 
         navigator.serviceWorker.startMessages();
     });
-}
-
-function sendCommand(cmd){
-    active_reg.postMessage({cmd: cmd});
-}
-
-function parseMessage(evt){
-    console.log(evt);
 }
 
 window.addEventListener("load", Init);

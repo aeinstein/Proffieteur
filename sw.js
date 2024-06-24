@@ -69,10 +69,11 @@ self.addEventListener('fetch', async function (e) {
      * https://jakearchibald.com/2014/offline-cookbook/#cache-falling-back-to-network
      */
 
+    /*
     if (e.clientId) {
         current_client = await self.clients.get(e.clientId);
         current_client.postMessage(["Started"]);
-    }
+    }*/
 
 
     e.respondWith(

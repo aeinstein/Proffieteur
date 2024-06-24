@@ -7,6 +7,7 @@ body {
     margin: 0;
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     color: white;
+    background: black;
 }
 
 #menuCatcher {
@@ -193,5 +194,25 @@ button.tb-menu.selected {
 
 .disabled {
     pointer-events: none;
-    font-style: oblique;
+    color: slategrey;
+}
+
+#top {
+    display: inline-block;
+    visibility: hidden;
+    width: 300px;
+    position: absolute;
+    border: 1px solid #595959;
+    background: #20207d;
+    min-height: 200px;
+    left: 30%;
+    top: 30%;
+}
+
+#top table {
+    font-size: 10px;
+    width: 100%;
+}
+#top table tr td:nth-child(2) {
+    text-align: right;
 }
