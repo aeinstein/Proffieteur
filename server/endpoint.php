@@ -1,18 +1,32 @@
 <?php
-
+$compiler = new ArduinoCLI_Wrapper();
 
 switch ($_REQUEST["cmd"]){
     case "compile":
         $serial = $_REQUEST["serial"];
 
-        $compiler = new ArduinoCLI_Wrapper();
-
-
         moveConfig($serial);
         $compiler->compile($serial);
+        echo "OK";
         break;
 
     case "upload":
+        break;
+
+    case "getelf":
+        echo file_get_contents($compiler->getOutputDir()."/ProffieOS.ino.elf");
+        break;
+
+    case "getdfu":
+        echo file_get_contents($compiler->getOutputDir()."/ProffieOS.ino.dfu");
+        break;
+
+    case "getiap":
+        echo file_get_contents($compiler->getOutputDir()."/ProffieOS.ino.iap");
+        break;
+
+    case "getmap":
+        echo file_get_contents($compiler->getOutputDir()."/ProffieOS.ino.map");
         break;
 }
 

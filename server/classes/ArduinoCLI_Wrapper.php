@@ -40,6 +40,7 @@ class ArduinoCLI_Wrapper {
         if($this->verbose) $cmdline .= " --verbose";
 
         $build_props = "compiler.cpp.extra_flags=\"-DCONFIG_FILE=\"".$serial."\"\"";
+        $cmdline .= "--build-property ".$build_props;
 
 
         $cmdline .= $this->source_dir."/".$this->source_ino;
