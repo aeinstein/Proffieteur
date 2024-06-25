@@ -227,7 +227,7 @@ function init() {
 }
 
 function generateTopConfig(){
-    let ret = "";
+    let ret = "#define NUM_BLADES " + localStorage.getItem("NUM_BLADES");
 
     for(const item in top_config){
         switch(top_structure[item].type){

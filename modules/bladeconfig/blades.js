@@ -362,6 +362,8 @@ function getMaxBladeNumber(){
         max_blades = (blades[blade_id]["blades"].length > max_blades)?blades[blade_id]["blades"].length:max_blades;
     }
 
+    localStorage.setItem("NUM_BLADES", max_blades);
+
     return max_blades;
 }
 
