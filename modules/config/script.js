@@ -240,12 +240,10 @@ function generateTopConfig(){
                 if(top_config[item]) ret += "#define " + item + "\n";
                 break;
         }
-
     }
 
     return ret;
 }
-
 
 function save(){
     document.getElementById("topConfig").innerHTML= generateTopConfig();
@@ -260,12 +258,36 @@ function changedValue(evt){
             top_config[item] = !!evt.target.checked;
             break;
 
+        case "powerpins":
+            top_config[item] = "PowerPins<" + getSelectValues(evt.target).join(",") + ">";
+            break;
+
+        case "float":
+        case "integer":
+            top_config[item] = evt.target.value * 1;
+            break;
+
         default:
             top_config[item] = evt.target.value;
             break;
     }
 
     save();
+}
+
+function getSelectValues(select) {
+    const result = [];
+    const options = select && select.options;
+    let opt;
+
+    for (let i=0, iLen=options.length; i<iLen; i++) {
+        opt = options[i];
+
+        if (opt.selected) {
+            result.push(opt.value || opt.text);
+        }
+    }
+    return result;
 }
 
 window.addEventListener("load", init);
