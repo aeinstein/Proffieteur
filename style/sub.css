@@ -1,8 +1,7 @@
 body {
     margin: 0;
     padding: 5px;
-    font-family: Arial, Sans-Serif, sans-serif;
-    font-size: 13px;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     display: flex;
     flex-direction: column;
     gap: 5px;
@@ -264,11 +263,18 @@ hr {
 }
 
 #bladeConfig {
+    padding: 2px;
+    border: 1px solid #6060aa;
     min-width: 800px;
     min-height: 250px;
-
+    background-color: #20207d;
     width: 100%;
     font-size: 12px;
+    box-sizing: border-box;
+}
+
+#blade_id {
+    height: 25px;
 }
 
 textarea {
@@ -282,4 +288,41 @@ textarea {
 
 #lstErrors.error {
     background-color: darkred;
+}
+
+select, textarea {
+    background: #20207d;
+    border: 1px solid #595959;
+    color: #FFFFFF;
+    height: 25px;
+}
+
+textarea {
+    height: initial;
+}
+
+input {
+    color: rgb(255, 255, 255);
+    background: rgb(32, 32, 125);
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgb(89, 89, 89);
+    border-image: initial;
+    height: 22px;
+}
+
+button {
+    border: 1px solid #6060aa;
+    background: #101040;
+    color: #FFFFFF;
+    width: 100px;
+    text-align: center;
+    padding: 4px;
+    margin: 2px;
+    position: relative;
+    text-overflow: clip;
+    overflow: hidden;
+    display: inline-block;
+    cursor: pointer;
+    font-size: 13px;
 }

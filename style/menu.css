@@ -117,6 +117,7 @@ button.tb-menu.selected {
     left: 0;
     height: 200px;
     position: fixed;
+    background-color: black;
 }
 
 #console_serial {
