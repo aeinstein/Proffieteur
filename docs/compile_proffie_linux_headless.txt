@@ -1,0 +1,14 @@
+# Install
+curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | BINDIR=/usr/bin sh
+
+arduino-cli config init
+arduino-cli core update-index
+arduino-cli core install proffieboard:stm32l4 --additional-urls https://profezzorn.github.io/arduino-proffieboard/package_proffieboard_index.json
+sudo dpkg --add-architecture i386
+sudo apt-get update
+sudo apt-get install libc6:i386 libncurses5:i386 libstdc++6:i386
+
+
+# compile
+arduino-cli compile --fqbn proffieboard:stm32l4:ProffieboardV3-L452RE /CRYPTED/RAID/installs/ProffieOS/ProffieOS.ino --additional-urls https://profezzorn.github.io/arduino-proffieboard/package_proffieboard_index.json --output-dir=/home/tellimate/testarea/arduino --build_props "compiler.cpp.extra_flags=\"-DCONFIG_FILE=\"".$serial."\"\""
+
