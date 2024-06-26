@@ -1,6 +1,7 @@
 const blade_definitions = JSON.parse(localStorage.blade_definitions || "{}");
 const blades = JSON.parse(localStorage.blades || "{}");
-let presets = {};
+const presets = JSON.parse(localStorage.PRESETS || "{}");
+
 
 let stored_blade_string;
 
@@ -8,7 +9,6 @@ function clrBlades(){
     const blade_id = getValue("blade_id");
     blades[blade_id]["blades"] = [];
 
-    //refreshBladeIDs();
     refreshBlades();
 
     localStorage.setItem('blades', JSON.stringify(blades));
@@ -17,7 +17,6 @@ function clrBlades(){
 function clrBladeID(){
     const blade_id = getValue("blade_id");
     delete blades[blade_id];
-
 
     refreshBladeIDs();
     refreshBlades();
@@ -174,14 +173,11 @@ function saveBladeDefinition(){
 }
 
 function buildConfig(){
-    //const blade_id = getValue("blade_id");
     displayError("No Errors found");
 
     setValue("num_blades", getMaxBladeNumber());
 
     let bladeArray = "BladeConfig blades[] = {\n";
-
-    presets = {};
 
     for(const blade_id in blades) {
         if(blades[blade_id].blades.length !== getMaxBladeNumber()) {
@@ -204,16 +200,15 @@ function buildConfig(){
 
         bladeArray += "    CONFIGARRAY(" + blades[blade_id]["presets"] + ")\n"
 
-        presets[blades[blade_id]["presets"]] = [];
+        if(!presets.hasOwnProperty(blades[blade_id]["presets"])) presets[blades[blade_id]["presets"]] = [];
 
         if(blades[blade_id]["save_dir"] !== "") bladeArray += "    , " + blades[blade_id]["save_dir"];
         bladeArray += "  }\n";
     }
 
-    localStorage.setItem("PRESETS", JSON.stringify(presets));
-
     bladeArray += "}\n";
     document.getElementById("bladeConfig").innerHTML = bladeArray;
+    localStorage.setItem("PRESETS", JSON.stringify(presets));
 }
 
 function createBladeString(bladeName){
