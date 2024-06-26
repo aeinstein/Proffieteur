@@ -105,7 +105,7 @@ function showModule(mod){
             break;
 
         case "styles":
-            container.src = "modules/style_editor/style_editor.html";
+            container.src = "modules/style_editor/styles.html";
             break;
     }
 }
