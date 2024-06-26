@@ -1,5 +1,3 @@
-
-
 function refreshStyleEditor(){
     const style = document.getElementById("style").value;
 
@@ -11,9 +9,6 @@ function refreshStyleEditor(){
 function init(){
     styles =  JSON.parse(localStorage.getItem("STYLES"));
 
-
-
-
     let content = "";
 
     for(const item in styles){
@@ -24,4 +19,3 @@ function init(){
 }
 
 window.addEventListener("load", init);
-

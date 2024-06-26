@@ -75,7 +75,12 @@ function addPreset(p){
     ret += "\t\t\"" + p.track + "\",\n";
 
     for(let i = 1; i <= document.getElementById("num_blades").value; i++){
-        ret += "\t\t\"" + p["blade" + i] + "\",\n";
+
+        let content = p["blade" + i];
+        content = content.replace("<", "&lt;");
+        content = content.replace(">", "&gt;");
+
+        ret += "\t\t" + content + ",\n";
     }
 
     ret += "\t\t\"" + p.name + "\"\n";
@@ -104,7 +109,7 @@ function newPreset(){
         content += "<option id='StylePtr<Black>()'>StylePtr&lt;Black&gt;()";
 
         for(const item in styles){
-            content += "<option id='" + item + "'>" + item;
+            content += "<option value='StylePtr<" + item + ">()'>" + item;
         }
         content += "</select></td>";
 
