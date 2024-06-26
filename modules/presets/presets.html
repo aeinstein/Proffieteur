@@ -3,7 +3,8 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Title</title>
-	<link rel="stylesheet" type="text/css" href="../../style/style.css">
+	<link rel="stylesheet" type="text/css" href="../../style/sub.css">
+	<script src="../../script.js"></script>
 	<script src="presets.js"></script>
 </head>
 
@@ -15,11 +16,8 @@
 		<table style="width: 100%">
 			<tr>
 				<td>
-					<label for="preset">Preset</label>
+					<label for="preset">Preset Set</label>
 					<select id="preset" onchange="refreshPresets()"></select>
-					<button class="b1" onclick="editPreset()">Edit</button>
-					<button class="b1" onclick="newPreset()">New</button>
-					<button class="b1" onclick="clrPreset()">Delete</button>
 				</td>
 				<td>
 					Number of blades
@@ -37,38 +35,48 @@
 		<table style="width: 100%">
 			<tr>
 				<td style="vertical-align: top">
-					Current<br>Blades
+					Current<br>Presets
+					<button class="b1" onclick="newPreset()">New</button>
 				</td>
 			</tr>
 		</table>
+
+		<hr>
+		<div><pre id="presetConfig"></pre></div>
 	</div>
 </div>
 
 <template id="tmpNewPreset">
 	New Preset<br>
 	<hr>
-	<table>
+	<table id="tblNewPreset">
 		<tr>
-			<td>Preset Array</td>
-			<td><input type="number" id="newBladeID" min="-1" max="700000" value="0" maxlength="6" style="width:65px; text-align: right"></td>
-		</tr>
-		<tr>
-			<td>Presets</td>
-			<td><select id="newBladePresets">
-				<option>presets</option>
-				<option>no_blade</option>
-			</select></td>
-		</tr>
-		<tr>
-			<td>Save Folder</td>
-			<td><input type="text" id="newBladeSaveFolder" placeholder="example: nb_save"></td>
+			<td><label for="newPresetName">Name / OLED</label></td>
+			<td><input type="text" id="newPresetName"></td>
 		</tr>
 		<tr>
 			<td colspan="2"><hr></td>
 		</tr>
 		<tr>
+			<td><label for="newPresetFont">Font Folder</label></td>
+			<td><select id="newPresetFont"></select></td>
+		</tr>
+
+		<tr>
+			<td><label for="newPresetFallback">Use a fallback Folder</label></td>
+			<td><select id="newPresetFallback"></select></td>
+		</tr>
+		<tr>
+			<td><label for="newPresetTrack">Track</label></td>
+			<td><select id="newPresetTrack"></select></td>
+		</tr>
+
+		<tr>
+			<td colspan="2"><hr></td>
+		</tr>
+		<tr>
 			<td><button onclick="hideTemplate()">Cancel</button></td>
-			<td style="text-align: right"><button onclick="saveNewBladeID()">Save</button></td>
+			<td style="text-align: right"><button onclick="saveNewPreset()">Save</button></td>
 		</tr>
 	</table>
 </template>

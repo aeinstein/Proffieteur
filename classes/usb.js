@@ -232,6 +232,7 @@ class USB {
     async listTracks() {
         let track_lines = await this.getList("list_tracks");
         this.bc.postMessage({"tracks": track_lines});
+        localStorage.setItem("TRACKS", JSON.stringify(track_lines));
 
         let current_track = await this.send("get_track");
         current_track = current_track.split("\n")[0];
@@ -253,11 +254,14 @@ class USB {
         const has_common = await this.hasDir("common");
         let font_lines = await this.getList("list_fonts");
 
+        localStorage.setItem("FONTS", JSON.stringify(font_lines));
+
         if (has_common) {
             for (let i = 0; i < font_lines.length; i++) {
                 font_lines[i] += ";common";
             }
         }
+
 
         this.bc.postMessage({"fonts": font_lines});
     }

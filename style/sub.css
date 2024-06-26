@@ -237,6 +237,8 @@ hr {
     position: fixed;
     background-color: #373737;
     top: 50%;
+    left: 50%;
+    translate: -50%;
     transform: translate(0px, -50%);
     padding: 5px;
     color: white;
@@ -262,7 +264,7 @@ hr {
 
 }
 
-#bladeConfig {
+#bladeConfig, #topConfig, #presetConfig {
     padding: 2px;
     border: 1px solid #6060aa;
     min-width: 800px;

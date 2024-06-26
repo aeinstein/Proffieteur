@@ -227,7 +227,9 @@ function init() {
 }
 
 function generateTopConfig(){
-    let ret = "#define NUM_BLADES " + localStorage.getItem("NUM_BLADES");
+    if(!localStorage.getItem("NUM_BLADES")) return "You have to create Blades first";
+
+    let ret = "#define NUM_BLADES " + localStorage.getItem("NUM_BLADES") + "\n";
 
     for(const item in top_config){
         switch(top_structure[item].type){

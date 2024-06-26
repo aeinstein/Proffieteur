@@ -1,5 +1,7 @@
 const blade_definitions = JSON.parse(localStorage.blade_definitions || "{}");
 const blades = JSON.parse(localStorage.blades || "{}");
+let presets = {};
+
 let stored_blade_string;
 
 function clrBlades(){
@@ -179,6 +181,8 @@ function buildConfig(){
 
     let bladeArray = "BladeConfig blades[] = {\n";
 
+    presets = {};
+
     for(const blade_id in blades) {
         if(blades[blade_id].blades.length !== getMaxBladeNumber()) {
             displayError("BladeID " + blade_id + " must have " + getMaxBladeNumber() + " blades", true);
@@ -199,9 +203,14 @@ function buildConfig(){
         }
 
         bladeArray += "    CONFIGARRAY(" + blades[blade_id]["presets"] + ")\n"
+
+        presets[blades[blade_id]["presets"]] = [];
+
         if(blades[blade_id]["save_dir"] !== "") bladeArray += "    , " + blades[blade_id]["save_dir"];
         bladeArray += "  }\n";
     }
+
+    localStorage.setItem("PRESETS", JSON.stringify(presets));
 
     bladeArray += "}\n";
     document.getElementById("bladeConfig").innerHTML = bladeArray;
