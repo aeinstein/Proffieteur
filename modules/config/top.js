@@ -241,6 +241,14 @@ function generateTopConfig(){
             case "boolean":
                 if(top_config[item]) ret += "#define " + item + "\n";
                 break;
+
+            case "powerpins":
+                let content = top_config[item];
+                content = content.replace("<", "&lt;");
+                content = content.replace(">", "&gt;");
+                console.log(content);
+                ret += "#define " + item + " " + content + "\n";
+                break;
         }
     }
 
