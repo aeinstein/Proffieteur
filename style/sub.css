@@ -299,6 +299,10 @@ select, textarea {
     height: 25px;
 }
 
+select[multiple] {
+    height: initial;
+}
+
 textarea {
     height: initial;
 }
