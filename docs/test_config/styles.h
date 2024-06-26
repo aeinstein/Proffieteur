@@ -1,5 +1,3 @@
-#ifdef CONFIG_STYLES
-
 /*--------------------------------- PCBBattery---------------------------------*/
 using PCBBattery = 
 Layers<Black,ColorSelect<EffectIncrementF<EFFECT_USER1,Int<2>>,TrFade<100>,AlphaL<White,Int<0>>,AlphaL<RgbArg<RETRACTION_COLOR_ARG,Rgb<255,255,255>>,SparkleF<300,800>>>,InOutTrL<TrInstant,TrInstant,Mix<SmoothStep<Scale<BatteryLevel,Int<0>,Int<32768>>,Int<1>>,Mix<BatteryLevel,Red,Green>,Black>>>;
@@ -199,6 +197,3 @@ Layers<
   //Noise Responsive Charge Up Preon
   TransitionEffectL<TrConcat<TrDelayX<Percentage<WavLen<EFFECT_PREON>,66>>,AlphaL<BrownNoiseFlicker<Black,RotateColorsX<Variation,Rgb16<33124,58942,65535>>,150>,SmoothStep<Scale<NoisySoundLevel,Int<-1500>,Trigger<EFFECT_PREON,WavLen<EFFECT_PREON>,Int<0>,Int<0>>>,Int<-13500>>>,TrDelayX<Percentage<WavLen<EFFECT_PREON>,34>>>,EFFECT_PREON>
 >;
-
-
-#endif

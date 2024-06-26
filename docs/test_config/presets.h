@@ -1,5 +1,3 @@
-#ifdef CONFIG_PRESETS
-
 Preset presets[] = {
 	{ 
 		"Stitched;common",  
@@ -127,6 +125,3 @@ Preset no_blade[] = {
 	}
 };
 
-
-#include "blades.h"
-#endif

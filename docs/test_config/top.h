@@ -1,5 +1,4 @@
-#ifdef CONFIG_TOP
-#include "../proffieboard_v3_config.h"
+
 #define NUM_BLADES 3
 #define NUM_BUTTONS 1
 
@@ -58,4 +57,3 @@ const unsigned int maxLedsPerStrip = 500;
 #define FETT263_LOCKUP_DELAY 200
 #define FETT263_BM_CLASH_DETECT 6
 //#define FETT263_TWIST_OFF
-#endif

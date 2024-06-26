@@ -1,14 +1,26 @@
 // ProffieOS7 Config File
 
+#ifdef CONFIG_TOP
+#include "../proffieboard_v3_config.h"
 #include "top.h"
+#endif
+
 
 #ifdef CONFIG_PROP
 #include "../../props/saber_fett263_buttons.h"
 #endif
 
+#ifdef CONFIG_PRESETS
 #include "presets.h"
-#include "buttons.h"
-#include "styles.h"
+#include "blades.h"
+#endif
 
- /* Generated with Fett263 Config Helper v3.10 */
+#ifdef CONFIG_BUTTONS
+#include "buttons.h"
+#endif
+
+#ifdef CONFIG_STYLES
+#include "styles.h"
+#endif
+
  
