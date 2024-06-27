@@ -44,17 +44,39 @@ bc.onmessage = (ev)=> {
         case "serial_connected":
             document.getElementById("serial_connected").className = "connected";
             document.getElementById("ble_connected").className = "disabled";
+            _findMenuButton("Connect").className = "tb-menu hidden";
+            _findMenuButton("Disconnect").className = "tb-menu";
             break;
 
         case "usb_connected":
             document.getElementById("usb_connected").className = "connected";
             document.getElementById("ble_connected").className = "disabled";
+            _findMenuButton("Connect").className = "tb-menu hidden";
+            _findMenuButton("Disconnect").className = "tb-menu";
             break;
 
         case "ble_connected":
             document.getElementById("usb_connected").className = "disabled";
             document.getElementById("serial_connected").className = "disabled";
             document.getElementById("ble_connected").className = "connected";
+            break;
+
+        case "usb_disconnected":
+            _findMenuButton("Connect").className = "tb-menu";
+            _findMenuButton("Disconnect").className = "tb-menu hidden";
+
+            document.getElementById("serial_connected").className = "";
+            document.getElementById("usb_connected").className = "";
+            document.getElementById("ble_connected").className = "";
+            break;
+
+        case "serial_disconnected":
+            _findMenuButton("Connect").className = "tb-menu";
+            _findMenuButton("Disconnect").className = "tb-menu hidden";
+
+            document.getElementById("serial_connected").className = "";
+            document.getElementById("usb_connected").className = "";
+            document.getElementById("ble_connected").className = "";
             break;
     }
 };
@@ -94,6 +116,12 @@ function sendUSB(cmd){
 
 function sendSerial(cmd){
     bc.postMessage({"send_serial": cmd});
+}
+
+function disconnectAll(){
+    bc.postMessage("disconnect_usb")
+    bc.postMessage("disconnect_serial")
+    //bc.postMessage("disconnect_ble")
 }
 
 function Init() {

@@ -10,6 +10,7 @@ class Serial {
     versionLoaded;
     reader;
     topPID;
+    aborter;
 
     constructor() {
         this.bc = new BroadcastChannel('proffiediag');
@@ -30,6 +31,10 @@ class Serial {
 
                 case "connect_serial":
                     this.connect();
+                    break;
+
+                case "disconnect_serial":
+                    this.disconnect();
                     break;
             }
         };
@@ -63,12 +68,18 @@ class Serial {
             this.serial_port = await navigator.serial.requestPort({'filters': [{ usbVendorId: this.usbVendorId }]});
         }
 
+        this.serial_port.ondisconnect = ()=>{
+            this.disconnect();
+        }
+
         // Wait for the serial port to open.
         await this.serial_port.open({ baudRate: 9600 });
 
+        this.aborter = new AbortController;
+
 
         const textDecoder = new TextDecoderStream();
-        const readableStreamClosed = this.serial_port.readable.pipeTo(textDecoder.writable);
+        this.readableStreamClosed = this.serial_port.readable.pipeTo(textDecoder.writable, this.aborter);
         this.reader = textDecoder.readable
             .pipeThrough(new TransformStream(new LineBreakTransformer()))
             .getReader();
@@ -79,6 +90,16 @@ class Serial {
 
         this.send("version");
 
+    }
+
+    async disconnect() {
+        console.log("serial_close");
+        this.aborter.abort();
+        this.reader.cancel();
+        await this.readableStreamClosed.catch(() => { /* Ignore the error */});
+        await this.serial_port.close();
+        console.log("serial_closed");
+        this.bc.postMessage("serial_disconnected");
     }
 
     async runLoop() {
@@ -166,5 +187,6 @@ class Serial {
 
         await writer.write(cmd + "\r\n");
         await writer.close();
+        await writableStreamClosed;
     }
 }

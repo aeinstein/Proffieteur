@@ -33,6 +33,10 @@ class USB {
                 this.connect();
                 break;
 
+            case "disconnect_usb":
+                this.disconnect();
+                break;
+
             case "list_tracks":
                 this.listTracks();
                 break;
@@ -109,7 +113,9 @@ class USB {
             return;
         }
 
-        navigator.usb.ondisconnect = this.onDisconnected;
+        navigator.usb.ondisconnect = ()=>{
+            this.onDisconnected();
+        };
 
         console.log("claim");
         await this.usb_device.claimInterface(interfaceNumber);
@@ -137,7 +143,9 @@ class USB {
     }
 
     disconnect(){
-        this.usb_device.disconnect();
+        console.log("disconnect USB");
+        this.usb_device.close();
+        this.onDisconnected();
     }
 
     async runLoop() {
@@ -310,9 +318,6 @@ class USB {
     die(e) {
         for (let i = 0; i < this.callback_queue.length; i++) this.callback_queue[i][1](e);
         this.callback_queue = [];
-        this.current_packet = null;
-        this.send_buf = [];
-        this.sending = false;
     }
 }
 
