@@ -31,6 +31,16 @@ function menuInit(){
     xhttp.send();
 }
 
+function _findMenuButton(caption){
+    const menu = document.getElementById("titlebar");
+
+    let buttons = document.getElementsByTagName("BUTTON");
+
+    for(let i = 0; i <= buttons.length; i++){
+        if(buttons[i].innerHTML === caption) return buttons[i];
+    }
+}
+
 function openMenu(evt){
     console.log(evt);
 
@@ -45,7 +55,7 @@ function openMenu(evt){
     if(attr && attr.startsWith("#")) {
         document.getElementById("menuCatcher").style.display = "block";
 
-        evt.target.className = "tb-menu selected";
+        if(evt.target.className.indexOf("hidden") < 0) evt.target.className = "tb-menu selected";
 
         const submenu = document.getElementById(attr.substring(1));
         submenu.className = " tb-submenu shown";
@@ -77,7 +87,7 @@ function closeMenu(){
     subs = titlebar.getElementsByTagName("button");
 
     for(let i = 0; i < subs.length; i++){
-        subs[i].className = "tb-menu";
+        if(subs[i].className.indexOf("hidden") < 0) subs[i].className = "tb-menu";
     }
 
     document.getElementById("menuCatcher").style.display = "none";
