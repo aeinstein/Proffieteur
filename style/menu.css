@@ -51,6 +51,10 @@ button.tb-menu.selected {
     background-color: #FFFFFF10 !important;
 }
 
+button.tb-menu.hidden {
+    display: none;
+}
+
 .tb-submenu {
     min-width: 70px;
     background-color: #1f1f1f;
