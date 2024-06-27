@@ -8,6 +8,8 @@ bc = new BroadcastChannel('proffiediag');
 bc.onmessage = (ev)=> {
     console.log(ev.data);
 
+    if(ev.data.status) displayError(ev.data.status, ev.data.is_error);
+
     if(ev.data.prop) current_board["props"] = ev.data.prop;
     if(ev.data.buttons) current_board["buttons"] = ev.data.buttons;
     if(ev.data.installdate) current_board["installdate"] = ev.data.installdate;

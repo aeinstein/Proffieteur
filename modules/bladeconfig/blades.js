@@ -2,6 +2,7 @@ const blade_definitions = JSON.parse(localStorage.blade_definitions || "{}");
 const blades = JSON.parse(localStorage.blades || "{}");
 const presets = JSON.parse(localStorage.PRESETS || "{}");
 
+bc = new BroadcastChannel('proffiediag');
 
 let stored_blade_string;
 
@@ -391,12 +392,8 @@ function init(){
 }
 
 function displayError(txt, isError){
-    const elem = document.getElementById("lstErrors");
 
-    if(isError) elem.className = "error";
-    else elem.className = "";
-
-    elem.innerHTML = txt;
+    bc.postMessage({"status": txt, is_error: isError});
 }
 
 window.addEventListener("load", init);

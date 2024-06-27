@@ -7,44 +7,35 @@
 	<script src="../../script.js"></script>
 	<script src="presets.js"></script>
 </head>
-
-<div style="width: 100%">
-	<div id="cntBlades" class="container">
-		<button onclick="showTemplate('tmpBladeHelp')" style="float: right">Help</button>
-		<legend>Presets</legend>
-		<hr>
+<div style="display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: stretch;" id="container">
+	<fieldset>
+		<legend>Preset Set</legend>
 		<table style="width: 100%">
 			<tr>
 				<td>
 					<label for="preset">Preset Set</label>
 					<select id="preset" onchange="refreshPresets()"></select>
 				</td>
-				<td>
-					Number of blades
-					<input style="width: 30px; text-align: center" type="text" id="num_blades" readonly>
-				</td>
-			</tr>
-			<tr>
-				<td colspan="2">
-
-				</td>
 			</tr>
 		</table>
-		<hr>
+	</fieldset>
 
-		<table style="width: 100%">
-			<tr>
-				<td style="vertical-align: top">
-					Current<br>Presets
-					<button class="b1" onclick="newPreset()">New</button>
-				</td>
-			</tr>
-		</table>
+	<fieldset>
+		<legend>Number of blades</legend>
+		<input style="width: 30px; text-align: center" type="text" id="num_blades" readonly>
+	</fieldset>
 
-		<hr>
-		<div><pre id="presetConfig"></pre></div>
-	</div>
+	<fieldset>
+		<legend>Current Preset</legend>
+		<button class="b1" onclick="newPreset()">New</button>
+	</fieldset>
 </div>
+
+<div><pre id="presetConfig"></pre></div>
 
 <template id="tmpNewPreset">
 	New Preset<br>

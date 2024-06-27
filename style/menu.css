@@ -104,6 +104,10 @@ button.tb-menu.hidden {
     user-select: none;
 }
 
+#status_text {
+    padding-left: 3px;
+}
+
 #manufacturerName, #productName, #serialNumber, #version, #usb_connected, #serial_connected, #ble_connected{
     float: right;
     font-size: 12px;

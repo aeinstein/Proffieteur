@@ -97,27 +97,7 @@ function closeMenu(){
 function showModule(mod){
     const container = document.getElementById("mainFrame");
 
-    switch(mod){
-        case "admin":
-            container.src = "modules/admin/admin.html";
-            break;
-
-        case "general":
-            container.src = "modules/config/top.html";
-            break;
-
-        case "bladeconfig":
-            container.src = "modules/bladeconfig/blades.html";
-            break;
-
-        case "presets":
-            container.src = "modules/presets/presets.html";
-            break;
-
-        case "styles":
-            container.src = "modules/style_editor/styles.html";
-            break;
-    }
+    container.src = "modules/" + mod + "/sub.html";
 }
 
 window.addEventListener("load", menuInit);

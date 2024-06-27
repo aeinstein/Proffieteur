@@ -1,4 +1,10 @@
 <?php
+
+
+define("CONFIG_PATH", "/CRYPTED/RAID/installs/ProffieOS/config/webconfig");
+
+require_once "classes/ArduinoCLI_Wrapper.php";
+
 $compiler = new ArduinoCLI_Wrapper();
 
 switch ($_REQUEST["cmd"]){
@@ -11,6 +17,29 @@ switch ($_REQUEST["cmd"]){
         break;
 
     case "upload":
+
+        echo var_dump_ret($_FILES);
+
+        $serial = $_REQUEST["serial"];
+
+        mkdir(CONFIG_PATH."/".$serial);
+
+        foreach($_FILES as $file){
+            $filename = $file['name'];
+
+            /* Choose where to save the uploaded file */
+            $location = CONFIG_PATH."/".$serial."/".$filename;
+
+            /* Save the uploaded file to the local filesystem */
+            if ( move_uploaded_file($file['tmp_name'], $location) ) {
+                echo "$filename Success <br>";
+            } else {
+                echo "$filename Failure <br>";
+            }
+        }
+
+
+
         break;
 
     case "getelf":
@@ -30,7 +59,13 @@ switch ($_REQUEST["cmd"]){
         break;
 }
 
-
+function var_dump_ret($mixed = null) {
+    ob_start();
+    var_dump($mixed);
+    $content = ob_get_contents();
+    ob_end_clean();
+    return $content;
+}
 
 function moveConfig($serial){
     $dir = "tmp/".$serial;

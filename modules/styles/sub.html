@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Title</title>
+	<link rel="stylesheet" type="text/css" href="../../style/sub.css">
+	<script src="style.js"></script>
+</head>
+<body>
+
+<fieldset>
+	<legend>Style Editor</legend>
+	<table style="width: 100%">
+		<tr>
+			<td>
+				<label for="style">Style</label>
+				<select id="style" onchange="refreshStyleEditor()"></select>
+			</td>
+		</tr>
+	</table>
+</fieldset>
+
+<iframe id="editor" src="style_editor.html" style="width: 100%; border: none; height: 100%"></iframe>
+
+</body>
+</html>

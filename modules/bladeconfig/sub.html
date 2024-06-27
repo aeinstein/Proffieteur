@@ -11,11 +11,16 @@
 
 <body>
 
-<div style="width: 100%">
-	<div id="cntBlades" class="container">
-		<button onclick="showTemplate('tmpBladeHelp')" style="float: right">Help</button>
-		<legend>Blade Config</legend>
-		<hr>
+
+<div style="display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: stretch;" id="container">
+
+	<fieldset>
+		<legend>BladeID</legend>
+
 		<table style="width: 100%">
 			<tr>
 				<td>
@@ -27,22 +32,32 @@
 					<button class="b1" onclick="newBladeID()">New</button>
 					<button class="b1" onclick="clrBladeID()">Delete</button>
 				</td>
+
+
+			</tr>
+		</table>
+	</fieldset>
+
+	<fieldset>
+		<legend>Blade definitions</legend>
+		<table style="width: 100%">
+			<tr>
 				<td>
 					Number of blades
 					<input style="width: 30px; text-align: center" type="text" id="num_blades" readonly>
 				</td>
 				<td style="text-align: right">
-					<button onclick="newBladeDefinition()">New blade definition</button>
-					<button onclick="editBladeDefinitions()">Edit blade definitions</button>
+					<button onclick="newBladeDefinition()">New</button>
+					<button onclick="editBladeDefinitions()">Edit</button>
 				</td>
 			</tr>
 		</table>
-		<hr>
+	</fieldset>
+
+	<fieldset>
+		<legend>Current Blades</legend>
 		<table style="width: 100%">
 			<tr>
-				<td style="vertical-align: top">
-					Current<br>Blades
-				</td>
 				<td>
 					<select style="min-width: 200px" id="currentBlades" ondblclick="editBlade()" multiple></select>
 				</td>
@@ -52,17 +67,13 @@
 				<td style="vertical-align: top; text-align: right; width: 200px">
 					<button onclick="addBlade()">Add blade</button>
 					<button onclick="clrBlades()">clear blades</button>
-
 				</td>
 			</tr>
 		</table>
-		<hr>
-		<div><pre id="bladeConfig"></pre></div>
-
-	</div>
-	<br>
-	<div class="container" id="lstErrors"></div>
+	</fieldset>
 </div>
+
+<div><pre id="bladeConfig"></pre></div>
 
 <template id="tmpNewBladeID">
 	New BladeID<br>

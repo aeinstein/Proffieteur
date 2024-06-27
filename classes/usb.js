@@ -4,7 +4,7 @@ class USB {
 
     filters = [
         {
-            'usbVendorId': this.usbVendorId,
+            'vendorId': this.usbVendorId,
             'productId': this.usbProductId
         }
     ];
@@ -82,6 +82,8 @@ class USB {
             productName: this.usb_device.productName,
             serialNumber: this.usb_device.serialNumber
         }
+
+        localStorage.setItem("CURRENT_DEVICE", JSON.stringify(this.currentDevice));
 
         let interfaceNumber;
 
