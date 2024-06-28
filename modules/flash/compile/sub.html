@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<link rel="stylesheet" type="text/css" href="../../../style/sub.css">
 	<title>Title</title>
+	<link rel="stylesheet" type="text/css" href="../../../style/sub.css">
+	<script src="../../script.js"></script>
 	<script src="compile.js" type="module"></script>
 </head>
 <body>
@@ -15,27 +16,46 @@
     justify-content: flex-start;
     align-items: stretch;" id="container">
 
+	<fieldset style="min-height: 180px">
+		<legend>Upload</legend>
+		<button onclick="uploadConfigFiles()">Upload Configs</button>
+		<table id="uploads"></table>
+
+	</fieldset>
+
 	<fieldset>
 		<legend>Compiler</legend>
-		<button onclick="uploadConfigFiles()">Upload Configs</button>
 		<button onclick="compile()">Compile</button>
 	</fieldset>
 
 	<fieldset>
 		<legend>Flasher</legend>
-		<button>Flash !!!</button>
+		<button onclick="flasher.upload()">Upload</button>
 	</fieldset>
 
 	<fieldset>
-		<legend>Upload</legend>
-		<table id="uploads">
-
-		</table>
+		<legend>InfoDisplay</legend>
+		<div id="infoDisplay"></div>
 	</fieldset>
 
 	<fieldset>
+		<legend>Dfu Display</legend>
+		<div id="dfuDisplay"></div>
+	</fieldset>
+
+	<fieldset>
+		<legend>Status Display</legend>
+		<div id="statusDisplay"></div>
+	</fieldset>
+
+	<fieldset style="width: 100%; min-height: 200px">
 		<legend>Compile Output</legend>
 		<div id="compileOutput"></div>
+	</fieldset>
+
+	<fieldset style="width: 100%; min-height: 200px">
+		<legend>Download Log</legend>
+		<div id="downloadLog"></div>
 	</fieldset>
 
 </div>

@@ -1,6 +1,6 @@
 /* dfu.js must be included before dfuse.js */
-
-const dfuse = {};
+import {dfu} from "./dfu.js";
+export const dfuse = {};
 
 (function() {
     'use strict';

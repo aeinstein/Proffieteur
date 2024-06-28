@@ -3,6 +3,7 @@ import {Presets} from "../../../classes/presets.js";
 import {BladeConfig} from "../../../classes/blades.js";
 import {Buttons} from "../../../classes/buttons.js";
 import {Styles} from "../../../classes/styles.js";
+import {Flasher} from "../../../classes/flasher.js";
 
 const COMPILE_SERVER = "https://vdev.cust.itnox.de/proffieteur/server/";
 
@@ -132,5 +133,6 @@ function getStyleConfig(){
     return styles.getConfig();
 }
 
+window.flasher = new Flasher();
 window.compile = compile;
 window.uploadConfigFiles = uploadConfigFiles;
