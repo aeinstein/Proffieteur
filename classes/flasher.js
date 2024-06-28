@@ -13,35 +13,43 @@ export class Flasher{
     firmwareFile;
 
     constructor() {
+        this.bc = new BroadcastChannel('proffiediag');
+
+
         this.dfuDisplay = document.getElementById("dfuDisplay");
         this.statusDisplay = document.getElementById("statusDisplay");
         this.infoDisplay = document.getElementById("infoDisplay");
         this.downloadLog = document.querySelector("#downloadLog");
+        this.dnloadButton = document.getElementById("btnDownload");
+        this.connectButton = document.getElementById("btnConnect");
     }
 
 
     async download() {
-        await fetch("tmp/ProffieOS.ino.elf")
-            .then(res => res.arrayBuffer)
-            .then((file) => {
-                this.firmwareFile = file;
+        await fetch("../../../server/tmp/ProffieOS.ino.elf")
+            .then(res => res.blob())
+            .then(async (blob) => {
+                this.firmwareFile = await blob.text();
+                this.displayError("Firmware downloaded: " + this.firmwareFile.length);
+
             })
     }
 
     onDisconnect(reason) {
+        this.displayError("Error: " + reason);
 
-        displayError("Error: " + reason);
-
-        /*
         if (reason) {
-            statusDisplay.textContent = reason;
+            this.statusDisplay.textContent = reason;
         }
 
-        connectButton.textContent = "Program";
-        infoDisplay.textContent = "";
-        dfuDisplay.textContent = "";
-        */
+        this.connectButton.textContent = "Program";
+        this.infoDisplay.textContent = "";
+        this.dfuDisplay.textContent = "";
 
+    }
+
+    displayError(reason, isError){
+        this.bc.postMessage({"status": reason, isError: isError});
     }
 
     getDFUDescriptorProperties(device) {
@@ -49,6 +57,7 @@ export class Flasher{
         // TODO: read the selected configuration's descriptor
         return device.readConfigurationDescriptor(0).then(
             data => {
+                console.log(data);
                 let configDesc = dfu.parseConfigurationDescriptor(data);
                 let funcDesc = null;
                 let configValue = device.settings.configuration.configurationValue;
@@ -80,7 +89,8 @@ export class Flasher{
         );
     }
 
-    upload(){
+    onConnectClick(){
+        // Clear logs
         this.clearLog(this.downloadLog);
 
         if (this.device) {
@@ -95,12 +105,15 @@ export class Flasher{
             navigator.usb.requestDevice({ 'filters': filters }).then(
                 async selectedDevice => {
                     if (selectedDevice.vendorId === 0x1209) {
-
                         await selectedDevice.open();
+
+                        console.log("device opened");
 
                         if (selectedDevice.configuration === null) {
                             selectedDevice.selectConfiguration(1);
                         }
+
+                        console.log("config selected");
 
                         let interfaceNumber = -1;
                         let endpointOut;
@@ -123,40 +136,55 @@ export class Flasher{
                             })
                         })
 
+                        console.log("Endpoints: ", endpointIn, endpointOut);
+
                         if (interfaceNumber === -1) {
-                            displayError("No WebUSB interface, unable to reset device, please press BOOT+RESET.", true)
+                            this.statusDisplay.textContent = "No WebUSB interface, unable to reset device, please press BOOT+RESET.";
 
                         } else {
+                            console.log("claim");
                             await selectedDevice.claimInterface(interfaceNumber);
+
+                            console.log("select alt");
                             await selectedDevice.selectAlternateInterface(interfaceNumber, 0);
+
+                            console.log("controlTransferOut");
                             await selectedDevice.controlTransferOut({
                                 'requestType': 'class',
                                 'recipient': 'interface',
                                 'request': 0x22,
                                 'value': 0x01,
                                 'index': interfaceNumber});
-                            selectedDevice.transferOut(endpointOut,
-                                new TextEncoder('utf-8').encode("\nRebootDFU\n"));
 
-                            displayError("Proffieboard is rebooting into bootloader mode, please click 'Program' again. (If this doesn't work, please press BOOT+RESET)", true);
+                            console.log("transferOut");
+                            selectedDevice.transferOut(endpointOut, new TextEncoder('utf-8').encode("\nRebootDFU\n"));
+
+                            this.statusDisplay.textContent = "Proffieboard is rebooting into bootloader mode, please click 'Program' again. (If this doesn't work, please press BOOT+RESET)";
 
                         }
 
                     } else {
+                        console.log("looking for dfu");
+                        console.log(selectedDevice);
+
                         let interfaces = dfu.findDeviceDfuInterfaces(selectedDevice);
+
                         if (interfaces.length === 0) {
-                            console.log(selectedDevice);
-                            displayError("The selected device does not have any USB DFU interfaces.", true);
+                            this.statusDisplay.textContent = "The selected device does not have any USB DFU interfaces.";
 
                         } else {
+                            console.log("fix names");
+
                             // STM32L433 has 4 interfaces, select the first one.
                             await this.fixInterfaceNames(selectedDevice, interfaces);
+
+                            console.log("connect");
                             this.device = await this.connect(new dfu.Device(selectedDevice, interfaces[0]));
                         }
                     }
                 }
             ).catch(error => {
-                //statusDisplay.textContent = error;
+                this.statusDisplay.textContent = error;
                 console.log(error);
             });
         }
@@ -167,11 +195,20 @@ export class Flasher{
         if (interfaces.some(intf => (intf.name == null))) {
             // Manually retrieve the interface name string descriptors
             let tempDevice = new dfu.Device(device_, interfaces[0]);
+            console.log(tempDevice);
+
             await tempDevice.device_.open();
+            console.log("opened");
+
             let mapping = await tempDevice.readInterfaceNames();
+            console.log("readed");
+
             await tempDevice.close();
+            console.log("closed");
 
             for (let intf of interfaces) {
+                console.log("intf:", intf);
+
                 if (intf.name === null) {
                     let configIndex = intf.configuration.configurationValue;
                     let intfNumber = intf["interface"].interfaceNumber;
@@ -185,6 +222,8 @@ export class Flasher{
     async connect(device) {
         try {
             await device.open();
+            console.log("opened");
+
         } catch (error) {
             this.onDisconnect(error);
             throw error;
@@ -195,12 +234,16 @@ export class Flasher{
 
         try {
             desc = await this.getDFUDescriptorProperties(device);
+            console.log(desc);
+
         } catch (error) {
             this.onDisconnect(error);
             throw error;
         }
 
         let memorySummary = "";
+
+        console.log("start download");
 
         if (desc && Object.keys(desc).length > 0) {
             device.properties = desc;
@@ -214,7 +257,7 @@ export class Flasher{
 
             if (device.settings.alternate.interfaceProtocol === 0x02) {
                 if (!desc.CanDnload) {
-                   //dnloadButton.disabled = true;
+                   this.dnloadButton.disabled = true;
                 }
             }
 
@@ -259,15 +302,15 @@ export class Flasher{
 
         // Display basic USB information
         this.statusDisplay.textContent = '';
-        //this.connectButton.textContent = 'Disconnect';
+        this.connectButton.textContent = 'Disconnect';
         this.infoDisplay.textContent = (
-            "Name: " + device.device_.productName + "\n" +
-            "MFG: " + device.device_.manufacturerName + "\n" +
-            "Serial: " + device.device_.serialNumber + "\n"
+            "Name: " + device.device_.productName + "<br>" +
+            "MFG: " + device.device_.manufacturerName + "<br>" +
+            "Serial: " + device.device_.serialNumber + "<br>"
         );
 
         // Display basic dfu-util style info
-        this.dfuDisplay.textContent = this.formatDFUSummary(device) + "\n" + memorySummary;
+        this.dfuDisplay.textContent = this.formatDFUSummary(device) + "<br>" + memorySummary;
 
         if (device.memoryInfo) {
             let segment = device.getFirstWritableSegment();
@@ -281,8 +324,12 @@ export class Flasher{
         this.setLogContext(this.downloadLog);
         this.clearLog(this.downloadLog);
 
+        await this.download();
+
         if (device && this.firmwareFile != null) {
             try {
+                console.log("getStatus");
+
                 let status = await device.getStatus();
                 if (status.state === dfu.dfuERROR) {
                     await device.clearStatus();
@@ -290,6 +337,8 @@ export class Flasher{
             } catch (error) {
                 device.logWarning("Failed to clear status");
             }
+
+            console.log("do_download");
 
             await device.do_download(this.transferSize, this.firmwareFile, this.manifestationTolerant).then(
                 () => {
