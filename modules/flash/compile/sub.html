@@ -18,7 +18,7 @@
 	<fieldset>
 		<legend>Compiler</legend>
 		<button onclick="uploadConfigFiles()">Upload Configs</button>
-		<button>Upload</button>
+		<button onclick="compile()">Compile</button>
 	</fieldset>
 
 	<fieldset>
@@ -26,7 +26,17 @@
 		<button>Flash !!!</button>
 	</fieldset>
 
+	<fieldset>
+		<legend>Upload</legend>
+		<table id="uploads">
 
+		</table>
+	</fieldset>
+
+	<fieldset>
+		<legend>Compile Output</legend>
+		<div id="compileOutput"></div>
+	</fieldset>
 
 </div>
 </body>

@@ -1,49 +1,4 @@
 let current_template;
-let current_details;
-
-function showDetails(){
-    let tmp;
-
-    if(current_details) current_details.style.display = "none";
-
-    switch(getValue("newBladeType")){
-        case "SimpleBladePtr":
-            tmp = document.getElementById("detailsSimpleBlade");
-            refreshSimpleBlade();
-            break;
-
-        case "WS281XBladePtr":
-            tmp = document.getElementById("detailsWS281XBladePtr");
-            break;
-
-        case "SubBlade":
-            for(const def in blade_definitions){
-                if(blade_definitions[def]["type"] === "SimpleBladePtr") continue;
-                if(blade_definitions[def]["type"] === "DimBlade") continue;
-                if(blade_definitions[def]["type"] === "SubBlade") continue;
-                if(blade_definitions[def]["type"] === "SubBladeWithStride") continue;
-                if(blade_definitions[def]["type"] === "SubBladeReverse") continue;
-                addOption("sb_bladeDefinition", def);
-            }
-
-            tmp = document.getElementById("detailsSubBlade");
-            break;
-
-        case "DimBlade":
-            for(const def in blade_definitions){
-                addOption("dim_bladeDefinition", def);
-            }
-
-            tmp = document.getElementById("detailsDimBlade");
-            break;
-
-    }
-
-    setFocus("bladeName");
-
-    tmp.style.display = "inline-block";
-    current_details = tmp;
-}
 
 function showTemplate(id){
     if(current_template) document.body.removeChild(current_template);

@@ -155,6 +155,10 @@ export class TopConfig {
 
         let ret = "#define NUM_BLADES " + localStorage.getItem("NUM_BLADES") + "\n";
 
+        ret += "const unsigned int maxLedsPerStrip = 500;\n";
+        ret += "#define ENABLE_WS2811\n";
+        ret += "#define ENABLE_I2C\n";
+
         for(const item in this.top_config){
             switch(top_structure[item].type){
                 case "integer":
@@ -168,8 +172,8 @@ export class TopConfig {
 
                 case "powerpins":
                     let content = this.top_config[item];
-                    content = content.replace("<", "&lt;");
-                    content = content.replace(">", "&gt;");
+                    //content = content.replace("<", "&lt;");
+                    //content = content.replace(">", "&gt;");
                     console.log(content);
                     ret += "#define " + item + " " + content + "\n";
                     break;

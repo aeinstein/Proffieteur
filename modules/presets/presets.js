@@ -1,102 +1,42 @@
+let presetConfig;
 
-let presets, fonts, tracks, styles;
-
-let use_common = true;
-
-styles = {}
-
-bc = new BroadcastChannel('proffiediag');
-
-bc.onmessage = async (ev) => {
-    console.log(ev);
-
-    if (ev.data.fonts) fonts = ev.data.fonts;
-};
+import { Presets } from "../../classes/presets.js";
 
 function loadFontsFromConnected(){
     bc.postMessage("list_fonts");
 }
 
-function saveNewPreset(){
+export function saveNewPreset(){
     let font = document.getElementById("newPresetFont").value;
 
     if(document.getElementById("newPresetFallback").value !== "") font += ";" + document.getElementById("newPresetFallback").value;
-    if(use_common) font += ";common";
+    if(presetConfig.use_common) font += ";common";
 
     let preset = {
         font: font,
         track: document.getElementById("newPresetTrack").value,
     };
 
-    for(let i = 1; i <= document.getElementById("num_blades").value; i++){
+    for(let i = 1; i <= presetConfig.NUM_BLADES; i++){
         preset["blade" + i] = document.getElementById("styleBlade" +i).value;
     }
 
     preset["name"] = document.getElementById("newPresetName").value;
 
-    presets[document.getElementById("preset").value].push(preset);
+    presetConfig.presets[document.getElementById("preset").value].push(preset);
 
+    console.log(presetConfig.presets);
 
-    localStorage.setItem("PRESETS", JSON.stringify(presets));
-
-    console.log(presets);
-    buildConfig();
+    document.getElementById("presetConfig").innerHTML = presetConfig.getConfig();
     hideTemplate();
 }
 
-function buildConfig(){
-    let config = "";
-
-    for(const item in presets){
-        config += addPresetSet(item);
-    }
-
-    document.getElementById("presetConfig").innerHTML = config;
-}
-
-function addPresetSet(preset){
-    let ret = "Preset " + preset + "[] = {\n";
-
-    for(let i = 0; i < presets[preset].length; i++) {
-        if(i > 0) ret += ",\n";
-        ret += addPreset(presets[preset][i]);
-    }
-
-    ret += "\n";
-    ret += "};\n\n";
-
-    return ret;
-}
-
-function addPreset(p){
-    let ret = "\t{\n";
-
-    ret += "\t\t\"" + p.font + "\",\n";
-    ret += "\t\t\"" + p.track + "\",\n";
-
-    for(let i = 1; i <= document.getElementById("num_blades").value; i++){
-
-        let content = p["blade" + i];
-        content = content.replace("<", "&lt;");
-        content = content.replace(">", "&gt;");
-
-        ret += "\t\t" + content + ",\n";
-    }
-
-    ret += "\t\t\"" + p.name + "\"\n";
-
-    ret += "\t}";
-
-    return ret;
-}
-
-
-function newPreset(){
+export function newPreset(){
     showTemplate("tmpNewPreset");
 
-    fillSelectBox("newPresetFont", fonts);
-    fillSelectBox("newPresetTrack", [""].concat(tracks));
-    fillSelectBox("newPresetFallback", [""].concat(fonts));
+    fillSelectBox("newPresetFont", presetConfig.fonts);
+    fillSelectBox("newPresetTrack", [""].concat(presetConfig.tracks));
+    fillSelectBox("newPresetFallback", [""].concat(presetConfig.fonts));
 
     let startRow = 3;
 
@@ -108,7 +48,7 @@ function newPreset(){
         content += "<td><select id='styleBlade" + i +"'>";
         content += "<option id='StylePtr<Black>()'>StylePtr&lt;Black&gt;()";
 
-        for(const item in styles){
+        for(const item in presetConfig.styles){
             content += "<option value='StylePtr<" + item + ">()'>" + item;
         }
         content += "</select></td>";
@@ -147,10 +87,6 @@ function getStylesFromFile(tmp){
     localStorage.setItem("STYLES", JSON.stringify(styles));
 }
 
-function refreshPresets(){
-
-}
-
 function fillSelectBox(box, content){
     const s = document.getElementById(box);
 
@@ -161,20 +97,18 @@ function fillSelectBox(box, content){
 }
 
 function init(){
-    presets = JSON.parse(localStorage.getItem("PRESETS"));
-    fonts =  JSON.parse(localStorage.getItem("FONTS"));
-    tracks =  JSON.parse(localStorage.getItem("TRACKS"));
-    styles =  JSON.parse(localStorage.getItem("STYLES"));
+    presetConfig = new Presets();
 
     const s = document.getElementById("preset");
 
-    for(const item in presets){
+    for(const item in presetConfig.presets){
         s.innerHTML += "<option id='" + item + "'>" + item;
     }
 
-    document.getElementById("num_blades").value = localStorage.getItem("NUM_BLADES");
-    buildConfig();
+    document.getElementById("num_blades").value = presetConfig.NUM_BLADES;
+    document.getElementById("presetConfig").innerHTML = presetConfig.getConfig();
 }
 
-
+window.saveNewPreset = saveNewPreset;
+window.newPreset = newPreset;
 window.addEventListener("load", init);

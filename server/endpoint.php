@@ -11,15 +11,12 @@ switch ($_REQUEST["cmd"]){
     case "compile":
         $serial = $_REQUEST["serial"];
 
-        moveConfig($serial);
+        //moveConfig($serial);
         $compiler->compile($serial);
-        echo "OK";
+        echo "\nOK\n";
         break;
 
     case "upload":
-
-        echo var_dump_ret($_FILES);
-
         $serial = $_REQUEST["serial"];
 
         mkdir(CONFIG_PATH."/".$serial);
@@ -32,9 +29,9 @@ switch ($_REQUEST["cmd"]){
 
             /* Save the uploaded file to the local filesystem */
             if ( move_uploaded_file($file['tmp_name'], $location) ) {
-                echo "$filename Success <br>";
+                echo "$filename Success\n";
             } else {
-                echo "$filename Failure <br>";
+                echo "$filename Failure\n";
             }
         }
 

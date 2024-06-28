@@ -1,306 +1,126 @@
-const blade_definitions = JSON.parse(localStorage.blade_definitions || "{}");
-const blades = JSON.parse(localStorage.blades || "{}");
-const presets = JSON.parse(localStorage.PRESETS || "{}");
+import {BladeConfig} from "../../classes/blades.js";
 
-bc = new BroadcastChannel('proffiediag');
+export let bladeConfig;
 
-let stored_blade_string;
+let current_details;
 
-function clrBlades(){
-    const blade_id = getValue("blade_id");
-    blades[blade_id]["blades"] = [];
-
-    refreshBlades();
-
-    localStorage.setItem('blades', JSON.stringify(blades));
-}
-
-function clrBladeID(){
-    const blade_id = getValue("blade_id");
-    delete blades[blade_id];
-
-    refreshBladeIDs();
-    refreshBlades();
-
-    localStorage.setItem('blades', JSON.stringify(blades));
-}
-
-function newBladeID(){
+window.newBladeID = ()=>{
     showTemplate("tmpNewBladeID");
     document.getElementById("newBladeID").readOnly = false;
 }
 
-function editBladeID(){
+window.editBladeID = ()=>{
     showTemplate("tmpNewBladeID");
+
+    let blade = bladeConfig.getBladeID(getValue("blade_id"));
+
     setValue("newBladeID", getValue("blade_id"));
-    setValue("newBladePresets", blades[blade_id]["presets"]);
-    setValue("newBladeSaveFolder", blades[blade_id]["newBladeSaveFolder"])
+    setValue("newBladePresets", blade["presets"]);
+    setValue("newBladeSaveFolder", blade["newBladeSaveFolder"]?blade["newBladeSaveFolder"]:"");
     document.getElementById("newBladeID").readOnly = true;
 }
 
-function saveNewBladeID(){
-    if(blades.hasOwnProperty(getValue("newBladeID"))) {
+window.saveNewBladeID = ()=>{
+    const newBladeID = getValue("newBladeID");
+    if(bladeConfig.hasBladeID(newBladeID)){
         let tmp = {
             presets: getValue("newBladePresets"),
             save_dir: getValue("newBladeSaveFolder")
         };
 
-
-        blades[getValue("newBladeID")] = merge_options(blades[getValue("newBladeID")], tmp);
+        bladeConfig.setBlades(newBladeID, merge_options(bladeConfig.getBladeID(newBladeID), tmp))
 
     } else {
-        blades[getValue("newBladeID")] = {
+        bladeConfig.setBlades(newBladeID, {
             presets: getValue("newBladePresets"),
             blades: [],
             save_dir: getValue("newBladeSaveFolder")
-        };
+        });
     }
 
-
-    localStorage.setItem('blades', JSON.stringify(blades));
+    //localStorage.setItem('blades', JSON.stringify(blades));
 
     refreshBladeIDs();
 
-    document.getElementById("blade_id").value = getValue("newBladeID");
+    document.getElementById("blade_id").value = newBladeID;
 
     refreshBlades();
     hideTemplate();
 }
 
-function saveBladeDefinition(){
+window.saveBladeDefinition = ()=>{
     const bladeName = getValue("bladeName");
 
-    if(bladeName === "") {
-        alert("You must provide a name");
-        setFocus("bladeName");
-        return;
-    }
-
-
-    switch(getValue("newBladeType")){
-    case "SimpleBladePtr":
-        blade_definitions[bladeName] = {
-            type: "SimpleBladePtr",
-            led1: getValue("led1"),
-            led2: getValue("led2"),
-            led3: getValue("led3"),
-            led4: getValue("led4"),
-            powerPin1: getValue("pin1"),
-            powerPin2: getValue("pin2"),
-            powerPin3: getValue("pin3"),
-            powerPin4: getValue("pin4")
-        }
-        break;
-
-    case "DimBlade":
-        blade_definitions[bladeName] = {
-            type: "DimBlade",
-            brightness: getValue("brightness"),
-            blade_definition: getValue("dim_bladeDefinition")
-        }
-
-        break;
-
-    case "SubBlade":
-        let type = "SubBlade";
-
-        let max_led = blade_definitions[getValue("sb_bladeDefinition")].leds *1;
-        let first_led= getValue("sb_first") *1;
-        let last_led= getValue("sb_last") *1;
-        let stride = getValue("sb_stride") *1;
-
-
-        console.log("stride: ", stride);
-
-        console.log("max led: " + max_led);
-
-        if(first_led <= 0 || first_led > max_led +1 ) {
-            alert("First led must not exceed blade length");
-            return;
-        }
-
-        if(last_led <= 0 || last_led > max_led +1) {
-            alert("Last led must not exceed blade length");
-            return;
-        }
-
-        blade_definitions[bladeName] = {
-            type: type,
-            first_led: first_led,
-            last_led: last_led,
-            blade_definition: getValue("sb_bladeDefinition")
-        }
-
-        if(first_led > last_led) {
-            console.log("SubBladeReverse");
-            blade_definitions[bladeName]["type"] = "SubBladeReverse";
-        }
-
-        if(stride > 1) {
-            console.log("SubBladeWithStride");
-            blade_definitions[bladeName]["type"] = "SubBladeWithStride";
-            blade_definitions[bladeName]["stride_length"] = stride;
-        }
-
-        break;
-
-    case "WS281XBladePtr":
-        if(getValue("numLeds") < 0) {
-            alert("Number of leds < 0??");
-            setFocus("numLeds");
-            return;
-        }
-
-
-        blade_definitions[bladeName] = {
-            type: "WS281XBladePtr",
-            leds: getValue("numLeds"),
-            data_pin: getValue("dataPin"),
-            byteorder: getValue("byte_order"),
-            power_pins: getSelectValues("powerpins")
-        }
-
-        if(getValue("pin_class")) blade_definitions[bladeName]["pin_class"] = getValue("pin_class");
-        if(getValue("frequency")) blade_definitions[bladeName]["frequency"] = getValue("frequency");
-        if(getValue("reset_us")) blade_definitions[bladeName]["reset_us"] = getValue("reset_us");
-        if(getValue("t1h")) blade_definitions[bladeName]["t1h"] = getValue("t1h");
-        if(getValue("t0h")) blade_definitions[bladeName]["t0h"] = getValue("t0h");
-        break;
-    }
-
-    localStorage.setItem('blade_definitions', JSON.stringify(blade_definitions));
+    bladeConfig.saveBladeDefinition(bladeName);
 
     hideTemplate();
 }
 
-function buildConfig(){
-    displayError("No Errors found");
-
-    setValue("num_blades", getMaxBladeNumber());
-
-    let bladeArray = "BladeConfig blades[] = {\n";
-
-    for(const blade_id in blades) {
-        if(blades[blade_id].blades.length !== getMaxBladeNumber()) {
-            displayError("BladeID " + blade_id + " must have " + getMaxBladeNumber() + " blades", true);
-            //continue;
-        }
-
-        stored_blade_string = "";
-
-        console.log("writing blade: " + blade_id);
-        bladeArray += "  {\n";
-        bladeArray += "    " + blade_id + ",\n";
-
-        for (let i = 0; i < blades[blade_id]["blades"].length; i++) {
-            let bladeName = blades[blade_id]["blades"][i]
-            bladeArray += "    " + createBladeString(bladeName) + ",";
-            bladeArray += " // " + bladeName;
-            bladeArray += "\n";
-        }
-
-        bladeArray += "    CONFIGARRAY(" + blades[blade_id]["presets"] + ")\n"
-
-        if(!presets.hasOwnProperty(blades[blade_id]["presets"])) presets[blades[blade_id]["presets"]] = [];
-
-        if(blades[blade_id]["save_dir"] !== "") bladeArray += "    , " + blades[blade_id]["save_dir"];
-        bladeArray += "  }\n";
-    }
-
-    bladeArray += "}\n";
-    document.getElementById("bladeConfig").innerHTML = bladeArray;
-    localStorage.setItem("PRESETS", JSON.stringify(presets));
-}
-
-function createBladeString(bladeName){
-    console.log("createBladeString: ", bladeName);
-
-    // inject dummy blade entry
-    if(bladeName === "Dummy") {
-        return "SimpleBladePtr<NoLED, NoLED, NoLED, NoLED, -1. -1, -1, -1>()";
-    }
-
-    const curBlade = blade_definitions[bladeName];
-
-    let bladeString = "";
-    let tmpString;
-
-    switch(curBlade["type"]) {
-        case "SimpleBladePtr":
-
-            break;
-
-        case "WS281XBladePtr":
-            bladeString = curBlade["type"] + "<" + curBlade["leds"] + ", " + curBlade["data_pin"] + ", " + curBlade["byteorder"] + ", ";
-
-            bladeString += "PowerPINS<";
-            bladeString += curBlade["power_pins"]
-            bladeString += "> ";
-
-            bladeString += ">()";
-            break;
-
-        case "SubBlade":
-        case "SubBladeReverse":
-            tmpString = createBladeString(curBlade["blade_definition"])
-
-            bladeString = curBlade["type"] + "(" + (curBlade["first_led"] -1) + ", " + (curBlade["last_led"] -1) + ", ";
-            if(tmpString === stored_blade_string) {
-                bladeString += "NULL";
-            } else {
-                bladeString += tmpString;
-            }
-
-            bladeString += ")";
-
-            stored_blade_string = tmpString;
-            break;
-
-        case "SubBladeWithStride":
-            tmpString = createBladeString(curBlade["blade_definition"]);
-
-            bladeString = curBlade["type"] + "(" + (curBlade["first_led"] -1) + ", " + (curBlade["last_led"] -1) + ", ";
-            bladeString += curBlade["stride_length"] + ", "
-            if(tmpString === stored_blade_string) {
-                bladeString += "NULL";
-            } else {
-                bladeString += tmpString;
-            }
-
-            bladeString += ")";
-
-            stored_blade_string = tmpString;
-            break;
-
-        case "DimBlade":
-            bladeString = curBlade["type"] + "(" + curBlade["brightness"] + ", " + createBladeString(curBlade["blade_definition"]);
-            bladeString += ")";
-            break;
-    }
-
-    console.log(bladeString);
-    return bladeString;
-}
-
-function newBladeDefinition(){
+window.newBladeDefinition = ()=>{
     showTemplate("tmpNewBladeDefinition");
     showDetails();
 }
 
-function editBladeDefinitions(){
+window.editBladeDefinitions = () =>{
     showTemplate("tmpListBladeDefinitions");
     refreshDefinitions();
 }
 
-function addBlade(){
+window.addBlade = ()=>{
     showTemplate("tmpAddBlade");
 
     addOption("bladeDefinition", "Dummy");
 
-    for(const def in blade_definitions){
+    for(const def in bladeConfig.getDefinitions()){
         console.log(def);
         addOption("bladeDefinition", def);
     }
+}
+
+window.showDetails = ()=>{
+    let tmp;
+
+    if(current_details) current_details.style.display = "none";
+
+    switch(getValue("newBladeType")){
+        case "SimpleBladePtr":
+            tmp = document.getElementById("detailsSimpleBlade");
+            refreshSimpleBlade();
+            break;
+
+        case "WS281XBladePtr":
+            tmp = document.getElementById("detailsWS281XBladePtr");
+            break;
+
+        case "SubBlade":
+            for(const def in bladeConfig.getDefinitions()){
+                let type = bladeConfig.getDefinition(def)["type"];
+
+                if(type === "SimpleBladePtr") continue;
+                if(type === "DimBlade") continue;
+                if(type === "SubBlade") continue;
+                if(type === "SubBladeWithStride") continue;
+                if(type === "SubBladeReverse") continue;
+                addOption("sb_bladeDefinition", def);
+            }
+
+            tmp = document.getElementById("detailsSubBlade");
+            break;
+
+        case "DimBlade":
+            for(const def in bladeConfig.getDefinitions()){
+                addOption("dim_bladeDefinition", def);
+            }
+
+            tmp = document.getElementById("detailsDimBlade");
+            break;
+
+    }
+
+    setFocus("bladeName");
+
+    tmp.style.display = "inline-block";
+    current_details = tmp;
 }
 
 
@@ -308,10 +128,10 @@ function refreshDefinitions(){
     const definitions = document.getElementById("lstBladeDefinitions");
     let tmp = "<table>";
 
-    for(let definition in blade_definitions){
+    for(let definition in bladeConfig.getDefinitions()){
         tmp += "<tr>";
         tmp += "<td>" + definition + "</td>";
-        tmp += "<td>" + JSON.stringify(blade_definitions[definition]) + "</td>";
+        tmp += "<td>" + JSON.stringify(bladeConfig.getDefinition(definition)) + "</td>";
         tmp += "</tr>";
     }
 
@@ -319,16 +139,16 @@ function refreshDefinitions(){
     definitions.innerHTML = tmp;
 }
 
-function saveAddBlade(){
+window.saveAddBlade = ()=>{
     const blade_id = getValue("blade_id");
     console.log("BladeID: " + blade_id);
 
     let bladeNo = 0;
-    bladeNo += blades[blade_id]?blades[blade_id]["blades"].length:0;
+    bladeNo += bladeConfig.getBladeID(blade_id)["blades"].length;
 
     console.log("BladeNo: " + bladeNo);
 
-    if(!blades[blade_id]) {
+    if(!bladeConfig.hasBladeID(blade_id)) {
         blades[blade_id] = {
             presets: "presets",
             blades: [],
@@ -336,8 +156,7 @@ function saveAddBlade(){
         };
     }
 
-    blades[blade_id]["blades"][bladeNo] = getValue("bladeDefinition");
-    localStorage.setItem('blades', JSON.stringify(blades));
+    bladeConfig.setBlade(blade_id, bladeNo, getValue("bladeDefinition"))
 
     refreshBlades();
     hideTemplate();
@@ -348,28 +167,17 @@ function refreshBlades(){
 
     const blade_id = getValue("blade_id");
 
-    if(!blades.hasOwnProperty(blade_id)) {
+    if(!bladeConfig.hasBladeID(blade_id)) {
         displayError("You need at least one BladeID", true);
         return;
     }
 
-    for(let i = 0; i < blades[blade_id]["blades"].length; i++){
-        addOption("currentBlades", blades[blade_id]["blades"][i]);
+    for(let i = 0; i < bladeConfig.getNumBlades(blade_id); i++){
+        addOption("currentBlades", bladeConfig.getBlades(blade_id)[i]);
     }
 
-    buildConfig()
-}
 
-function getMaxBladeNumber(){
-    let max_blades = 0;
-
-    for(const blade_id in blades) {
-        max_blades = (blades[blade_id]["blades"].length > max_blades)?blades[blade_id]["blades"].length:max_blades;
-    }
-
-    localStorage.setItem("NUM_BLADES", max_blades);
-
-    return max_blades;
+    document.getElementById("bladeConfig").innerHTML = bladeConfig.getConfig();
 }
 
 function refreshBladeIDs(){
@@ -377,7 +185,7 @@ function refreshBladeIDs(){
 
     let bladeFound = false;
 
-    for(const id in blades){
+    for(const id in bladeConfig.blades){
         bladeFound = true;
         addOption("blade_id", id);
     }
@@ -387,14 +195,30 @@ function refreshBladeIDs(){
 
 
 function init(){
+    bladeConfig = new BladeConfig();
+    document.getElementById("num_blades").value = bladeConfig.getMaxBladeNumber();
     refreshBladeIDs();
     refreshBlades();
 }
 
 function displayError(txt, isError){
-
     bc.postMessage({"status": txt, is_error: isError});
 }
 
+
+window.clrBladeID = ()=> {
+    const blade_id = document.getElementById('blade_id').value;
+    bladeConfig.clrBladeID(blade_id);
+    refreshBladeIDs();
+}
+
+window.clrBlades = ()=> {
+    const blade_id = document.getElementById('blade_id').value;
+    bladeConfig.clrBlades(blade_id);
+    refreshBlades();
+}
+
+
+window.refreshBlades = refreshBlades;
 window.addEventListener("load", init);
 

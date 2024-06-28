@@ -10,5 +10,9 @@ sudo apt-get install libc6:i386 libncurses5:i386 libstdc++6:i386
 
 
 # compile
-arduino-cli compile --fqbn proffieboard:stm32l4:ProffieboardV3-L452RE /CRYPTED/RAID/installs/ProffieOS/ProffieOS.ino --additional-urls https://profezzorn.github.io/arduino-proffieboard/package_proffieboard_index.json --output-dir=/home/tellimate/testarea/arduino --build_props "compiler.cpp.extra_flags=\"-DCONFIG_FILE=\"".$serial."\"\""
+arduino-cli compile --fqbn proffieboard:stm32l4:ProffieboardV3-L452RE
+/CRYPTED/RAID/installs/ProffieOS/ProffieOS.ino
+--additional-urls https://profezzorn.github.io/arduino-proffieboard/package_proffieboard_index.json
+--output-dir=/home/tellimate/testarea/arduino
+--build_props "compiler.cpp.extra_flags=\"-DCONFIG_FILE=\"".$serial."\"\""
 

@@ -93,7 +93,7 @@ function changedValue(evt){
             break;
 
         case "powerpins":
-            top_config.setItem(item, "PowerPins<" + getSelectValues(evt.target).join(",") + ">");
+            top_config.setItem(item, "PowerPINS<" + getSelectValues(evt.target).join(",") + ">");
             break;
 
         case "float":
