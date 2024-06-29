@@ -26,7 +26,7 @@ export class Flasher{
 
 
     async download() {
-        await fetch("../../../server/tmp/ProffieOS.ino.elf")
+        await fetch("../../../server/tmp/ProffieOS.ino.dfu")
             .then(res => res.blob())
             .then(async (blob) => {
                 this.firmwareFile = await blob.text();
