@@ -3,14 +3,14 @@
 class ArduinoCLI_Wrapper {
     private $config;
     private $cmd = "/usr/bin/arduino-cli";
-    private $fqbn = "proffieboard:stm32l4:ProffieboardV3-L452RE";
+    private $fqbn = "proffieboard:stm32l4:ProffieboardV3-L452RE:usb=cdc_webusb,dosfs=sdmmc1,opt=o3";
     private $source_dir = "/CRYPTED/RAID/installs/ProffieOS";
     private $source_ino = "ProffieOS.ino";
     private $additional_urls = "https://profezzorn.github.io/arduino-proffieboard/package_proffieboard_index.json";
     private $output_dir = "";
     private $verbose = false;
     private $enableMassStorage = false;
-    private $enableWebUSB = false;
+    private $enableWebUSB = true;
 
     function __construct(){
         $this->output_dir = $_SERVER["DOCUMENT_ROOT"]."/proffieteur/server/tmp/";
@@ -48,7 +48,6 @@ class ArduinoCLI_Wrapper {
         $cmdline .= " --build-property ".$build_props;
 
         $args = [
-            "-O3",
             "-DSTM32L452xx",
             "-DPROFFIEBOARD_VERSION=3",
             "-D__FPU_PRESENT=1",
