@@ -8,7 +8,12 @@
 	<script src="compile.js" type="module"></script>
 </head>
 <body>
-
+<style>
+	div.output {
+		overflow-y: scroll;
+        max-height: 300px;
+	}
+</style>
 
 <div style="display: flex;
     flex-direction: row;
@@ -51,7 +56,7 @@
 
 	<fieldset style="width: 100%; min-height: 200px">
 		<legend>Compile Output</legend>
-		<div id="compileOutput"></div>
+		<div class="output" id="compileOutput"></div>
 	</fieldset>
 
 	<fieldset style="width: 100%; min-height: 200px">

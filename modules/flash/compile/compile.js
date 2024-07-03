@@ -88,8 +88,7 @@ function colorize(input){
 }
 
 function getMainConfig(){
-    return "#define DOSFS_SDCARD 2\n" +
-        "#ifdef CONFIG_TOP\n" +
+    return "#ifdef CONFIG_TOP\n" +
         "#include \"../../proffieboard_v3_config.h\"\n" +
         "#include \"top.h\"\n" +
         "#endif\n" +

@@ -8,10 +8,14 @@ class ArduinoCLI_Wrapper {
     private $source_ino = "ProffieOS.ino";
     private $additional_urls = "https://profezzorn.github.io/arduino-proffieboard/package_proffieboard_index.json";
     private $output_dir = "";
+
+
     /**
      * @var mixed
      */
     private $verbose = false;
+    private $enableMassStorage = false;
+    private $enableWebUSB = true;
 
     function __construct(){
         $this->output_dir = $_SERVER["DOCUMENT_ROOT"]."/proffieteur/server/tmp/";
@@ -33,8 +37,12 @@ class ArduinoCLI_Wrapper {
         return $this->source_dir;
     }
 
+    function clean($serial){
+
+    }
+
     function compile($serial){
-        $cmdline = $this->cmd." compile ";
+        $cmdline = $this->cmd." compile -v ";
         $cmdline .= " --fqbn ".$this->fqbn;
         $cmdline .= " ".$this->source_dir."/".$this->source_ino;
         $cmdline .= " --additional-urls ".$this->additional_urls;
@@ -44,8 +52,46 @@ class ArduinoCLI_Wrapper {
         $build_props = "compiler.cpp.extra_flags=\"-DCONFIG_FILE=\\\"config/webconfig/".$serial."/config.h\\\"\"";
         $cmdline .= " --build-property ".$build_props;
 
-        echo $cmdline."\n";
+        $args = [
+            "-O3",
+            "-DSTM32L452xx",
+            "-DPROFFIEBOARD_VERSION=3",
+            "-D__FPU_PRESENT=1",
+            "-march=armv7e-m",
+            "-mthumb",
+            "-mfloat-abi=hard",
+            "-mfpu=fpv4-sp-d16",
+            "-mabi=aapcs",
+            "-mslow-flash-data",
+            "-fsingle-precision-constant",
+            "-felide-constructors",
+            "-ffast-math",
+            "-DUSB_VID=0x1209",
+            "-DUSB_PID=0x6668",
+            "-DUSB_DID=0xffff",
+            "-DUSB_MANUFACTURER=\"hubbe.net\"",
+            "-DUSB_PRODUCT=\"Proffieboard\"",
+            "-DDOSFS_SDCARD=3",
+            "-DDOSFS_SFLASH=0"
+        ];
 
+        $USB_TYPE = "USB_TYPE_CDC";
+
+        if($this->enableMassStorage) $USB_TYPE .= "_MSC";
+        if($this->enableWebUSB) $USB_TYPE .= "_WEBUSB";
+
+        $args[] = "-DUSB_TYPE=".$USB_TYPE;
+
+        $extra_flags = "";
+
+        foreach($args as $arg){
+            $extra_flags .= " ".str_replace("\"", "\\\"", $arg);
+        }
+
+        $build_props = "build.extra_flags=\"".$extra_flags."\"";
+        $cmdline .= " --build-property ".$build_props;
+
+        echo $cmdline."\n";
 
 
         $compiler = popen($cmdline." 2>&1", "r");
