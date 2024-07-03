@@ -47,6 +47,7 @@ class ArduinoCLI_Wrapper {
         $build_props = "compiler.cpp.extra_flags=\"-DCONFIG_FILE=\\\"config/webconfig/".$serial."/config.h\\\"\"";
         $cmdline .= " --build-property ".$build_props;
 
+        /*
         $args = [
             "-DSTM32L452xx",
             "-DPROFFIEBOARD_VERSION=3",
@@ -85,6 +86,7 @@ class ArduinoCLI_Wrapper {
         $build_props = "build.extra_flags=\"".$extra_flags."\"";
         $cmdline .= " --build-property ".$build_props;
 
+        */
         echo $cmdline."\n";
 
 
