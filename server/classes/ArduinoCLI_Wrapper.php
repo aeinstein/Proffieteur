@@ -8,14 +8,9 @@ class ArduinoCLI_Wrapper {
     private $source_ino = "ProffieOS.ino";
     private $additional_urls = "https://profezzorn.github.io/arduino-proffieboard/package_proffieboard_index.json";
     private $output_dir = "";
-
-
-    /**
-     * @var mixed
-     */
     private $verbose = false;
     private $enableMassStorage = false;
-    private $enableWebUSB = true;
+    private $enableWebUSB = false;
 
     function __construct(){
         $this->output_dir = $_SERVER["DOCUMENT_ROOT"]."/proffieteur/server/tmp/";

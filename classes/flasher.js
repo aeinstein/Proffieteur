@@ -29,8 +29,8 @@ export class Flasher{
         await fetch("../../../server/tmp/ProffieOS.ino.dfu")
             .then(res => res.blob())
             .then(async (blob) => {
-                this.firmwareFile = await blob.text();
-                this.displayError("Firmware downloaded: " + this.firmwareFile.length);
+                this.firmwareFile = await blob.arrayBuffer();
+                this.displayError("Firmware downloaded: " + this.firmwareFile.byteLength);
 
             })
     }
