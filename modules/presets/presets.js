@@ -1,4 +1,4 @@
-let presetConfig;
+export let presetConfig;
 
 import { Presets } from "../../classes/presets.js";
 
@@ -6,7 +6,7 @@ function loadFontsFromConnected(){
     bc.postMessage("list_fonts");
 }
 
-export function saveNewPreset(){
+export function savePreset(){
     let font = document.getElementById("newPresetFont").value;
 
     if(document.getElementById("newPresetFallback").value !== "") font += ";" + document.getElementById("newPresetFallback").value;
@@ -15,6 +15,7 @@ export function saveNewPreset(){
     let preset = {
         font: font,
         track: document.getElementById("newPresetTrack").value,
+        fallback: document.getElementById("newPresetFallback").value
     };
 
     for(let i = 1; i <= presetConfig.NUM_BLADES; i++){
@@ -23,15 +24,26 @@ export function saveNewPreset(){
 
     preset["name"] = document.getElementById("newPresetName").value;
 
-    presetConfig.presets[document.getElementById("preset").value].push(preset);
+    let index = presetConfig.presets[document.getElementById("preset").value].length;
+
+    if(document.getElementById("currentPresets").value !== "") {
+        index = document.getElementById("currentPresets").value;
+    }
+
+
+    presetConfig.presets[document.getElementById("preset").value][index] = preset;
 
     console.log(presetConfig.presets);
 
-    document.getElementById("presetConfig").innerHTML = presetConfig.getConfig();
+    document.getElementById("presetConfig").innerHTML = preformat(presetConfig.getConfig());
     hideTemplate();
 }
 
 export function newPreset(){
+
+    document.getElementById("currentPresets").value = "";
+    editPreset();
+    /*
     showTemplate("tmpNewPreset");
 
     fillSelectBox("newPresetFont", presetConfig.fonts);
@@ -54,6 +66,67 @@ export function newPreset(){
         content += "</select></td>";
 
         newRow.innerHTML = content;
+    }*/
+}
+
+export function delPreset(){
+    if(document.getElementById("currentPresets").value === "") {
+        presetConfig.displayError("Select Preset to delete", true);
+        return;
+    }
+
+    if(confirm("Sicher ?")) {
+        presetConfig.presets[document.getElementById("preset").value].splice(document.getElementById("currentPresets").value, 1);
+
+        console.log(presetConfig);
+        document.getElementById("presetConfig").innerHTML = preformat(presetConfig.getConfig());
+    }
+}
+
+export function editPreset(){
+    showTemplate("tmpNewPreset");
+
+    fillSelectBox("newPresetFont", presetConfig.fonts);
+    fillSelectBox("newPresetTrack", [""].concat(presetConfig.tracks));
+    fillSelectBox("newPresetFallback", [""].concat(presetConfig.fonts));
+
+    let startRow = 3;
+
+    let currentPreset = presetConfig.presets[document.getElementById("preset").value][document.getElementById("currentPresets").value];
+    console.log("presetnp:" + document.getElementById("currentPresets").value);
+    console.log(currentPreset);
+
+    for(let i = 1; i <= document.getElementById("num_blades").value; i++){
+        let tableRef = document.getElementById("tblNewPreset");
+        const newRow = tableRef.insertRow(startRow++)
+
+        let content = "<td>Style Blade " + i + "</td>";
+        content += "<td><select id='styleBlade" + i +"'>";
+
+        let buildin = {
+            "Black": "Black"
+        };
+
+        for(const item in merge_options(presetConfig.styles, buildin)){
+            content += "<option value='StylePtr<" + item + ">()'";
+
+            if(currentPreset) {
+                console.log(item, currentPreset["blade" + i]);
+
+                if(currentPreset["blade" + i] === "StylePtr<" + item + ">()") content += " selected";
+            }
+
+            content += ">" + item;
+        }
+        content += "</select></td>";
+
+        newRow.innerHTML = content;
+    }
+
+    if(currentPreset) {
+        document.getElementById("newPresetName").value = currentPreset.name;
+        document.getElementById("newPresetFallback").value = currentPreset.fallback;
+        document.getElementById("newPresetTrack").value = currentPreset.track;
     }
 }
 
@@ -92,12 +165,15 @@ function fillSelectBox(box, content){
 
     for(let i = 0; i < content.length; i++){
         const item = content[i];
-        s.innerHTML += "<option id='" + item + "'>" + item;
+        s.innerHTML += "<option value='" + item + "'>" + item;
     }
 }
 
 function init(){
     presetConfig = new Presets();
+    window.presetConfig = presetConfig;
+
+    console.log(presetConfig);
 
     const s = document.getElementById("preset");
 
@@ -106,9 +182,60 @@ function init(){
     }
 
     document.getElementById("num_blades").value = presetConfig.NUM_BLADES;
-    document.getElementById("presetConfig").innerHTML = presetConfig.getConfig();
+    document.getElementById("presetConfig").innerHTML = preformat(presetConfig.getConfig());
+
+    refreshCurrentPresets();
 }
 
-window.saveNewPreset = saveNewPreset;
+
+function preformat(txt){
+    let conf = txt;
+    conf = conf.replaceAll("<", "&lt;");
+    conf = conf.replaceAll(">", "&gt;");
+
+    return conf;
+}
+
+export function refreshCurrentPresets(){
+    let pre = "";
+
+    let currentPresets = presetConfig.presets[document.getElementById("preset").value];
+    for(let i = 0; i < currentPresets.length; i++){
+        const currentPreset = currentPresets[i];
+        pre += "<option value='" + i + "'>" + currentPreset.name;
+    }
+
+    document.getElementById("currentPresets").innerHTML = pre;
+}
+
+export function newPresetSet(){
+    document.getElementById("preset").value = "";
+    editPresetSet();
+}
+
+export function delPresetSet(){
+
+}
+
+export function editPresetSet(){
+    showTemplate("tmpNewPresetSet");
+    document.getElementById("newPresetSetName").value = document.getElementById("preset").value;
+}
+
+export function savePresetSet(){
+
+}
+
+window.savePreset = savePreset;
+window.delPreset = delPreset;
+window.editPreset = editPreset;
 window.newPreset = newPreset;
+
+window.savePresetSet = savePresetSet;
+window.delPresetSet = delPresetSet;
+window.editPresetSet = editPresetSet;
+window.newPresetSet = newPresetSet;
+
+window.refreshCurrentPresets = refreshCurrentPresets;
 window.addEventListener("load", init);
+

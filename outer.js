@@ -121,9 +121,7 @@ function sendSerial(cmd){
 }
 
 function disconnectAll(){
-    bc.postMessage("disconnect_usb")
-    bc.postMessage("disconnect_serial")
-    //bc.postMessage("disconnect_ble")
+    bc.postMessage("disconnect_all");
 }
 
 function Init() {

@@ -17,28 +17,67 @@
 		<table style="width: 100%">
 			<tr>
 				<td>
-					<label for="preset">Preset Set</label>
-					<select id="preset" onchange="refreshPresets()"></select>
+					<select id="preset" onchange="refreshCurrentPresets()"></select>
+				</td>
+				<td style="vertical-align: top">
+					<button class="b1" onclick="editPresetSet()">Edit</button>
+					<button class="b1" onclick="newPresetSet()">New</button>
+					<button class="b1" onclick="delPresetSet()">Delete</button>
 				</td>
 			</tr>
 		</table>
+	</fieldset>
+
+
+
+	<fieldset>
+		<legend>Presets in this set</legend>
+		<table>
+			<tr>
+				<td>
+					<select multiple id="currentPresets" ondblclick="editPreset()"></select>
+				</td>
+				<td style="vertical-align: top">
+					<button class="b1" onclick="editPreset()">Edit</button>
+					<button class="b1" onclick="newPreset()">New</button>
+					<button class="b1" onclick="delPreset()">Delete</button>
+				</td>
+			</tr>
+		</table>
+
+
+
 	</fieldset>
 
 	<fieldset>
 		<legend>Number of blades</legend>
 		<input style="width: 30px; text-align: center" type="text" id="num_blades" readonly>
 	</fieldset>
-
-	<fieldset>
-		<legend>Current Preset</legend>
-		<button class="b1" onclick="newPreset()">New</button>
-	</fieldset>
 </div>
 
 <div><pre id="presetConfig"></pre></div>
 
+<template id="tmpNewPresetSet">
+	Preset Set<br>
+	<hr>
+	<table>
+		<tr>
+			<td>Name</td>
+			<td><input type="text" id="newPresetSetName"></td>
+		</tr>
+		<tr>
+			<td colspan="2"><hr></td>
+		</tr>
+		<tr>
+			<td><button onclick="hideTemplate()">Cancel</button></td>
+			<td style="text-align: right"><button onclick="savePresetSet()">Save</button></td>
+		</tr>
+	</table>
+</template>
+
+
 <template id="tmpNewPreset">
-	New Preset<br>
+	Preset<br>
 	<hr>
 	<table id="tblNewPreset">
 		<tr>
@@ -67,7 +106,7 @@
 		</tr>
 		<tr>
 			<td><button onclick="hideTemplate()">Cancel</button></td>
-			<td style="text-align: right"><button onclick="saveNewPreset()">Save</button></td>
+			<td style="text-align: right"><button onclick="savePreset()">Save</button></td>
 		</tr>
 	</table>
 </template>

@@ -70,4 +70,8 @@ export class Presets {
 
         return ret;
     }
+
+    displayError(reason, isError){
+        this.bc.postMessage({"status": reason, isError: isError});
+    }
 }
