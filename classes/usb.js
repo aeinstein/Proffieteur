@@ -34,6 +34,7 @@ class USB {
                 break;
 
             case "disconnect_usb":
+            case "disconnect_all":
                 this.disconnect();
                 break;
 

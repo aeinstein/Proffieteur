@@ -34,6 +34,7 @@ class Serial {
                     break;
 
                 case "disconnect_serial":
+                case "disconnect_all":
                     this.disconnect();
                     break;
             }

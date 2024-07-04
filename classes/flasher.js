@@ -90,6 +90,8 @@ export class Flasher{
     }
 
     onConnectClick(){
+        bc.postMessage("disconnect_all");
+
         // Clear logs
         this.clearLog(this.downloadLog);
 
@@ -160,6 +162,7 @@ export class Flasher{
                             selectedDevice.transferOut(endpointOut, new TextEncoder('utf-8').encode("\nRebootDFU\n"));
 
                             this.statusDisplay.textContent = "Proffieboard is rebooting into bootloader mode, please click 'Program' again. (If this doesn't work, please press BOOT+RESET)";
+                            this.connectButton.textContent = "Upload";
 
                         }
 
@@ -420,9 +423,7 @@ export class Flasher{
         const alt = device.settings.alternate.alternateSetting;
         const serial = device.device_.serialNumber;
 
-        let info = `${mode}: [${vid}:${pid}] cfg=${cfg}, intf=${intf}, alt=${alt}, name="${name}" serial="${serial}"`;
-
-        return info;
+        return `${mode}: [${vid}:${pid}] cfg=${cfg}, intf=${intf}, alt=${alt}, name="${name}" serial="${serial}"`;
     }
 
     setLogContext(div) {
