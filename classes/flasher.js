@@ -90,7 +90,7 @@ export class Flasher{
     }
 
     onConnectClick(){
-        bc.postMessage("disconnect_all");
+        this.bc.postMessage("disconnect_all");
 
         // Clear logs
         this.clearLog(this.downloadLog);
@@ -330,6 +330,9 @@ export class Flasher{
         await this.download();
 
         if (device && this.firmwareFile != null) {
+            this.setLogContext(this.statusDisplay);
+            this.clearLog(this.statusDisplay);
+
             try {
                 console.log("getStatus");
 
@@ -342,6 +345,7 @@ export class Flasher{
             }
 
             console.log("do_download");
+
 
             await device.do_download(this.transferSize, this.firmwareFile, this.manifestationTolerant).then(
                 () => {
