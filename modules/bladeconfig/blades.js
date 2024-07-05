@@ -177,7 +177,7 @@ function refreshBlades(){
     }
 
 
-    document.getElementById("bladeConfig").innerHTML = bladeConfig.getConfig();
+    document.getElementById("bladeConfig").innerHTML = preformat(bladeConfig.getConfig());
 }
 
 function refreshBladeIDs(){

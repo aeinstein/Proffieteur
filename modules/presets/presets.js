@@ -35,38 +35,13 @@ export function savePreset(){
 
     console.log(presetConfig.presets);
 
-    document.getElementById("presetConfig").innerHTML = preformat(presetConfig.getConfig());
+    refreshCurrentPresets();
     hideTemplate();
 }
 
 export function newPreset(){
-
     document.getElementById("currentPresets").value = "";
     editPreset();
-    /*
-    showTemplate("tmpNewPreset");
-
-    fillSelectBox("newPresetFont", presetConfig.fonts);
-    fillSelectBox("newPresetTrack", [""].concat(presetConfig.tracks));
-    fillSelectBox("newPresetFallback", [""].concat(presetConfig.fonts));
-
-    let startRow = 3;
-
-    for(let i = 1; i <= document.getElementById("num_blades").value; i++){
-        let tableRef = document.getElementById("tblNewPreset");
-        const newRow = tableRef.insertRow(startRow++)
-
-        let content = "<td>Style Blade " + i + "</td>";
-        content += "<td><select id='styleBlade" + i +"'>";
-        content += "<option id='StylePtr<Black>()'>StylePtr&lt;Black&gt;()";
-
-        for(const item in presetConfig.styles){
-            content += "<option value='StylePtr<" + item + ">()'>" + item;
-        }
-        content += "</select></td>";
-
-        newRow.innerHTML = content;
-    }*/
 }
 
 export function delPreset(){
@@ -79,7 +54,7 @@ export function delPreset(){
         presetConfig.presets[document.getElementById("preset").value].splice(document.getElementById("currentPresets").value, 1);
 
         console.log(presetConfig);
-        document.getElementById("presetConfig").innerHTML = preformat(presetConfig.getConfig());
+        refreshCurrentPresets();
     }
 }
 
@@ -182,19 +157,12 @@ function init(){
     }
 
     document.getElementById("num_blades").value = presetConfig.NUM_BLADES;
-    document.getElementById("presetConfig").innerHTML = preformat(presetConfig.getConfig());
 
     refreshCurrentPresets();
 }
 
 
-function preformat(txt){
-    let conf = txt;
-    conf = conf.replaceAll("<", "&lt;");
-    conf = conf.replaceAll(">", "&gt;");
 
-    return conf;
-}
 
 export function refreshCurrentPresets(){
     let pre = "";
@@ -206,6 +174,8 @@ export function refreshCurrentPresets(){
     }
 
     document.getElementById("currentPresets").innerHTML = pre;
+
+    document.getElementById("presetConfig").innerHTML = preformat(presetConfig.getConfig());
 }
 
 export function newPresetSet(){

@@ -50,10 +50,10 @@ export class Presets {
     }
 
     addPreset(p){
-        let ret = "\t{\n";
+        let ret = "  {\n";
 
-        ret += "\t\t\"" + p.font + "\",\n";
-        ret += "\t\t\"" + p.track + "\",\n";
+        ret += "    \"" + p.font + "\",\n";
+        ret += "    \"" + p.track + "\",\n";
 
         for(let i = 1; i <= this.NUM_BLADES; i++){
 
@@ -61,12 +61,12 @@ export class Presets {
             //content = content.replace("<", "&lt;");
             //content = content.replace(">", "&gt;");
 
-            ret += "\t\t" + content + ",\n";
+            ret += "    " + content + ",\n";
         }
 
-        ret += "\t\t\"" + p.name + "\"\n";
+        ret += "    \"" + p.name + "\"\n";
 
-        ret += "\t}";
+        ret += "  }";
 
         return ret;
     }

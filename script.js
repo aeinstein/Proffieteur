@@ -71,6 +71,14 @@ function removeAllOptions(id){
     tmp.length = 0;
 }
 
+function preformat(txt){
+    let conf = txt;
+    conf = conf.replaceAll("<", "&lt;");
+    conf = conf.replaceAll(">", "&gt;");
+
+    return conf;
+}
+
 function merge_options(obj1,obj2){
     let attrname;
     const obj3 = {};

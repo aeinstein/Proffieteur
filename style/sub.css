@@ -304,6 +304,15 @@ hr {
 
 }
 
+#container > br {
+    width: 100%;
+    content: '';
+}
+
+#currentPresets {
+    min-width: 150px;
+}
+
 #bladeConfig, #topConfig, #presetConfig {
     padding: 2px;
     border: 1px solid #6060aa;

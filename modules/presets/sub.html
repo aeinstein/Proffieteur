@@ -7,6 +7,10 @@
 	<script src="../../script.js"></script>
 	<script src="presets.js" type="module"></script>
 </head>
+<style>
+
+</style>
+
 <div style="display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -28,9 +32,22 @@
 		</table>
 	</fieldset>
 
-
-
 	<fieldset>
+		<legend>Number of blades</legend>
+
+		<table style="width: 100%">
+			<tr>
+				<td>
+					Number of blades
+					<input style="width: 30px; text-align: center" type="text" id="num_blades" readonly>
+				</td>
+			</tr>
+		</table>
+	</fieldset>
+
+	<br>
+
+	<fieldset style="wrap-after: flex;">
 		<legend>Presets in this set</legend>
 		<table>
 			<tr>
@@ -44,14 +61,6 @@
 				</td>
 			</tr>
 		</table>
-
-
-
-	</fieldset>
-
-	<fieldset>
-		<legend>Number of blades</legend>
-		<input style="width: 30px; text-align: center" type="text" id="num_blades" readonly>
 	</fieldset>
 </div>
 
