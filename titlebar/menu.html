@@ -4,7 +4,7 @@
 	<button class="tb-menu hidden" onclick="disconnectAll()">Disconnect</button>
 	<button class="tb-menu" onclick="showModule('admin')">Administration</button>
 	<button class="tb-menu" data-sub="#subConfig">Configuration</button>
-	<button class="tb-menu" data-sub="#subFlash">Flash</button>
+	<button class="tb-menu" onclick="showModule('flash')">Firmware</button>
 	<button class="tb-menu" data-sub="#subView">View</button>
 	<button class="tb-menu" data-sub="#subHelp">Help</button>
 	<tm-batterychart id="batteryChart" background="#202020" width="300" height="33" style="float: right"></tm-batterychart>
@@ -28,13 +28,6 @@
 	<button class="tb-menu" onclick="showModule('presets')">Presets</button>
 	<button class="tb-menu" onclick="showModule('styles')">Styles</button>
 	<button class="tb-menu" onclick="showModule('props')">Props</button>
-</div>
-
-<div id="subFlash" class="tb-submenu">
-	<button class="tb-menu" onclick="showModule('flash/compile')">Compile</button><br>
-	<button class="tb-menu" onclick="showModule('flash/upload')">Upload</button><br>
-	<hr>
-	<button class="tb-menu" onclick="showModule('flash_settings')">Settings</button>
 </div>
 
 <div id="subView" class="tb-submenu">

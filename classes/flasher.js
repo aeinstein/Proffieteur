@@ -26,7 +26,7 @@ export class Flasher{
 
 
     async download() {
-        await fetch("../../../server/tmp/ProffieOS.ino.dfu")
+        await fetch("../../server/tmp/ProffieOS.ino.dfu")
             .then(res => res.blob())
             .then(async (blob) => {
                 this.firmwareFile = await blob.arrayBuffer();
@@ -294,7 +294,9 @@ export class Flasher{
         }
 
         // Bind logging methods
-        device.logDebug = this.logDebug;
+        device.logDebug = (msg)=>{
+            this.displayStatus(msg);
+        };
         device.logInfo = this.logInfo;
         device.logWarning = this.logWarning;
         device.logError = this.logError;
@@ -443,8 +445,16 @@ export class Flasher{
         }
     }
 
+
+    displayStatus(msg){
+        this.statusDisplay.innerHTML = msg;
+    }
+
     logDebug(msg) {
         console.log(msg);
+        if (this.logContext) {
+            this.statusDisplay.innerHTML = msg;
+        }
     }
 
     logInfo(msg) {
