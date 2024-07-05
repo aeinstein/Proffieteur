@@ -79,6 +79,12 @@ function preformat(txt){
     return conf;
 }
 
+function nl2br (str, replaceMode, isXhtml) {
+    const breakTag = (isXhtml) ? '<br />' : '<br>';
+    const replaceStr = (replaceMode) ? '$1' + breakTag : '$1' + breakTag + '$2';
+    return (str + '').replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, replaceStr);
+}
+
 function merge_options(obj1,obj2){
     let attrname;
     const obj3 = {};

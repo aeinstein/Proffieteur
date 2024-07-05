@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Title</title>
+	<link rel="stylesheet" type="text/css" href="../../style/sub.css">
+	<script src="../../script.js"></script>
+	<script src="props.js" type="module"></script>
+</head>
+<style>
+	pre {
+        line-height: 6px;
+        margin: 5px 2px 2px;
+    }
+
+	fieldset {
+        overflow-y: auto;
+        overflow-x: hidden;
+        height: inherit;
+        box-sizing: border-box;
+	}
+</style>
+<body>
+<div style="display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: stretch;" id="container">
+	<fieldset>
+		<legend>Prop file</legend>
+		<table style="width: 100%">
+			<tr>
+				<td>
+					<select id="propfile" onchange="selectPropFile()">
+						<option>caiwyn</option>
+						<option>fett263</option>
+						<option>sa22c</option>
+						<option>shtok</option>
+					</select>
+				</td>
+			</tr>
+		</table>
+	</fieldset>
+	<br>
+	<fieldset>
+		<legend>Readme</legend>
+		<pre id="readme"></pre>
+	</fieldset>
+</div>
+</body>
+</html>

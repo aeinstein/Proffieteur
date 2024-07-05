@@ -1,7 +1,7 @@
 {
-  "name": "proffieconfig_web",
+  "name": "proffieteur",
   "version": "1.0.0",
-  "description": "ProffieConfigWeb",
+  "description": "Proffieteur",
   "main": "main.js",
   "scripts": {
     "start": "electron-forge start",

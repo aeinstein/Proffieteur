@@ -75,6 +75,7 @@ sudo apt-get install libc6:i386 libncurses5:i386 libstdc++6:i386
 ```
 
 ### Features
+* Modular structure
 * Console for WebUSB
 * Console for WebSerial
 * Create and flash new configs
@@ -85,6 +86,7 @@ sudo apt-get install libc6:i386 libncurses5:i386 libstdc++6:i386
 
 
 ### RoadMap
+* electron Binaries for win and mac
 * ProcessMonitor
 * Config "Props" area
 * More ToolTips
