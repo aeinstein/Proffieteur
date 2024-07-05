@@ -2,6 +2,9 @@ export let presetConfig;
 
 import { Presets } from "../../classes/presets.js";
 
+
+
+
 function loadFontsFromConnected(){
     bc.postMessage("list_fonts");
 }
@@ -106,6 +109,10 @@ export function editPreset(){
 }
 
 
+export function getPresetsFromConnected(){
+    bc.postMessage("list_presets");
+}
+
 function getStylesFromLS(){
     let styles = localStorage.getItem("styles");
     getStylesFromFile(styles)
@@ -205,6 +212,8 @@ window.savePresetSet = savePresetSet;
 window.delPresetSet = delPresetSet;
 window.editPresetSet = editPresetSet;
 window.newPresetSet = newPresetSet;
+
+window.loadFontsFromConnected = loadFontsFromConnected;
 
 window.refreshCurrentPresets = refreshCurrentPresets;
 window.addEventListener("load", init);

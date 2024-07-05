@@ -7,6 +7,7 @@ let presets = [];
 let dragging = null;
 let fonts;
 let tracks;
+let connected = 0;
 
 bc = new BroadcastChannel('proffiediag');
 
@@ -30,6 +31,14 @@ bc.onmessage = async (ev) => {
     if(ev.data.presets) {
         presets = ev.data.presets;
         UpdatePresets();
+    }
+
+    // getpresets if connection is complete
+    if(ev.data === "usb_connected") connected |= 1
+    if(ev.data === "serial_connected") connected |= 2
+    if(connected === 3) {
+        connected = 0;
+        onConnected();
     }
 
     if(ev.data.named_styles) styles = ev.data.named_styles;
@@ -545,8 +554,7 @@ async function DelPreset() {
 }
 
 async function DelConfirm() {
-    const r = confirm("Delete current preset?");
-    if (r == true) {
+    if (confirm("Delete current preset?")) {
         DelPreset();
     }
 }
@@ -751,12 +759,16 @@ function concatTypedArrays(a, b) { // a, b TypedArray of same type
 }
 
 
-//document.getElementById("txtVersion").innerHTML = parent.current_board["version"];
-document.getElementById("txtButtons").innerHTML = parent.current_board["buttons"];
-document.getElementById("txtProp").innerHTML = parent.current_board["props"];
-document.getElementById("txtConfig").innerHTML = parent.current_board["config"];
-document.getElementById("txtInstalled").innerHTML = parent.current_board["installdate"];
+
+function onConnected(){
+    //document.getElementById("txtVersion").innerHTML = parent.current_board["version"];
+    document.getElementById("txtButtons").innerHTML = parent.current_board["buttons"];
+    document.getElementById("txtProp").innerHTML = parent.current_board["props"];
+    document.getElementById("txtConfig").innerHTML = parent.current_board["config"];
+    document.getElementById("txtInstalled").innerHTML = parent.current_board["installdate"];
+    bc.postMessage("get_presets");
+}
 
 
-bc.postMessage("get_presets");
+onConnected();
 
