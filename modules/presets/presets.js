@@ -170,7 +170,7 @@ export function refreshCurrentPresets(){
     let currentPresets = presetConfig.presets[document.getElementById("preset").value];
     for(let i = 0; i < currentPresets.length; i++){
         const currentPreset = currentPresets[i];
-        pre += "<option value='" + i + "'>" + currentPreset.name;
+        pre += "<option value='" + i + "'>" + i + " - " + currentPreset.name;
     }
 
     document.getElementById("currentPresets").innerHTML = pre;
