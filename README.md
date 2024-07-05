@@ -1,11 +1,15 @@
 
 # Proffieteur
 ### Proffieboard Diagnostics
-WebAPP for basic diagnostics and configuration of Proffieboards, via WebUSB and WebSerial. Based on original work from [profezzorn](https://github.com/profezzorn).
+WebAPP for basic diagnostics, full configuration and direct upload of Proffieboards, via WebUSB and WebSerial. 
+Based on original work from [profezzorn](https://github.com/profezzorn).
 
 # Only ProffieboardV3 for now !!!
 
 ![](/contrib/admin.PNG)
+
+# General Config
+![](/contrib/top.PNG)
 
 # Blade Config Editor
 ![](/contrib/blades.PNG)
@@ -13,15 +17,19 @@ WebAPP for basic diagnostics and configuration of Proffieboards, via WebUSB and 
 | ![](/contrib/newBladeDefinition.PNG)    | ![](/contrib/newLed.PNG) |
 | ----------- | ----------- |
 
+# Style Editor
+![](/contrib/styles.PNG)
+
 # Preset Editor
 ![](/contrib/presets.PNG)
 ![](/contrib/preset_edit.PNG)
 
+
+
 # Server compile
 ![](/contrib/compile.PNG)
 
-# Style Editor
-![](/contrib/styles.PNG)
+
 
 ## This App is -- in progress --
 Please no questions yet, it is IN PROGRESS !!
