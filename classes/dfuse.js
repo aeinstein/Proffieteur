@@ -342,6 +342,6 @@ export const dfuse = {};
 
         // DfuSe encodes the read address based on the transfer size,
         // the block number - 2, and the SET_ADDRESS pointer.
-        return await dfu.Device.prototype.do_upload.call(this, xfer_size, max_size, 2);
+        return await dfu.Device.prototype.readFirmware.call(this, xfer_size, max_size, 2);
     }
 })();

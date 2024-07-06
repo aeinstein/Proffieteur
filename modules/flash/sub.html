@@ -22,7 +22,7 @@
     align-items: stretch;" id="container">
 
 	<fieldset style="min-height: 180px">
-		<legend>Upload</legend>
+		<legend>Configuration</legend>
 		<button onclick="uploadConfigFiles()">Upload Configs</button>
 		<table id="uploads"></table>
 
@@ -31,11 +31,13 @@
 	<fieldset>
 		<legend>Compiler</legend>
 		<button onclick="compile()">Compile</button>
+		<br><br>
+		<div id="txtCompiler"></div>
 	</fieldset>
 
 	<fieldset>
 		<legend>Flasher</legend>
-		<button id="btnConnect" onclick="flasher.onConnectClick()">Connect</button>
+		<button id="btnConnect" onclick="flasher.connect()">Connect</button>
 	</fieldset>
 
 	<fieldset>

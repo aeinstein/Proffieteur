@@ -15,28 +15,25 @@ export class Flasher{
     constructor() {
         this.bc = new BroadcastChannel('proffiediag');
 
-
         this.dfuDisplay = document.getElementById("dfuDisplay");
         this.statusDisplay = document.getElementById("statusDisplay");
         this.infoDisplay = document.getElementById("infoDisplay");
-        this.downloadLog = document.querySelector("#downloadLog");
+        this.downloadLog = document.getElementById("downloadLog");
         this.dnloadButton = document.getElementById("btnDownload");
         this.connectButton = document.getElementById("btnConnect");
     }
 
-
-    async download() {
+    async downloadFirmware() {
         await fetch("../../server/tmp/ProffieOS.ino.dfu")
             .then(res => res.blob())
             .then(async (blob) => {
                 this.firmwareFile = await blob.arrayBuffer();
-                this.displayError("Firmware downloaded: " + this.firmwareFile.byteLength);
-
+                displayStatus("Firmware downloaded: " + this.firmwareFile.byteLength);
             })
     }
 
     onDisconnect(reason) {
-        this.displayError("Error: " + reason);
+        displayStatus("Error: " + reason);
 
         if (reason) {
             this.statusDisplay.textContent = reason;
@@ -46,10 +43,6 @@ export class Flasher{
         this.infoDisplay.textContent = "";
         this.dfuDisplay.textContent = "";
 
-    }
-
-    displayError(reason, isError){
-        this.bc.postMessage({"status": reason, isError: isError});
     }
 
     getDFUDescriptorProperties(device) {
@@ -89,8 +82,13 @@ export class Flasher{
         );
     }
 
-    onConnectClick(){
+    connect(){
         this.bc.postMessage("disconnect_all");
+
+        if(!localStorage.getItem("firmwareFile")){
+            displayError("No Firmware found, pls Compile");
+            return;
+        }
 
         // Clear logs
         this.clearLog(this.downloadLog);
@@ -162,7 +160,7 @@ export class Flasher{
                             selectedDevice.transferOut(endpointOut, new TextEncoder('utf-8').encode("\nRebootDFU\n"));
 
                             this.statusDisplay.textContent = "Proffieboard is rebooting into bootloader mode, please click 'Program' again. (If this doesn't work, please press BOOT+RESET)";
-                            this.connectButton.textContent = "Upload";
+                            this.connectButton.textContent = "Program";
 
                         }
 
@@ -182,7 +180,7 @@ export class Flasher{
                             await this.fixInterfaceNames(selectedDevice, interfaces);
 
                             console.log("connect");
-                            this.device = await this.connect(new dfu.Device(selectedDevice, interfaces[0]));
+                            this.device = await this.write(new dfu.Device(selectedDevice, interfaces[0]));
                         }
                     }
                 }
@@ -222,7 +220,7 @@ export class Flasher{
         }
     }
 
-    async connect(device) {
+    async write(device) {
         try {
             await device.open();
             console.log("opened");
@@ -274,7 +272,7 @@ export class Flasher{
                         totalSize += segment.end - segment.start;
                     }
 
-                    memorySummary = `Selected memory region: ${device.memoryInfo.name} (${this.niceSize(totalSize)})`;
+                    memorySummary = `Selected memory region: ${device.memoryInfo.name} (${niceSize(totalSize)})`;
 
                     for (let segment of device.memoryInfo.segments) {
                         let properties = [];
@@ -295,12 +293,12 @@ export class Flasher{
 
         // Bind logging methods
         device.logDebug = (msg)=>{
-            this.displayStatus(msg);
+            displayStatus(msg);
         };
-        device.logInfo = this.logInfo;
-        device.logWarning = this.logWarning;
-        device.logError = this.logError;
-        device.logProgress = this.logProgress;
+        device.logInfo = displayStatus;
+        device.logWarning = displayError;
+        device.logError = displayError;
+        device.logProgress = displayStatus;
 
         // Clear logs
         this.clearLog(this.downloadLog);
@@ -329,7 +327,10 @@ export class Flasher{
         this.setLogContext(this.downloadLog);
         this.clearLog(this.downloadLog);
 
-        await this.download();
+
+        this.firmwareFile = str2ab(localStorage.getItem("firmwareFile"));
+
+        //await this.downloadFirmware();
 
         if (device && this.firmwareFile != null) {
             this.setLogContext(this.statusDisplay);
@@ -346,11 +347,10 @@ export class Flasher{
                 device.logWarning("Failed to clear status");
             }
 
-            console.log("do_download");
+            console.log("writeFirmware");
 
 
-            await device.do_download(this.transferSize, this.firmwareFile, this.manifestationTolerant).then(
-                () => {
+            await device.writeFirmware(this.transferSize, this.firmwareFile, this.manifestationTolerant).then(() => {
                     this.logInfo("Done!");
                     this.setLogContext(null);
                     if (!this.manifestationTolerant) {
@@ -367,7 +367,7 @@ export class Flasher{
                     }
                 },
                 error => {
-                    this.logError(error);
+                    displayStatus(error, true);
                     this.setLogContext(null);
                     throw error
                 }
@@ -395,21 +395,7 @@ export class Flasher{
         return "0x" + s;
     }
 
-    niceSize(n) {
-        const gigabyte = 1024 * 1024 * 1024;
-        const megabyte = 1024 * 1024;
-        const kilobyte = 1024;
 
-        if (n >= gigabyte) {
-            return n / gigabyte + "GiB";
-        } else if (n >= megabyte) {
-            return n / megabyte + "MiB";
-        } else if (n >= kilobyte) {
-            return n / kilobyte + "KiB";
-        } else {
-            return n + "B";
-        }
-    }
 
     formatDFUSummary(device) {
         const vid = this.hex4(device.device_.vendorId);
@@ -442,68 +428,6 @@ export class Flasher{
         }
         if (context) {
             context.innerHTML = "";
-        }
-    }
-
-
-    displayStatus(msg){
-        this.statusDisplay.innerHTML = msg;
-    }
-
-    logDebug(msg) {
-        console.log(msg);
-        if (this.logContext) {
-            this.statusDisplay.innerHTML = msg;
-        }
-    }
-
-    logInfo(msg) {
-        console.log(msg);
-        if (this.logContext) {
-            let info = document.createElement("p");
-            info.className = "info";
-            info.textContent = msg;
-            this.logContext.appendChild(info);
-        }
-    }
-
-    logWarning(msg) {
-        console.log(msg);
-        if (this.logContext) {
-            let warning = document.createElement("p");
-            warning.className = "warning";
-            warning.textContent = msg;
-            this.logContext.appendChild(warning);
-        }
-    }
-
-    logError(msg) {
-        console.log(msg);
-        if (this.logContext) {
-            let error = document.createElement("p");
-            error.className = "error";
-            error.textContent = msg;
-            this.logContext.appendChild(error);
-        }
-    }
-
-    logProgress(done, total) {
-        if (this.logContext) {
-            let progressBar;
-
-            if (this.logContext.lastChild.tagName.toLowerCase() === "progress") {
-                progressBar = logContext.lastChild;
-            }
-
-            if (!progressBar) {
-                progressBar = document.createElement("progress");
-                this.logContext.appendChild(progressBar);
-            }
-
-            progressBar.value = done;
-            if (typeof total !== 'undefined') {
-                progressBar.max = total;
-            }
         }
     }
 }

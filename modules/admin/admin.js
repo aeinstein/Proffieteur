@@ -9,8 +9,6 @@ let fonts;
 let tracks;
 let connected = 0;
 
-bc = new BroadcastChannel('proffiediag');
-
 bc.onmessage = async (ev) => {
     console.log(ev);
 

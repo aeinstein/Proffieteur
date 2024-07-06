@@ -3,6 +3,12 @@ import {top_structure, TopConfig} from "../../classes/top.js";
 let top_config;
 
 function buildGUI(){
+    let buttons = JSON.parse(localStorage.getItem("BUTTONS"));
+
+    document.getElementById("btn1").value = buttons["button1"];
+    document.getElementById("btn2").value = buttons["button2"];
+    document.getElementById("btn3").value = buttons["button3"];
+
     for(const item in top_structure){
         const group = top_structure[item].group;
 
@@ -70,6 +76,16 @@ function getOrAddFieldset(group){
     return fs;
 }
 
+function refreshButtonConfig(){
+    let num_buttons = 0;
+    if(document.getElementById("btn1").value) num_buttons++;
+    if(document.getElementById("btn2").value) num_buttons++;
+    if(document.getElementById("btn3").value) num_buttons++;
+
+    top_config.setItem("NUM_BUTTONS", num_buttons);
+    save();
+}
+
 function init() {
     top_config = new TopConfig();
 
@@ -87,26 +103,40 @@ function save(){
 function changedValue(evt){
     const item = evt.target.id;
 
-    switch(top_structure[item].type){
-        case "boolean":
-            top_config.setItem(item, !!evt.target.checked);
-            break;
+    console.log(item);
 
-        case "powerpins":
-            top_config.setItem(item, "PowerPINS<" + getSelectValues(evt.target).join(",") + ">");
-            break;
+    if(item.substring(0, 3) === "btn") generateButtons();
+    else {
+        switch(top_structure[item].type){
+            case "boolean":
+                top_config.setItem(item, !!evt.target.checked);
+                break;
 
-        case "float":
-        case "integer":
-            top_config.setItem(item, evt.target.value * 1);
-            break;
+            case "powerpins":
+                top_config.setItem(item, "PowerPINS<" + getSelectValues(evt.target).join(",") + ">");
+                break;
 
-        default:
-            top_config.setItem(item, evt.target.value);
-            break;
+            case "float":
+            case "integer":
+                top_config.setItem(item, evt.target.value * 1);
+                break;
+
+            default:
+                top_config.setItem(item, evt.target.value);
+                break;
+        }
     }
 
     save();
+}
+
+function generateButtons(){
+    let buttons = {};
+
+    for(let buttonNo = 1; buttonNo <= 3; buttonNo++){
+        buttons["button" + buttonNo] = document.getElementById("btn" + buttonNo).value;
+    }
+    localStorage.setItem("BUTTONS", JSON.stringify(buttons));
 }
 
 function getSelectValues(select) {
@@ -123,6 +153,8 @@ function getSelectValues(select) {
     }
     return result;
 }
+
+window.refreshButtonConfig = refreshButtonConfig;
 
 window.addEventListener("load", init);
 

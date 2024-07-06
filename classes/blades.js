@@ -138,7 +138,7 @@ export class BladeConfig{
     }
 
     getConfig(){
-        this.displayError("No Errors found", false);
+        displayStatus("No Errors found", false);
 
         //setValue("num_blades", bladeConfig.getMaxBladeNumber());
 
@@ -146,7 +146,7 @@ export class BladeConfig{
 
         for(const blade_id in this.blades) {
             if(this.blades[blade_id].blades.length !== this.getMaxBladeNumber()) {
-                this.displayError("BladeID " + blade_id + " must have " + this.getMaxBladeNumber() + " blades", true);
+                displayStatus("BladeID " + blade_id + " must have " + this.getMaxBladeNumber() + " blades", true);
                 //continue;
             }
 
@@ -178,13 +178,9 @@ export class BladeConfig{
         return(bladeString);
     }
 
-    displayError(txt, isError){
-        this.bc.postMessage({"status": txt, is_error: isError});
-    }
-
     saveBladeDefinition(bladeName){
         if(bladeName === "") {
-            this.displayError("please provide a name", true);
+            displayStatus("please provide a name", true);
             return;
         }
 
@@ -226,12 +222,12 @@ export class BladeConfig{
                 console.log("max led: " + max_led);
 
                 if(first_led <= 0 || first_led > max_led +1 ) {
-                    this.displayError("First led must not exceed blade length", true);
+                    displayStatus("First led must not exceed blade length", true);
                     return;
                 }
 
                 if(last_led <= 0 || last_led > max_led +1) {
-                    this.displayError("Last led must not exceed blade length", true);
+                    displayStatus("Last led must not exceed blade length", true);
                     return;
                 }
 
@@ -257,7 +253,7 @@ export class BladeConfig{
 
             case "WS281XBladePtr":
                 if(getValue("numLeds") < 0) {
-                    this.displayError("Number of leds < 0??", true);
+                    displayStatus("Number of leds < 0??", true);
                     return;
                 }
 

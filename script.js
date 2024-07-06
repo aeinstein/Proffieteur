@@ -1,4 +1,13 @@
 let current_template;
+const bc = new BroadcastChannel('proffiediag');
+
+function displayStatus(reason, isError){
+    bc.postMessage({"status": reason, isError: isError});
+}
+
+function displayError(reason){
+    displayStatus(reason, true);
+}
 
 function showTemplate(id){
     if(current_template) document.body.removeChild(current_template);
@@ -91,4 +100,52 @@ function merge_options(obj1,obj2){
     for (attrname in obj1) { obj3[attrname] = obj1[attrname]; }
     for (attrname in obj2) { obj3[attrname] = obj2[attrname]; }
     return obj3;
+}
+
+function colorize(input){
+    let ret = input;
+    const esc = String.fromCharCode(0x1b);
+
+    ret = ret.replaceAll(esc + "[90m", "<font color='gray'>");
+    ret = ret.replaceAll(esc + "[92m", "<font color='green'>");
+    ret = ret.replaceAll(esc + "[93m", "<font color='yellow'>");
+    ret = ret.replaceAll(esc + "[0m", "</font>");
+    return ret;
+}
+
+function ab2str(buffer){
+    const bufView = new Uint16Array(buffer);
+    const length = bufView.length;
+    let result = '';
+    let addition = Math.pow(2, 16) - 1;
+
+    for(let i = 0; i<length; i+=addition){
+        if(i + addition > length) addition = length - i;
+        result += String.fromCharCode.apply(null, bufView.subarray(i,i+addition));
+    }
+
+    return result;
+}
+
+function str2ab(str) {
+    const buf = new ArrayBuffer(str.length *2);
+    const bufView = new Uint16Array(buf);
+    for (let i = 0; i < str.length; i++) bufView[i] = str.charCodeAt(i);
+    return buf;
+}
+
+function niceSize(n) {
+    const gigabyte = 1024 * 1024 * 1024;
+    const megabyte = 1024 * 1024;
+    const kilobyte = 1024;
+
+    if (n >= gigabyte) {
+        return (n / gigabyte).toFixed(2) + " GiB";
+    } else if (n >= megabyte) {
+        return (n / megabyte).toFixed(2) + " MiB";
+    } else if (n >= kilobyte) {
+        return (n / kilobyte).toFixed(2) + " KiB";
+    } else {
+        return n + " Bytes";
+    }
 }

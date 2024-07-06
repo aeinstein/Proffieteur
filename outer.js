@@ -8,7 +8,7 @@ bc = new BroadcastChannel('proffiediag');
 bc.onmessage = (ev)=> {
     console.log(ev.data);
 
-    if(ev.data.status) displayError(ev.data.status, ev.data.is_error);
+    if(ev.data.status) displayStatus(ev.data.status, ev.data.is_error);
 
     if(ev.data.prop) current_board["props"] = ev.data.prop;
     if(ev.data.buttons) current_board["buttons"] = ev.data.buttons;
@@ -144,10 +144,10 @@ function Init() {
         err = false;
     }
 
-    if (err) displayError("This browser supports neither webusb nor web bluetooth.", true);
+    if (err) displayStatus("This browser supports neither webusb nor web bluetooth.", true);
 }
 
-function displayError(txt, isError){
+function displayStatus(txt, isError){
     const st = document.getElementById("status_text");
     st.innerHTML = txt;
     if(isError) st.className = "error";

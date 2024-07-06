@@ -1,12 +1,5 @@
 
 export const top_structure = {
-    "NUM_BUTTONS": {
-        type: "integer",
-        default: 1,
-        desc: "How many buttons",
-        group: "Buttons"
-    },
-
     "VOLUME": {
         type: "integer",
         default: 1000,
@@ -159,7 +152,14 @@ export class TopConfig {
         ret += "#define ENABLE_WS2811\n";
         ret += "#define ENABLE_I2C\n";
 
+
+        ret += "#define NUM_BUTTONS " + this.top_config["NUM_BUTTONS"] + "\n";
+
         for(const item in this.top_config){
+            if(item === "NUM_BUTTONS") continue;
+
+            console.log(item, top_structure[item]);
+
             switch(top_structure[item].type){
                 case "integer":
                 case "float":

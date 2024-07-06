@@ -55,36 +55,42 @@ export async function uploadConfigFiles() {
 
 export async function compile() {
     const output = document.getElementById("compileOutput");
-    output.innerHTML = "running";
+    output.innerHTML = "starting compile";
 
     await fetch(COMPILE_SERVER + 'endpoint.php?cmd=compile&serial=' + currentDevice.serialNumber)
         .then(res => res.text())
-        .then((res)=>{
+        .then(async (res) => {
             console.log(res);
 
             let ret = "";
 
             let lines = res.split("\n");
 
-            for(let i = 0; i < lines.length; i++){
-                let line = lines[i];
-                ret += colorize(line) + "<br>";
+            for (let i = 0; i < lines.length; i++) {
+                ret += colorize(lines[i]) + "<br>";
             }
 
             output.innerHTML = ret;
+
+            await download();
         })
     ;
 }
 
-function colorize(input){
-    let ret = input;
-    const esc = String.fromCharCode(0x1b);
+async function download() {
+    await fetch("../../server/tmp/ProffieOS.ino.dfu")
+        .then(res => res.blob())
+        .then(async (blob) => {
+            const firmwareFile = await blob.arrayBuffer();
+            displayStatus("Firmware downloaded: " + firmwareFile.byteLength);
+            localStorage.setItem("firmwareFile", ab2str(firmwareFile));
+            init();
+        })
+}
 
-    ret = ret.replaceAll(esc + "[90m", "<font color='gray'>");
-    ret = ret.replaceAll(esc + "[92m", "<font color='green'>");
-    ret = ret.replaceAll(esc + "[93m", "<font color='yellow'>");
-    ret = ret.replaceAll(esc + "[0m", "</font>");
-    return ret;
+function deleteStoredFirmware(){
+    localStorage.removeItem("firmwareFile");
+    init();
 }
 
 function getMainConfig(){
@@ -132,6 +138,23 @@ function getStyleConfig(){
     return styles.getConfig();
 }
 
+function init(){
+    if(localStorage.getItem("firmwareFile")){
+        let firmware = str2ab(localStorage.getItem("firmwareFile"));
+
+
+        let t = "Stored Firmware:<br>" + niceSize(firmware.byteLength) + " Bytes<br>";
+        t += "<button onclick='deleteStoredFirmware()'>Delete</button>";
+
+        document.getElementById("txtCompiler").innerHTML = t;
+    } else {
+        document.getElementById("txtCompiler").innerHTML = "No stored firmware";
+    }
+}
+
 window.flasher = new Flasher();
 window.compile = compile;
 window.uploadConfigFiles = uploadConfigFiles;
+window.deleteStoredFirmware = deleteStoredFirmware;
+
+window.addEventListener("load", init);

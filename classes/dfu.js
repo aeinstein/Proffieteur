@@ -70,7 +70,7 @@ export const dfu = {};
     };
 
     dfu.Device.prototype.logDebug = function(msg) {
-
+        console.log(msg);
     };
 
     dfu.Device.prototype.logInfo = function(msg) {
@@ -514,7 +514,7 @@ export const dfu = {};
         }
     };
 
-    dfu.Device.prototype.do_upload = async function(xfer_size, max_size=Infinity, first_block=0) {
+    dfu.Device.prototype.readFirmware = async function(xfer_size, max_size=Infinity, first_block=0) {
         let transaction = first_block;
         let blocks = [];
         let bytes_read = 0;
@@ -572,7 +572,7 @@ export const dfu = {};
         return this.poll_until(state => (state === idle_state));
     };
 
-    dfu.Device.prototype.do_download = async function(xfer_size, data, manifestationTolerant) {
+    dfu.Device.prototype.writeFirmware = async function(xfer_size, data, manifestationTolerant) {
         let bytes_sent = 0;
         let expected_size = data.byteLength;
         let transaction = 0;
