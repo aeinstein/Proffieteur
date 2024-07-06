@@ -94,6 +94,7 @@ function deleteStoredFirmware(){
 }
 
 function getMainConfig(){
+    const propFile = localStorage.getItem("PROPS");
     return "#ifdef CONFIG_TOP\n" +
         "#include \"../../proffieboard_v3_config.h\"\n" +
         "#include \"top.h\"\n" +
@@ -101,7 +102,7 @@ function getMainConfig(){
         "\n" +
         "\n" +
         "#ifdef CONFIG_PROP\n" +
-        "#include \"../../../props/saber_fett263_buttons.h\"\n" +
+        "#include \"../../../props/saber_" + propFile + "_buttons.h\"\n" +
         "#endif\n" +
         "\n" +
         "#ifdef CONFIG_PRESETS\n" +

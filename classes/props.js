@@ -2,7 +2,8 @@ export class Props{
     current_props;
 
     BC_structure = {
-        desc: "0 Buttons:\n" +
+        desc: "",
+        desc0Button: "0 Buttons:\n" +
             "Activate Muted - None\n" +
             "Activate blade - forward or backward horizontal thrust movement or sharp swing movement (Swing On)\n" +
             "Play/Stop Music - hit the saber (perform clash event) holding the blade up while it's OFF\n" +
@@ -19,7 +20,19 @@ export class Props{
             "Lightning Block - None\n" +
             "Enter Multi-Block mode - None\n" +
             "\n" +
-            "1 Button:\n" +
+            "CUSTOM SOUNDS SUPPORTED (add to font to enable):\n" +
+            "\n" +
+            "On Demand Power Save - dim.wav\n" +
+            "On Demand Battery Level - battery.wav\n" +
+            "Battle Mode On (on toggle) - bmbegin.wav\n" +
+            "Battle Mode Off (on toggle) - bmend.wav\n" +
+            "Enter Volume Menu - vmbegin.wav\n" +
+            "Exit Volume Menu - vmend.wav\n" +
+            "Force Push - push.wav\n" +
+            "Fast On (optional) - faston.wav\n" +
+            "Multi-Blast Mode On - blstbgn.wav\n" +
+            "Multi-Blast Mode Off - blstend.wav",
+        desc1Button: "1 Button:\n" +
             "Activate Muted - fast double click while OFF\n" +
             "Activate blade - short click while OFF or forward thrust movement + hit or forward thrust movement or sharp swing movement (Swing On)\n" +
             "Play/Stop Music - hold 1 second and release while ON\n" +
@@ -42,9 +55,8 @@ export class Props{
             "Volume DOWN - hold and release while in Volume Menu\n" +
             "Volume UP - short click while in Volume Menu\n" +
             "Exit Volume Menu - hold + clash while OFF and in Volume Menu\n" +
-            "Battery Level - triple click while OFF\n" +
-            "\n" +
-            "2 Buttons:\n" +
+            "Battery Level - triple click while OFF\n",
+        desc2Button: "2 Buttons:\n" +
             "Activate Muted - fast double click Activation button while OFF\n" +
             "Activate blade - short click Activation button while OFF or forward thrust movement + hit or forward thrust movement or sharp swing movement (Swing On)\n" +
             "Play/Stop Music - hold 1 second and release Activation button while OFF or ON\n" +
@@ -67,82 +79,14 @@ export class Props{
             "Volume UP - short click Activation button while OFF and in Volume Menu\n" +
             "Volume DOWN - short click AUX button while OFF and in Volume Menu\n" +
             "Exit Volume Menu - long click AUX button while OFF and in Volume Menu\n" +
-            "Battery level - hold AUX button while OFF\n" +
-            "\n" +
-            "\n" +
-            "CUSTOM SOUNDS SUPPORTED (add to font to enable):\n" +
-            "\n" +
-            "On Demand Power Save - dim.wav\n" +
-            "On Demand Battery Level - battery.wav\n" +
-            "Battle Mode On (on toggle) - bmbegin.wav\n" +
-            "Battle Mode Off (on toggle) - bmend.wav\n" +
-            "Enter Volume Menu - vmbegin.wav\n" +
-            "Exit Volume Menu - vmend.wav\n" +
-            "Force Push - push.wav\n" +
-            "Fast On (optional) - faston.wav\n" +
-            "Multi-Blast Mode On - blstbgn.wav\n" +
-            "Multi-Blast Mode Off - blstend.wav"
+            "Battery level - hold AUX button while OFF\n",
+        desc3Button: false
     }
 
     fett263_structure = {
         desc: "Fett263 Buttons for use with 1, 2 or 3 Button Sabers\n" +
             "\n" +
-            "* 1 Button Controls based on SA22C prop\n" +
-            "Includes Gesture Controls, Battle Mode 2.0, Edit Mode, Track Player, Quote/Force Player, Real Clash, Choreography Mode\n" +
-            "   Dual Mode Ignition Sounds, Multi-Phase Control, Multi-Blast\n" +
-            "\n" +
-            " ProffieOS: Control software for lightsabers and other props.\n" +
-            " http://fredrik.hubbe.net/lightsaber/teensy_saber.html\n" +
-            " Copyright (c) 2016-2019 Fredrik Hubinette\n" +
-            "\n" +
-            " Fett263 Button (prop) file, \"Battle Mode 2.0\", \"Edit Mode\", \"Track Player\", \"Real Clash\", \"Choreography Mode\", \"Dual Mode Ignition\",\n" +
-            " \"Multi-Phase\", \"Multi-Blast\"\n" +
-            " Copyright (c) 2022-2023 Fernando da Rosa\n" +
-            " Visit https://www.fett263.com/proffieOS7-fett263-prop-file.html for required set up and additional information\n" +
-            " \n" +
-            " Voice Prompts and sounds required for certain features and should be included in /common folder or /font folder on SD card.\n" +
-            "   Free prompts (courtesy of Brian Conner) available here: http://fredrik.hubbe.net/lightsaber/sound/\n" +
-            "\n" +
-            " Track Player requires track files to be located in /font/tracks for font specific tracks or /common/tracks for universal (all presets) or a combination of the two.\n" +
-            " \n" +
-            "  ----- This prop enables the following EFFECTs for use in menus, Special Abilities* and/or chained effects controlled at the style level in each preset -----\n" +
-            "  *requires FETT263_SPECIAL_ABILITIES define\n" +
-            "\n" +
-            "   EFFECT_BATTERY_LEVEL (to display/say* battery level) *requires FETT263_SAY_BATTERY_VOLTS or FETT263_SAY_BATTERY_PERCENT\n" +
-            "   EFFECT_VOLUME_LEVEL (to display current volume level)\n" +
-            "   EFFECT_POWERSAVE (blade dimming / powersave option)\n" +
-            "   EFFECT_QUOTE (random quote* cannot be mixed with EFFECT_NEXT_QUOTE)\n" +
-            "   EFFECT_NEXT_QUOTE (sequential quote)\n" +
-            "   EFFECT_TRACK (plays previously selected Track (via Track Player) -or- preset's default track if \"tracks\" folder is not found)\n" +
-            "   EFFECT_ALT_SOUND (enables Alt font selection from style)\n" +
-            "   EFFECT_TRANSITION_SOUND (enable custom transition sounds)\n" +
-            "   EFFECT_SOUND_LOOP (enable custom looped sound toggled on/off with each call)\n" +
-            "   EFFECT_BEGIN_BATTLE_MODE (begin Battle Mode)\n" +
-            "   EFFECT_END_BATTLE_MODE (end Battle Mode)\n" +
-            "   EFFECT_BEGIN_AUTO_BLAST (begin Multi-Blast Mode)\n" +
-            "   EFFECT_END_AUTO_BLAST (end Multi-Blast Mode)\n" +
-            "   EFFECT_INTERACTIVE_PREON (allows prop to recognize Interactive Preon effects for primary control)\n" +
-            "   EFFECT_INTERACTIVE_BLAST (allows prop to recognize Interactive Blast effects for primary control)\n" +
-            "   EFFECT_ON (enable normal ignition from chained effect while OFF)\n" +
-            "   EFFECT_FAST_ON (enable ignition without preon from chained effect while OFF)\n" +
-            "   EFFECT_OFF (enable normal retraction from chained effect while ON)\n" +
-            "   EFFECT_FAST_OFF (enable retraction without pstoff from chained effect while ON)\n" +
-            "   EFFECT_SECONDARY_IGNITION (to enable separate \"secondary\" blade ignition control)\n" +
-            "   EFFECT_SECONDARY_RETRACTION (to enable separate \"secondary\" blade retraction control)\n" +
-            "\n" +
-            "----- Available Mini Game EFFECTs -----\n" +
-            "\n" +
-            "    EFFECT_GAME_START (begin game effects)\n" +
-            "    EFFECT_GAME_ACTION1 (game action 1)\n" +
-            "    EFFECT_GAME_ACTION2 (game action 2)\n" +
-            "    EFFECT_GAME_CHOICE (interactive choice based on action)\n" +
-            "    EFFECT_GAME_RESPONSE1 (available response for action 1)\n" +
-            "    EFFECT_GAME_RESPONSE2 (available response for action 2)\n" +
-            "    EFFECT_GAME_RESULT1 (result of choice for action 1)\n" +
-            "    EFFECT_GAME_RESULT2 (result of choice for action 2)\n" +
-            "    EFFECT_GAME_WIN (end game with win)\n" +
-            "    EFFECT_GAME_LOSE (end game with loss)\n" +
-            "\n" +
+
             "---------- 2 / 3 Button Controls ----------\n" +
             "NOTE: \n" +
             "  Click = do short click\n" +
@@ -780,7 +724,64 @@ export class Props{
             "  Multi-Blast Mode Off - blstend.wav\n" +
             "  Quotes - quote01.wav\n" +
             "  Transition Sound - tr.wav\n" +
-            "  Transition Sound Loop trloop.wav\n"
+            "  Transition Sound Loop trloop.wav\n",
+
+        desc1Button: "* 1 Button Controls based on SA22C prop\n" +
+            "Includes Gesture Controls, Battle Mode 2.0, Edit Mode, Track Player, Quote/Force Player, Real Clash, Choreography Mode\n" +
+            "   Dual Mode Ignition Sounds, Multi-Phase Control, Multi-Blast\n" +
+            "\n" +
+            " ProffieOS: Control software for lightsabers and other props.\n" +
+            " http://fredrik.hubbe.net/lightsaber/teensy_saber.html\n" +
+            " Copyright (c) 2016-2019 Fredrik Hubinette\n" +
+            "\n" +
+            " Fett263 Button (prop) file, \"Battle Mode 2.0\", \"Edit Mode\", \"Track Player\", \"Real Clash\", \"Choreography Mode\", \"Dual Mode Ignition\",\n" +
+            " \"Multi-Phase\", \"Multi-Blast\"\n" +
+            " Copyright (c) 2022-2023 Fernando da Rosa\n" +
+            " Visit https://www.fett263.com/proffieOS7-fett263-prop-file.html for required set up and additional information\n" +
+            " \n" +
+            " Voice Prompts and sounds required for certain features and should be included in /common folder or /font folder on SD card.\n" +
+            "   Free prompts (courtesy of Brian Conner) available here: http://fredrik.hubbe.net/lightsaber/sound/\n" +
+            "\n" +
+            " Track Player requires track files to be located in /font/tracks for font specific tracks or /common/tracks for universal (all presets) or a combination of the two.\n" +
+            " \n" +
+            "  ----- This prop enables the following EFFECTs for use in menus, Special Abilities* and/or chained effects controlled at the style level in each preset -----\n" +
+            "  *requires FETT263_SPECIAL_ABILITIES define\n" +
+            "\n" +
+            "   EFFECT_BATTERY_LEVEL (to display/say* battery level) *requires FETT263_SAY_BATTERY_VOLTS or FETT263_SAY_BATTERY_PERCENT\n" +
+            "   EFFECT_VOLUME_LEVEL (to display current volume level)\n" +
+            "   EFFECT_POWERSAVE (blade dimming / powersave option)\n" +
+            "   EFFECT_QUOTE (random quote* cannot be mixed with EFFECT_NEXT_QUOTE)\n" +
+            "   EFFECT_NEXT_QUOTE (sequential quote)\n" +
+            "   EFFECT_TRACK (plays previously selected Track (via Track Player) -or- preset's default track if \"tracks\" folder is not found)\n" +
+            "   EFFECT_ALT_SOUND (enables Alt font selection from style)\n" +
+            "   EFFECT_TRANSITION_SOUND (enable custom transition sounds)\n" +
+            "   EFFECT_SOUND_LOOP (enable custom looped sound toggled on/off with each call)\n" +
+            "   EFFECT_BEGIN_BATTLE_MODE (begin Battle Mode)\n" +
+            "   EFFECT_END_BATTLE_MODE (end Battle Mode)\n" +
+            "   EFFECT_BEGIN_AUTO_BLAST (begin Multi-Blast Mode)\n" +
+            "   EFFECT_END_AUTO_BLAST (end Multi-Blast Mode)\n" +
+            "   EFFECT_INTERACTIVE_PREON (allows prop to recognize Interactive Preon effects for primary control)\n" +
+            "   EFFECT_INTERACTIVE_BLAST (allows prop to recognize Interactive Blast effects for primary control)\n" +
+            "   EFFECT_ON (enable normal ignition from chained effect while OFF)\n" +
+            "   EFFECT_FAST_ON (enable ignition without preon from chained effect while OFF)\n" +
+            "   EFFECT_OFF (enable normal retraction from chained effect while ON)\n" +
+            "   EFFECT_FAST_OFF (enable retraction without pstoff from chained effect while ON)\n" +
+            "   EFFECT_SECONDARY_IGNITION (to enable separate \"secondary\" blade ignition control)\n" +
+            "   EFFECT_SECONDARY_RETRACTION (to enable separate \"secondary\" blade retraction control)\n" +
+            "\n" +
+            "----- Available Mini Game EFFECTs -----\n" +
+            "\n" +
+            "    EFFECT_GAME_START (begin game effects)\n" +
+            "    EFFECT_GAME_ACTION1 (game action 1)\n" +
+            "    EFFECT_GAME_ACTION2 (game action 2)\n" +
+            "    EFFECT_GAME_CHOICE (interactive choice based on action)\n" +
+            "    EFFECT_GAME_RESPONSE1 (available response for action 1)\n" +
+            "    EFFECT_GAME_RESPONSE2 (available response for action 2)\n" +
+            "    EFFECT_GAME_RESULT1 (result of choice for action 1)\n" +
+            "    EFFECT_GAME_RESULT2 (result of choice for action 2)\n" +
+            "    EFFECT_GAME_WIN (end game with win)\n" +
+            "    EFFECT_GAME_LOSE (end game with loss)\n" +
+            "\n"
     }
 
     sa22c_structure = {
@@ -843,8 +844,10 @@ export class Props{
             "individual tastes.\n" +
             "\n" +
             "Button configs:\n" +
-            "\n" +
-            "1 Button:\n" +
+            "\n",
+
+        desc0Button: false,
+        desc1Button: "1 Button:\n" +
             "Activate Muted - double click and hold while OFF\n" +
             "Activate - short click while OFF\n" +
             "Play/Stop Music - double click while OFF\n" +
@@ -869,8 +872,8 @@ export class Props{
             "Exit Volume Menu - Menu hold + clash while OFF\n" +
             "Battery Level - triple click while OFF\n" +
             "\n" +
-            "\n" +
-            "2 Button:\n" +
+            "\n",
+        desc2Button: "2 Button:\n" +
             "POWER\n" +
             "Activate Muted - double click and hold while OFF\n" +
             "Activate - short click while OFF\n" +
@@ -894,8 +897,8 @@ export class Props{
             "Enter VOLUME MENU - long click while OFF\n" +
             "Volume down - short click while OFF and in VOLUME MENU\n" +
             "Battery level - hold while off\n" +
-            "\n" +
-            "3 Button: Same as two button except for the following\n" +
+            "\n",
+        desc3Button:  "3 Button: Same as two button except for the following\n" +
             "\n" +
             "AUX2\n" +
             "Lightning Block - hold while ON\n" +
@@ -904,7 +907,9 @@ export class Props{
     }
 
     shtok_structure = {
-        desc: "0 Buttons:\n" +
+        desc: "",
+
+        desc0Button: "0 Buttons:\n" +
             "Activate Muted - None\n" +
             "Activate blade - forward or backward horizontal thrust movement or sharp swing movement (Swing On)\n" +
             "Play/Stop Music - hit the saber (perform clash event) holding the blade up while it's OFF\n" +
@@ -921,7 +926,25 @@ export class Props{
             "Lightning Block - None\n" +
             "Enter Multi-Block mode - None\n" +
             "\n" +
-            "1 Button:\n" +
+
+            "\n" +
+
+            "\n" +
+            "\n" +
+            "CUSTOM SOUNDS SUPPORTED (add to font to enable):\n" +
+            "\n" +
+            "On Demand Power Save - dim.wav\n" +
+            "On Demand Battery Level - battery.wav\n" +
+            "Battle Mode On (on toggle) - bmbegin.wav\n" +
+            "Battle Mode Off (on toggle) - bmend.wav\n" +
+            "Enter Volume Menu - vmbegin.wav\n" +
+            "Exit Volume Menu - vmend.wav\n" +
+            "Force Push - push.wav\n" +
+            "Fast On (optional) - faston.wav\n" +
+            "Multi-Blast Mode On - blstbgn.wav\n" +
+            "Multi-Blast Mode Off - blstend.wav\n",
+
+        desc1Button: "1 Button:\n" +
             "Activate Muted - fast double click while OFF\n" +
             "Activate blade - short click while OFF or forward thrust movement + hit or forward thrust movement or sharp swing movement (Swing On)\n" +
             "Play/Stop Music - hold 1 second and release while ON\n" +
@@ -944,9 +967,9 @@ export class Props{
             "Volume DOWN - hold and release while in Volume Menu\n" +
             "Volume UP - short click while in Volume Menu\n" +
             "Exit Volume Menu - hold + clash while OFF and in Volume Menu\n" +
-            "Battery Level - triple click while OFF\n" +
-            "\n" +
-            "2 Buttons:\n" +
+            "Battery Level - triple click while OFF\n",
+
+        desc2Button: "2 Buttons:\n" +
             "Activate Muted - fast double click Activation button while OFF\n" +
             "Activate blade - short click Activation button while OFF or forward thrust movement + hit or forward thrust movement or sharp swing movement (Swing On)\n" +
             "Play/Stop Music - hold 1 second and release Activation button while OFF or ON\n" +
@@ -969,21 +992,9 @@ export class Props{
             "Volume UP - short click Activation button while OFF and in Volume Menu\n" +
             "Volume DOWN - short click AUX button while OFF and in Volume Menu\n" +
             "Exit Volume Menu - long click AUX button while OFF and in Volume Menu\n" +
-            "Battery level - hold AUX button while OFF\n" +
-            "\n" +
-            "\n" +
-            "CUSTOM SOUNDS SUPPORTED (add to font to enable):\n" +
-            "\n" +
-            "On Demand Power Save - dim.wav\n" +
-            "On Demand Battery Level - battery.wav\n" +
-            "Battle Mode On (on toggle) - bmbegin.wav\n" +
-            "Battle Mode Off (on toggle) - bmend.wav\n" +
-            "Enter Volume Menu - vmbegin.wav\n" +
-            "Exit Volume Menu - vmend.wav\n" +
-            "Force Push - push.wav\n" +
-            "Fast On (optional) - faston.wav\n" +
-            "Multi-Blast Mode On - blstbgn.wav\n" +
-            "Multi-Blast Mode Off - blstend.wav\n"
+            "Battery level - hold AUX button while OFF\n",
+
+        desc3Button: false
     }
 
 
@@ -1115,10 +1126,19 @@ export class Props{
 
     setPropFile(prop){
         this.current_props = this[prop + "_structure"];
+        localStorage.setItem("PROPS", prop);
         console.log(this.current_props);
     }
 
     getReadme(){
         return this.current_props.desc;
+    }
+
+    getButtonHints(){
+        const numButtons = JSON.parse(localStorage.getItem("TOP")).NUM_BUTTONS;
+
+        const hint = this.current_props["desc" + numButtons + "Button"];
+        if(!hint) return numButtons + " Button/s not possible with this propfile";
+        return hint;
     }
 }
