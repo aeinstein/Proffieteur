@@ -4,6 +4,7 @@
 	<meta charset="UTF-8">
 	<title>Title</title>
 	<link rel="stylesheet" type="text/css" href="../../style/sub.css">
+	<script src="../../script.js"></script>
 	<script src="style.js"></script>
 </head>
 <body>
@@ -15,12 +16,40 @@
 			<td>
 				<label for="style">Style</label>
 				<select id="style" onchange="refreshStyleEditor()"></select>
+				<button class="b1" onclick="newStyle()">New</button>
+				<button class="b1" onclick="deleteStyle()">Delete</button>
 			</td>
 		</tr>
 	</table>
 </fieldset>
 
 <iframe id="editor" src="style_editor.html" style="width: 100%; border: none; height: 100%"></iframe>
+
+<template id="tmpNewStyle">
+	New Style<br>
+	<hr>
+	<table>
+		<tr>
+			<td>
+				Name
+			</td>
+			<td>
+				<input type="text" id="StyleName" placeholder="Name">
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2"><hr></td>
+		</tr>
+		<tr>
+			<td>
+				<button onclick="hideTemplate()">Cancel</button>
+			</td>
+			<td style="text-align: right">
+				<button onclick="saveNewStyle()">Create</button>
+			</td>
+		</tr>
+	</table>
+</template>
 
 </body>
 </html>
