@@ -6,6 +6,9 @@ Based on original work from [profezzorn](https://github.com/profezzorn).
 
 # Only ProffieboardV3 for now !!!
 
+## This App is -- in progress --
+Please no questions yet, it is IN PROGRESS !!
+
 ![](/contrib/admin.PNG)
 
 # General Config
@@ -29,10 +32,6 @@ Based on original work from [profezzorn](https://github.com/profezzorn).
 # Server compile
 ![](/contrib/compile.PNG)
 
-
-
-## This App is -- in progress --
-Please no questions yet, it is IN PROGRESS !!
 
 
 ### Configfile structure
@@ -78,17 +77,22 @@ sudo apt-get install libc6:i386 libncurses5:i386 libstdc++6:i386
 * Modular structure
 * Console for WebUSB
 * Console for WebSerial
-* Create and flash new configs
+* Create and flash new configs from browser
 * Separate build sessions for Cloud usage
 * Preset builder
 * Style builder
+* Blade Builder
 * Config "top" area
+* Config "button" area
+* Config "props" area
+* AdminTool
+* BatteryHistory
 
 
 ### RoadMap
+* Export/import to disk
 * electron Binaries for win and mac
 * ProcessMonitor
-* Config "Props" area
 * More ToolTips
 * Graphical Representation of "monitor fusion"
 * add useful documents and manuals
