@@ -1,11 +1,19 @@
 
 export const top_structure = {
-    "ENABLE_I2C": {
+    "ENABLE_SERIAL": {
         type: "boolean",
         default: false,
         desc: "Enable Bluetooth",
         group: "Extras"
     },
+
+    "ENABLE_I2C": {
+        type: "boolean",
+        default: false,
+        desc: "Enable I2C",
+        group: "Extras"
+    },
+
     "ENABLE_SSD1306": {
         type: "boolean",
         default: false,
