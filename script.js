@@ -149,3 +149,12 @@ function niceSize(n) {
         return n + " Bytes";
     }
 }
+
+function fillSelectBox(box, content){
+    const s = document.getElementById(box);
+
+    for(let i = 0; i < content.length; i++){
+        const item = content[i];
+        s.innerHTML += "<option value='" + item + "'>" + item;
+    }
+}

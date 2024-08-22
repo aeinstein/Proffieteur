@@ -1,5 +1,17 @@
 
 export const top_structure = {
+    "ENABLE_I2C": {
+        type: "boolean",
+        default: false,
+        desc: "Enable Bluetooth",
+        group: "Extras"
+    },
+    "ENABLE_SSD1306": {
+        type: "boolean",
+        default: false,
+        desc: "Enable OLED",
+        group: "Extras"
+    },
     "VOLUME": {
         type: "integer",
         default: 1000,
@@ -150,9 +162,6 @@ export class TopConfig {
 
         ret += "const unsigned int maxLedsPerStrip = 500;\n";
         ret += "#define ENABLE_WS2811\n";
-        ret += "#define ENABLE_I2C\n";
-
-
         ret += "#define NUM_BUTTONS " + this.top_config["NUM_BUTTONS"] + "\n";
 
         for(const item in this.top_config){

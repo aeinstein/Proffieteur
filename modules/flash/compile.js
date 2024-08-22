@@ -142,20 +142,26 @@ function getStyleConfig(){
 function init(){
     if(localStorage.getItem("firmwareFile")){
         let firmware = str2ab(localStorage.getItem("firmwareFile"));
+        console.log("firmwareFile Size:" + firmware.byteLength);
 
-
-        let t = "Stored Firmware:<br>" + niceSize(firmware.byteLength) + " Bytes<br>";
-        t += "<button onclick='deleteStoredFirmware()'>Delete</button>";
+        let t = "Stored Firmware:<br>" + niceSize(firmware.byteLength) + "<br>";
+        t += "<button onclick='deleteStoredFirmware()'>Delete</button><br>";
+        t += "<button onclick='downloadStoredFirmware()'>Download</button>";
 
         document.getElementById("txtCompiler").innerHTML = t;
     } else {
-        document.getElementById("txtCompiler").innerHTML = "No stored firmware";
+        document.getElementById("txtCompiler").innerHTML = "No cached firmware";
     }
+}
+
+function downloadStoredFirmware(){
+    window.open("../../server/tmp/ProffieOS.ino.dfu", "_blank");
 }
 
 window.flasher = new Flasher();
 window.compile = compile;
 window.uploadConfigFiles = uploadConfigFiles;
 window.deleteStoredFirmware = deleteStoredFirmware;
+window.downloadStoredFirmware = downloadStoredFirmware;
 
 window.addEventListener("load", init);

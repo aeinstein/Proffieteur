@@ -3,8 +3,6 @@ export let presetConfig;
 import { Presets } from "../../classes/presets.js";
 
 
-
-
 function loadFontsFromConnected(){
     bc.postMessage("list_fonts");
 }
@@ -85,6 +83,14 @@ export function editPreset(){
             "Black": "Black"
         };
 
+        content += "<option value='&style_charging'";
+        if(currentPreset && currentPreset["blade" + i] === "&style_charging") content += " selected";
+        content += ">-Style Charging-";
+
+        content += "<option value='&style_pov'";
+        if(currentPreset && currentPreset["blade" + i] === "&style_pov") content += " selected";
+        content += ">-Style POV-";
+
         for(const item in merge_options(presetConfig.styles, buildin)){
             content += "<option value='StylePtr<" + item + ">()'";
 
@@ -140,15 +146,6 @@ function getStylesFromFile(tmp){
     }
 
     localStorage.setItem("STYLES", JSON.stringify(styles));
-}
-
-function fillSelectBox(box, content){
-    const s = document.getElementById(box);
-
-    for(let i = 0; i < content.length; i++){
-        const item = content[i];
-        s.innerHTML += "<option value='" + item + "'>" + item;
-    }
 }
 
 function init(){
