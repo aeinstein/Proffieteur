@@ -204,7 +204,7 @@ export class TopConfig {
             }
         }
 
-        ret += "const unsigned int maxLedsPerStrip = MAX_LEDS;\n";
+        ret += "\n";
 
         this.save();
 

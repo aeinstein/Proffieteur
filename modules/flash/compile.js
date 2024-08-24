@@ -4,6 +4,7 @@ import {BladeConfig} from "../../classes/blades.js";
 import {Buttons} from "../../classes/buttons.js";
 import {Styles} from "../../classes/styles.js";
 import {Flasher} from "../../classes/flasher.js";
+import {PropConfig} from "../../classes/props.js";
 
 const COMPILE_SERVER = "https://vdev.cust.itnox.de/proffieteur/server/";
 
@@ -13,6 +14,7 @@ let presetConfig = new Presets();
 let bladeConfig = new BladeConfig();
 let buttons = new Buttons();
 let styles = new Styles();
+let props = new PropConfig();
 
 export async function uploadConfigFiles() {
     let formData = new FormData();
@@ -23,6 +25,7 @@ export async function uploadConfigFiles() {
     formData.append("blades.h", new File([getBladeConfig()], "blades.h", {type: "text/plain"}));
     formData.append("buttons.h", new File([getButtonConfig()], "buttons.h", {type: "text/plain"}));
     formData.append("styles.h", new File([getStyleConfig()], "styles.h", {type: "text/plain"}));
+    formData.append("props.h", new File([getPropsConfig()], "props.h", {type: "text/plain"}));
 
     await fetch(COMPILE_SERVER + 'endpoint.php?cmd=upload&serial=' + currentDevice.serialNumber, {
         method: "POST",
@@ -94,10 +97,12 @@ function deleteStoredFirmware(){
 }
 
 function getMainConfig(){
-    const propFile = localStorage.getItem("PROPS");
+    const propFile = localStorage.getItem("PROPFILE");
     return "#ifdef CONFIG_TOP\n" +
         "#include \"../../proffieboard_v3_config.h\"\n" +
         "#include \"top.h\"\n" +
+        "#include \"props.h\"\n" +
+        "const unsigned int maxLedsPerStrip = MAX_LEDS;\n" +
         "#endif\n" +
         "\n" +
         "\n" +
@@ -132,11 +137,15 @@ function getBladeConfig(){
 }
 
 function getButtonConfig(){
-    return buttons.getConfg();
+    return buttons.getConfig();
 }
 
 function getStyleConfig(){
     return styles.getConfig();
+}
+
+function getPropsConfig(){
+    return props.getConfig();
 }
 
 function init(){
