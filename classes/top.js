@@ -1,5 +1,12 @@
 
 export const top_structure = {
+    "MAX_LEDS": {
+        type: "integer",
+        default: 144,
+        desc: "Max leds per strip",
+        group: "General"
+    },
+
     "ENABLE_SERIAL": {
         type: "boolean",
         default: false,
@@ -168,7 +175,6 @@ export class TopConfig {
 
         let ret = "#define NUM_BLADES " + localStorage.getItem("NUM_BLADES") + "\n";
 
-        ret += "const unsigned int maxLedsPerStrip = 500;\n";
         ret += "#define ENABLE_WS2811\n";
         ret += "#define NUM_BUTTONS " + this.top_config["NUM_BUTTONS"] + "\n";
 
@@ -178,6 +184,7 @@ export class TopConfig {
             console.log(item, top_structure[item]);
 
             switch(top_structure[item].type){
+                case "int":
                 case "integer":
                 case "float":
                     ret += "#define " + item + " " + this.top_config[item] + "\n";
@@ -196,6 +203,8 @@ export class TopConfig {
                     break;
             }
         }
+
+        ret += "const unsigned int maxLedsPerStrip = MAX_LEDS;\n";
 
         this.save();
 

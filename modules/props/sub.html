@@ -8,51 +8,62 @@
 	<script src="props.js" type="module"></script>
 </head>
 <style>
-	pre {
-        line-height: 6px;
-        margin: 5px 2px 2px;
-    }
-
 	fieldset {
         overflow-y: auto;
         overflow-x: hidden;
         height: inherit;
         box-sizing: border-box;
+		max-width: 400px;
+	}
+
+	input[type=number] {
+		width: 50px;
+	}
+
+    #propConfig {
+        padding: 2px;
+        border: 1px solid #6060aa;
+        min-width: 800px;
+        min-height: 250px;
+        background-color: #20207d;
+        width: 100%;
+        font-size: 12px;
+        box-sizing: border-box;
+    }
+
+	td{
+        border-bottom: 1px solid white;
+		vertical-align: top;
+		padding-top: 5px;
+        padding-bottom: 5px;
+	}
+
+	td:nth-child(2) {
+		text-align: center;
 	}
 </style>
 <body>
+<fieldset style="height: 66px;">
+	<legend>Prop file</legend>
+	<table style="width: 100%">
+		<tr>
+			<td>
+				<select id="propfile" onchange="selectPropFile()">
+					<option>BC</option>
+					<option>caiwyn</option>
+					<option>fett263</option>
+					<option>sa22c</option>
+					<option>shtok</option>
+				</select>
+			</td>
+		</tr>
+	</table>
+</fieldset>
 <div style="display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: flex-start;
-    align-items: stretch;" id="container">
-	<fieldset>
-		<legend>Prop file</legend>
-		<table style="width: 100%">
-			<tr>
-				<td>
-					<select id="propfile" onchange="selectPropFile()">
-						<option>BC</option>
-						<option>caiwyn</option>
-						<option>fett263</option>
-						<option>sa22c</option>
-						<option>shtok</option>
-					</select>
-				</td>
-			</tr>
-		</table>
-	</fieldset>
-
-	<fieldset>
-		<legend>Readme</legend>
-		<pre id="readme"></pre>
-	</fieldset>
-
-	<fieldset>
-		<legend>Button Hint</legend>
-		<pre id="buttonHint"></pre>
-	</fieldset>
-	<br>
-</div>
+    align-items: stretch;" id="container"></div>
+<div><pre id="propConfig"></pre></div>
 </body>
 </html>

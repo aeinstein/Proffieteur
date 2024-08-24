@@ -158,3 +158,18 @@ function fillSelectBox(box, content){
         s.innerHTML += "<option value='" + item + "'>" + item;
     }
 }
+
+function getOrAddFieldset(title){
+    if(!title) return;
+
+    let fs = document.getElementById("fld" + title.toLowerCase()) || false;
+
+    if(!fs) {
+        fs = document.createElement("FIELDSET");
+        fs.id = "fld" + title.toLowerCase();
+        fs.innerHTML = "<legend>" + title + "</legend><table></table>";
+        document.getElementById("container").appendChild(fs);
+    }
+
+    return fs;
+}

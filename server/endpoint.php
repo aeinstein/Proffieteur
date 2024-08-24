@@ -95,6 +95,7 @@ function createConfigTemplate($dir){
 #ifdef CONFIG_TOP
 #include \"../../proffieboard_v3_config.h\"
 #include \"top.h\"
+#include \"props.h\"
 #endif
 
 #ifdef CONFIG_PROP

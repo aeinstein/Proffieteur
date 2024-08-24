@@ -1,3 +1,114 @@
+import {fett263_settings} from "../modules/props/fett263.js";
+import {bc_settings} from "../modules/props/bc.js";
+import {sa22c_settings} from "../modules/props/sa22c.js";
+import {caiwyn_settings} from "../modules/props/caiwyn.js";
+import {shtok_settings} from "../modules/props/shtok.js";
+
+export class PropConfig{
+    prop_file;
+    prop_template;
+    prop_config;
+
+    constructor() {
+        this.prop_file = localStorage.getItem('PROPFILE') || "BC";
+        this.prop_config = JSON.parse(localStorage.getItem('PROPS_' + this.prop_file.toUpperCase())) || {};
+
+        if(this.prop_file !== "") this.selectPropFile(this.prop_file);
+    }
+
+
+    selectPropFile(filename){
+        switch(filename){
+            case "fett263":
+                this.prop_template = fett263_settings;
+                break;
+
+            case "BC":
+                this.prop_template = bc_settings;
+                break;
+
+            case "sa22c":
+                this.prop_template = sa22c_settings;
+                break;
+
+            case "caiwyn":
+                this.prop_template = caiwyn_settings;
+                break;
+
+            case "shtok":
+                this.prop_template = shtok_settings;
+                break;
+
+            default:
+                console.error("Prop: " + filename + " not implemented");
+                return;
+        }
+
+        this.prop_file = filename;
+        this.prop_config = JSON.parse(localStorage.getItem('PROPS_' + this.prop_file.toUpperCase())) || {};
+
+        for(const item in this.prop_template){
+            this.prop_config[item] = this.prop_config.hasOwnProperty(item)?this.prop_config[item]:this.prop_template[item].default;
+        }
+
+        this.save();
+    }
+
+
+
+    getConfig() {
+        console.log("getConfig");
+
+        let ret = "";
+
+        for(const item in this.prop_template){
+            console.log(item);
+            switch(this.prop_template[item].type){
+                case "int":
+                case "integer":
+                case "float":
+                    ret += "#define " + item + " " + this.prop_config[item] + "\n";
+                    break;
+
+                case "boolean":
+                    if(this.prop_config[item]) ret += "#define " + item + "\n";
+                    break;
+
+                case "powerpins":
+                    let content = this.prop_config[item];
+                    //content = content.replace("<", "&lt;");
+                    //content = content.replace(">", "&gt;");
+                    console.log(content);
+                    ret += "#define " + item + " " + content + "\n";
+                    break;
+
+                default:
+                    console.error(this.prop_template[item].type + " not implemented");
+                    break;
+            }
+        }
+
+        console.log(ret);
+        this.save();
+        return ret;
+    }
+
+    setItem(item, value){
+        this.prop_config[item] = value;
+        this.getConfig();
+    }
+
+    getItem(item){
+        return this.prop_config[item];
+    }
+
+    save(){
+        localStorage.setItem('PROPFILE', this.prop_file);
+        localStorage.setItem("PROPS_" + this.prop_file.toUpperCase(), JSON.stringify(this.prop_config));
+    }
+}
+
+/*
 export class Props{
     current_props;
 
@@ -997,8 +1108,6 @@ export class Props{
         desc3Button: false
     }
 
-
-
     caiwyn_structure = {
         desc: "Caiwyn's Lightsaber Controls\n" +
             "This config is designed to provide fast, low-latency response to button\n" +
@@ -1142,3 +1251,4 @@ export class Props{
         return hint;
     }
 }
+ */

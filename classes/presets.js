@@ -10,7 +10,7 @@ export class Presets {
         this.bc = new BroadcastChannel('proffiediag');
 
         this.bc.onmessage = async (ev) => {
-            console.log(ev);
+            //console.log(ev);
 
             if (ev.data.fonts) this.fonts = ev.data.fonts;
             if (ev.data.presets) this.parsePresets(ev.data.presets);

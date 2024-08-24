@@ -61,21 +61,6 @@ function buildGUI(){
     save();
 }
 
-function getOrAddFieldset(group){
-    if(!group) return;
-
-    let fs = document.getElementById("fld" + group.toLowerCase()) || false;
-
-    if(!fs) {
-        fs = document.createElement("FIELDSET");
-        fs.id = "fld" + group.toLowerCase();
-        fs.innerHTML = "<legend>" + group + "</legend><table></table>";
-        document.getElementById("container").appendChild(fs);
-    }
-
-    return fs;
-}
-
 function refreshButtonConfig(){
     let num_buttons = 0;
     if(document.getElementById("btn1").value) num_buttons++;

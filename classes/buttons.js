@@ -5,7 +5,7 @@ export class Buttons {
         this.buttons = JSON.parse(localStorage.getItem("BUTTONS"));
     }
 
-    getConfg(){
+    getConfig(){
         let ret = "";
 
         switch(this.buttons["button1"]){
