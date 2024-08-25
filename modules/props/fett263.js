@@ -84,8 +84,8 @@ export const fett263_settings = {
     },
 
     "FETT263_BM_DISABLE_OFF_BUTTON": {
-        type: "int",
-        default: 6,
+        type: "boolean",
+        default: false,
         desc: "During Battle Mode Power Button Retraction is disabled to prevent accidental retraction, use gesture or exit Battle Mode to retract blade.",
         group: "BattleMode"
     },
