@@ -12,12 +12,12 @@ export class BladeConfig{
 
     clrBlades(blade_id){
         this.blades[blade_id]["blades"] = [];
-        this.save();
+        this.store();
     }
 
     clrBladeID(blade_id){
         delete this.blades[blade_id];
-        this.save();
+        this.store();
     }
 
     getMaxBladeNumber(){
@@ -114,7 +114,7 @@ export class BladeConfig{
 
     setBlade(blade_id, bladeNo, definition){
         this.blades[blade_id]["blades"][bladeNo] = definition;
-        this.save();
+        this.store();
     }
 
     setBlades(blade_id, blades){
@@ -277,7 +277,7 @@ export class BladeConfig{
         localStorage.setItem('blade_definitions', JSON.stringify(this.blade_definitions));
     }
 
-    save(){
+    store(){
         localStorage.setItem('blades', JSON.stringify(this.blades));
     }
 }

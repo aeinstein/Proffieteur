@@ -51,10 +51,8 @@ export class PropConfig{
             this.prop_config[item] = this.prop_config.hasOwnProperty(item)?this.prop_config[item]:this.prop_template[item].default;
         }
 
-        this.save();
+        this.store();
     }
-
-
 
     getConfig() {
         console.log("getConfig");
@@ -82,6 +80,10 @@ export class PropConfig{
                     ret += "#define " + item + " " + content + "\n";
                     break;
 
+                case "enum":
+                    if(this.prop_config[item]) ret += "#define " + this.prop_config[item] + "\n";
+                    break;
+
                 default:
                     console.error(this.prop_template[item].type + " not implemented");
                     break;
@@ -89,7 +91,7 @@ export class PropConfig{
         }
 
         console.log(ret);
-        this.save();
+        this.store();
         return ret;
     }
 
@@ -102,7 +104,7 @@ export class PropConfig{
         return this.prop_config[item];
     }
 
-    save(){
+    store(){
         localStorage.setItem('PROPFILE', this.prop_file);
         localStorage.setItem("PROPS_" + this.prop_file.toUpperCase(), JSON.stringify(this.prop_config));
     }

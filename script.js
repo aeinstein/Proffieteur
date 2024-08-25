@@ -173,3 +173,75 @@ function getOrAddFieldset(title){
 
     return fs;
 }
+
+function buildGUI(container, template, config){
+    console.log("buildGUI");
+
+    document.getElementById(container).innerHTML = "";
+
+    for(const item in template){
+        console.log(item);
+
+        const option = template[item];
+
+        const group = option.group;
+        console.log(group);
+        if(!group) continue;
+
+        const fs = getOrAddFieldset(group);
+        const content = fs.getElementsByTagName('table')[0];
+
+        const newRow = content.insertRow();
+        const newlabel = newRow.insertCell();
+        const newinput = newRow.insertCell();
+
+        newlabel.innerHTML = "<label for=\"" + item + "\">" + option.desc + "</label>";
+
+        let txt;
+
+        switch(option.type){
+            case "int":
+            case "integer":
+            case "float":
+                newinput.innerHTML = "<input id='" + item  + "' type='number' value='" + config.getItem(item) + "'>";
+                break;
+
+            case "boolean":
+                txt = "<input id='" + item  + "' type='checkbox'";
+                console.log(config.getItem(item));
+                if(config.getItem(item)) txt += " checked";
+                txt += ">";
+                newinput.innerHTML = txt;
+                break;
+
+            case "powerpins":
+                txt = "<select style='height: fit-content' id='" + item  + "' multiple>";
+                for(let i = 1; i<=6; i++){
+                    txt += "<option value='bladePowerPin" + i + "'";
+                    if(config.getItem(item).indexOf("bladePowerPin" + i) >= 0) txt += " selected";
+                    txt += ">bladePowerPin" + i + "</option>";
+                }
+                txt += "</select>";
+
+                newinput.innerHTML = txt;
+                break;
+
+            case "enum":
+                txt = "<select id='" + item  + "'>";
+                for(const entry in option.enums){
+                    txt += "<option value='" + entry + "'";
+                    if(config.getItem(item) === entry) txt += " selected";
+                    txt += ">" + option.enums[entry];
+                }
+                txt += "</select>";
+                newinput.innerHTML = txt;
+                break;
+
+            default:
+                console.error(config.getItem(item).type + " not implemented");
+                break;
+        }
+
+        content.appendChild(newRow);
+    }
+}

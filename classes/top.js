@@ -1,5 +1,39 @@
 
 export const top_structure = {
+    "button1":{
+        type: "enum",
+        enums: {
+            "": "None",
+            "latching": "Latching",
+            "momentary": "Momentary",
+            "touch": "Touch",
+        },
+        desc: "Button 1",
+        group: "Buttons"
+    },
+
+    "button2":{
+        type: "enum",
+        enums: {
+            "": "None",
+            "momentary": "Momentary",
+            "touch": "Touch",
+        },
+        desc: "Button 2",
+        group: "Buttons"
+    },
+
+    "button3":{
+        type: "enum",
+        enums: {
+            "": "None",
+            "momentary": "Momentary",
+            "touch": "Touch",
+        },
+        desc: "Button 3",
+        group: "Buttons"
+    },
+
     "MAX_LEDS": {
         type: "integer",
         default: 144,
@@ -206,7 +240,7 @@ export class TopConfig {
 
         ret += "\n";
 
-        this.save();
+        this.store();
 
         return ret;
     }
@@ -220,7 +254,7 @@ export class TopConfig {
         return this.top_config[item];
     }
 
-    save(){
+    store(){
         localStorage.setItem("TOP", JSON.stringify(this.top_config));
     }
 }

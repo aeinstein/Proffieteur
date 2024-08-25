@@ -2,12 +2,17 @@ import {top_structure, TopConfig} from "../../classes/top.js";
 
 let top_config;
 
+
+/*
 function buildGUI(){
     let buttons = JSON.parse(localStorage.getItem("BUTTONS"));
 
     document.getElementById("btn1").value = buttons["button1"];
     document.getElementById("btn2").value = buttons["button2"];
     document.getElementById("btn3").value = buttons["button3"];
+
+
+
 
     for(const item in top_structure){
         const group = top_structure[item].group;
@@ -60,28 +65,31 @@ function buildGUI(){
 
     save();
 }
+ */
 
 function refreshButtonConfig(){
     let num_buttons = 0;
-    if(document.getElementById("btn1").value) num_buttons++;
-    if(document.getElementById("btn2").value) num_buttons++;
-    if(document.getElementById("btn3").value) num_buttons++;
+    if(document.getElementById("button1").value) num_buttons++;
+    if(document.getElementById("button2").value) num_buttons++;
+    if(document.getElementById("button3").value) num_buttons++;
 
     top_config.setItem("NUM_BUTTONS", num_buttons);
-    save();
+    storeButtons();
+    refreshConfig();
 }
 
 function init() {
     top_config = new TopConfig();
 
     // Build GUI from template
-    buildGUI();
+    buildGUI("container", top_structure, top_config);
+    refreshConfig();
 
     // Register changed listenr
     document.getElementById("container").addEventListener("change", changedValue);
 }
 
-function save(){
+function refreshConfig(){
     document.getElementById("topConfig").innerHTML= top_config.generateTopConfig();
 }
 
@@ -90,53 +98,37 @@ function changedValue(evt){
 
     console.log(item);
 
-    if(item.substring(0, 3) === "btn") generateButtons();
-    else {
-        switch(top_structure[item].type){
-            case "boolean":
-                top_config.setItem(item, !!evt.target.checked);
-                break;
+    refreshButtonConfig();
 
-            case "powerpins":
-                top_config.setItem(item, "PowerPINS<" + getSelectValues(evt.target).join(",") + ">");
-                break;
+    switch(top_structure[item].type){
+        case "boolean":
+            top_config.setItem(item, !!evt.target.checked);
+            break;
 
-            case "float":
-            case "integer":
-                top_config.setItem(item, evt.target.value * 1);
-                break;
+        case "powerpins":
+            top_config.setItem(item, "PowerPINS<" + getSelectValues(evt.target).join(",") + ">");
+            break;
 
-            default:
-                top_config.setItem(item, evt.target.value);
-                break;
-        }
+        case "float":
+        case "integer":
+            top_config.setItem(item, evt.target.value * 1);
+            break;
+
+        default:
+            top_config.setItem(item, evt.target.value);
+            break;
     }
 
-    save();
+    refreshConfig();
 }
 
-function generateButtons(){
+function storeButtons(){
     let buttons = {};
 
     for(let buttonNo = 1; buttonNo <= 3; buttonNo++){
-        buttons["button" + buttonNo] = document.getElementById("btn" + buttonNo).value;
+        buttons["button" + buttonNo] = document.getElementById("button" + buttonNo).value;
     }
     localStorage.setItem("BUTTONS", JSON.stringify(buttons));
-}
-
-function getSelectValues(select) {
-    const result = [];
-    const options = select && select.options;
-    let opt;
-
-    for (let i=0, iLen=options.length; i<iLen; i++) {
-        opt = options[i];
-
-        if (opt.selected) {
-            result.push(opt.value || opt.text);
-        }
-    }
-    return result;
 }
 
 window.refreshButtonConfig = refreshButtonConfig;

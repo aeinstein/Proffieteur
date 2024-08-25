@@ -54,8 +54,13 @@ export const fett263_settings = {
         group: "BattleMode"
     },
 
-    "FETT263_BATTLE_MODE_START_ON": {
-        type: "boolean",
+    "FETT263_BATTLE_MODE": {
+        type: "enum",
+        enums: {
+            "": "Toggle On",
+            "FETT263_BATTLE_MODE_START_ON": "Start On",
+            "FETT263_BATTLE_MODE_ALWAYS_ON": "Always On"
+        },
         default: true,
         desc: "Battle Mode is active with each ignition by default but can be toggled using control ON/OFF",
         group: "BattleMode"
