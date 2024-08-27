@@ -10,8 +10,8 @@ body {
     display: flex;
     flex-direction: column;
     gap: 5px;
-    height: 100%;
     overflow: hidden;
+    overflow-y: auto;
     background: black;
     color: lightblue;
     flex-wrap: nowrap;

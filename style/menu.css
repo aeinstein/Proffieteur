@@ -89,7 +89,7 @@ button.tb-menu.hidden {
 #mainFrame {
     border: 0;
     width: 100%;
-    height: 100%;
+    height: calc(100% - 233px);
     position: fixed;
     padding-top: 33px;
 }
