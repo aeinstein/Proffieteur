@@ -100,5 +100,66 @@ function showModule(mod){
     container.src = "modules/" + mod + "/sub.html";
 }
 
+function saveLocalStorage(){
+    const data = {};
+    for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        data[k] = localStorage.getItem(k);
+    }
+
+    const textToSave = JSON.stringify(data);
+    const textToSaveAsBlob = new Blob([textToSave], {
+        type: "text/plain"
+    });
+    const textToSaveAsURL = window.URL.createObjectURL(textToSaveAsBlob);
+
+    const downloadLink = document.createElement("a");
+    downloadLink.download = "proffie.pcfg";
+    downloadLink.innerHTML = "Download File";
+    downloadLink.href = textToSaveAsURL;
+    downloadLink.onclick = ()=>{
+        document.body.removeChild(event.target);
+    };
+    downloadLink.style.display = "none";
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+}
+
+function loadLocalStorage(){
+    let readFile = (e) => {
+        const file = e.target.files[0];
+        if (!file) {
+            return;
+        }
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            const contents = e.target.result;
+            localStorage.clear();
+            console.log("storage cleared");
+            const data = JSON.parse(contents);
+
+            for (const key in data) {
+                localStorage.setItem(key, data[key]);
+            }
+        }
+        reader.readAsText(file)
+    }
+
+    const fileInput = document.createElement("input")
+    fileInput.type='file';
+    fileInput.accept = '.pcfg';
+    fileInput.style.display='none';
+    fileInput.onchange=readFile;
+
+    document.body.appendChild(fileInput)
+    clickElem(fileInput)
+}
+
+function clickElem(elem) {
+    const eventMouse = document.createEvent("MouseEvents");
+    eventMouse.initMouseEvent("click", true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null)
+    elem.dispatchEvent(eventMouse)
+}
+
 window.addEventListener("load", menuInit);
 
