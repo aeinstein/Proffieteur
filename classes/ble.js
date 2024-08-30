@@ -35,6 +35,16 @@ class BLE {
         },  //Laird BL600 Virtual Serial Port Service
     };
     device;
+    rx;
+    tx;
+    pw;
+    status;
+    server;
+    send_buf = [];
+    callback_queue = [];
+    bc;
+    sending;
+    watchdog_running = false;
 
     constructor() {
         this.bc = new BroadcastChannel('proffiediag');
@@ -42,7 +52,7 @@ class BLE {
         this.bc.onmessage = async (ev) => {
             console.log(ev);
 
-            if (ev.data.send_usb) this.send(ev.data.send_usb);
+            if (ev.data.send_ble) this.send(ev.data.send_ble);
 
             switch (ev.data) {
                 case "connect_ble":
@@ -52,24 +62,96 @@ class BLE {
         };
     }
 
+    send(cmd) {
+        let data = new TextEncoder('utf-8').encode(cmd + '\n');
+
+        // needs to fail on timeout
+        return new Promise((resolve, reject) => {
+            if (this.send_buf.length && this.send_buf[this.send_buf.length-1].length !== 20) {
+                data = concatTypedArrays(this.send_buf[this.send_buf.length-1], data);
+                this.send_buf = this.send_buf.slice(0, this.send_buf.length-1);
+            }
+            while (data.length) {
+                this.send_buf.push(data.slice(0, 20));
+                data = data.slice(20);
+            }
+            if (this.callback_queue.length === 0)
+                this.last_callback = Date.now();
+
+            this.callback_queue.push([resolve, reject]);
+            this.RunWatchDog();
+
+            //console.log("======SEND BUF BEGIN===");
+            //for (var i = 0; i < send_buf.length; i++) {
+            //  console.log(new TextDecoder().decode(send_buf[i]));
+            // }
+            //console.log("======SEND BUF END===");
+            if (!this.sending) this.SendNext();
+        });
+    }
+
+    SendNext() {
+        if (!this.current_packet) {
+            if (!this.send_buf.length) {
+                this.sending = false;
+                return;
+            }
+            this.current_packet = this.send_buf[0];
+            this.send_buf = this.send_buf.slice(1);
+        }
+        console.log("Sending " + (new TextDecoder().decode(this.current_packet)));
+        this.sending = true;
+
+        this.tx.writeValue(this.current_packet).then(
+            (v) => {
+                this.current_packet = 0;
+                this.SendNext();
+            },
+
+            (e) => {
+                console.log('rejected', e);
+                this.die();
+                setTimeout(this.runLoop, 10000);
+            });
+    }
+
+    RunWatchDog() {
+        if (this.callback_queue.length && !this.watchdog_running) {
+            this.watchdog_running = true;
+            setTimeout(()=>{
+                this.WatchDog();
+            }, 10000);
+        }
+    }
+
+    WatchDog() {
+        this.watchdog_running = false;
+
+        if ((Date.now() - this.last_callback) > 20000) {
+            this.die("timeout");
+            setTimeout(this.runLoop, 10000);
+        }
+        this.RunWatchDog();
+    }
+
     async connect() {
         if (!this.device) {
             const filters = [];
+
             for (const uuid in this.UARTs) {
                 filters.push({services: [uuid]});
             }
 
             this.device = await navigator.bluetooth.requestDevice({
                 //     acceptAllDevices: true,
-                optionalServices: [serviceUuid],
+                optionalServices: [this.serviceUuid],
                 //     filters: [{services: [serviceUuid]}]
                 filters: filters,
             });
 
-            console.log(device);
+            console.log(this.device);
         }
 
-        let status;
         try {
             let rxUuid = '713d0002-389c-f637-b1d7-91b361ae7678';
             let txUuid = '713d0003-389c-f637-b1d7-91b361ae7678';
@@ -77,24 +159,27 @@ class BLE {
             let statusUuid = '713d0005-389c-f637-b1d7-91b361ae7678';
 
             console.log('Connecting to GATT Server...');
-            server = await device.gatt.connect();
-            console.log(server)
-            console.log(device.allowedServices);
+            this.server = await this.device.gatt.connect();
+            console.log(this.server)
+            console.log(this.device.allowedServices);
 
             console.log('Getting Service...');
+
             let service;
-            for (const uuid in UARTs) {
+            for (const uuid in this.UARTs) {
                 console.log("trying uuid " + uuid);
                 try {
-                    service = await server.getPrimaryService(uuid);
+                    service = await this.server.getPrimaryService(uuid);
+
                 } catch (e) {
                     console.log(e);
                     continue;
                 }
-                rxUuid = UARTs[uuid].rx;
-                txUuid = UARTs[uuid].tx;
-                pwUuid = UARTs[uuid].pw;
-                statusUuid = UARTs[uuid].status;
+
+                rxUuid = this.UARTs[uuid].rx;
+                txUuid = this.UARTs[uuid].tx;
+                pwUuid = this.UARTs[uuid].pw;
+                statusUuid = this.UARTs[uuid].status;
                 break;
             }
 
@@ -103,50 +188,157 @@ class BLE {
             console.log(service)
 
             console.log('Getting Characteristics...');
-            rx = await service.getCharacteristic(rxUuid);
-            tx = await service.getCharacteristic(txUuid);
-            if (pwUuid) pw = await service.getCharacteristic(pwUuid);
-            if (statusUuid) status = await service.getCharacteristic(statusUuid);
+
+            this.rx = await service.getCharacteristic(rxUuid);
+            this.tx = await service.getCharacteristic(txUuid);
+            if (pwUuid) this.pw = await service.getCharacteristic(pwUuid);
+            if (statusUuid) this.status = await service.getCharacteristic(statusUuid);
+
 
             if (1) {
-                dumpChar(rx);
-                dumpChar(tx);
-                dumpChar(pw);
-                dumpChar(status);
+                this.dumpChar(this.rx);
+                this.dumpChar(this.tx);
+                this.dumpChar(this.pw);
+                this.dumpChar(this.status);
             }
 
             console.log("StartNotify");
-            await rx.startNotifications();
-            rx.addEventListener('characteristicvaluechanged', OnRX);
+            await this.rx.startNotifications();
+            this.rx.addEventListener('characteristicvaluechanged', (e)=>{
+                this.OnRX(e);
+            });
 
-            if (status) {
-                await status.startNotifications();
-                status.addEventListener('characteristicvaluechanged', OnStatus);
+            if (this.status) {
+                await this.status.startNotifications();
+                this.status.addEventListener('characteristicvaluechanged', this.OnStatus);
             }
 
-            device.addEventListener('gattserverdisconnected', onDisconnectedBLE);
+            this.device.addEventListener('gattserverdisconnected', this.onDisconnectedBLE);
+
         } catch (e) {
             console.log(e);
-            FIND('EMSG').innerHTML = 'Connection Failed';
-            throw e;
+            this.bc.postMessage({error: e.message});
+            return;
         }
 
-        if (pw) {
+        /*
+        if(this.pw) {
             console.log("Sending PW");
             const password = FIND('password').value;
-            status = await SendPW(password);
-            if (status === "OK") {
+
+            this.status = await this.SendPW(password);
+
+            if (this.status === "OK") {
                 console.log("Authenticated.");
                 localStorage.password = password;
+
             } else {
                 FIND('pwspan').style.display = 'initial';
+
                 if (password !== "") {
                     console.log("WRONG PASSWORD!");
                     FIND('EMSG').innerHTML = 'Wrong Password';
                 }
+
                 throw 'Wrong Password';
             }
+        }*/
+    }
+
+    dumpChar(c) {
+        if (!c) return;
+        console.log('> UUID:                 ' + c.uuid);
+        console.log('> Broadcast:            ' + c.properties.broadcast);
+        console.log('> Read:                 ' + c.properties.read);
+        console.log('> Write w/o response:   ' + c.properties.writeWithoutResponse);
+        console.log('> Write:                ' + c.properties.write);
+        console.log('> Notify:               ' + c.properties.notify);
+        console.log('> Indicate:             ' + c.properties.indicate);
+        console.log('> Signed Write:         ' + c.properties.authenticatedSignedWrites);
+        console.log('> Queued Write:         ' + c.properties.reliableWrite);
+        console.log('> Writable Auxiliaries: ' + c.properties.writableAuxiliaries);
+    }
+
+    async onDisconnectedBLE() {
+        console.log("BLE DISCONNECTED");
+        this.bc.postMessage("ble_disconnected");
+        this.die();
+
+
+        while (true) {
+            await sleep(5000);
+            console.log('Try reconnect ble');
+
+            try {
+                await this.connect();
+                FIND('reconnecting_message').style.visibility = 'hidden';
+                this.runLoop();
+                return;
+
+            } catch (e) {
+                console.log(e);
+            }
         }
+    }
+
+    die(e) {
+        for (let i = 0; i < this.callback_queue.length; i++) this.callback_queue[i][1](e);
+        this.callback_queue = [];
+    }
+
+    OnStatus(event) {
+        console.log("ONSTATUS");
+        const data = new TextDecoder().decode(event.target.value);
+        console.log('STATUS> ' + data);
+
+        if(this.status_cb) {
+            this.status_cb(data);
+            this.status_cb = 0;
+        }
+    }
+
+    OnRX(event) {
+        console.log(event);
+
+        this.OnData(event.target.value);
+    }
+
+    OnData(d){
+        const data = new TextDecoder().decode(d);
+        console.log("GOT DATA: " + data);
+
+        this.buffer += data;
+
+        let tmp = this.buffer.split("-+=END_OUTPUT=+-");
+
+        if (tmp.length > 1) {
+            this.buffer = tmp[1];
+            let ret = tmp[0];
+
+            tmp = ret.split("-+=BEGIN_OUTPUT=+-\n");
+
+            if (tmp.length > 1) ret = tmp[1];
+
+            ret = ret.split("\r").join("");
+
+            console.log('> ' + ret);
+            this.bc.postMessage({"ble_data": ret, "dir": "in"});
+
+            if (this.callback_queue.length) {
+                this.last_callback = Date.now();
+                this.callback_queue[0][0](ret);
+                this.callback_queue = this.callback_queue.slice(1);
+            }
+        }
+    }
+
+    SendPW(password) {
+        // needs to fail on timeout
+        return new Promise((resolve, reject) =>{
+            this.status_cb = resolve;
+            setTimeout(reject, 2000)
+            this.pw.writeValue(new TextEncoder('utf-8').encode(password));
+        });
     }
 
     async runLoop() {

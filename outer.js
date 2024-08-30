@@ -1,6 +1,6 @@
 let capabilities = {};
 let active_reg;
-let serial, usb;
+let serial, usb, ble;
 var current_board = {};     // must be var, to allow access from child
 
 bc = new BroadcastChannel('proffiediag');
@@ -112,6 +112,10 @@ function connectUSB(){
     bc.postMessage("connect_serial")
 }
 
+function connectBLE(){
+    bc.postMessage("connect_ble")
+}
+
 function sendUSB(cmd){
     bc.postMessage({"send_usb": cmd});
 }
@@ -141,6 +145,7 @@ function Init() {
     }
     if (navigator.bluetooth) {
         capabilities["ble"] = true;
+        ble = new BLE();
         err = false;
     }
 
