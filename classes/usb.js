@@ -15,24 +15,23 @@ class USB {
     usb_device;
     callback_queue = [];
     bc;
+    connected = false;
+
 
     constructor() {
         this.bc = new BroadcastChannel('proffiediag');
 
         this.bc.onmessage = (ev) => {
-            //console.log(ev);
+            if(!this.connected){
+                if(ev.data === "connect_usb") this.connect();
+                return;
+            }
 
-            if (ev.data.send_usb) this.send(ev.data.send_usb);
-
+            if(ev.data.send_usb) this.send(ev.data.send_usb);
             if(ev.data.blade_id) this.listPresets();    // refresh presets when blade changed
-
             if(ev.data.play_track) this.send("play_track " + ev.data.play_track);
 
             switch (ev.data) {
-            case "connect_usb":
-                this.connect();
-                break;
-
             case "disconnect_usb":
             case "disconnect_all":
                 this.disconnect();
@@ -153,7 +152,7 @@ class USB {
 
     async runLoop() {
         this.bc.postMessage("usb_connected");
-
+        this.connected = true;
         try {
             while (true) {
                 const data = await this.usb_device.transferIn(this.endpointIn, 64);
@@ -315,6 +314,7 @@ class USB {
     async onDisconnected() {
         console.log("USB DISCONNECTED");
         this.bc.postMessage("usb_disconnected");
+        this.connected = false;
         this.die();
     }
 

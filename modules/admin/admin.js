@@ -34,8 +34,9 @@ bc.onmessage = async (ev) => {
     // getpresets if connection is complete
     if(ev.data === "usb_connected") connected |= 1
     if(ev.data === "serial_connected") connected |= 2
-    if(connected === 3) {
-        connected = 0;
+    if(ev.data === "ble_connected") connected |= 4
+
+    if(connected === 3 || connected === 5) {
         onConnected();
     }
 
@@ -163,17 +164,17 @@ bc.onmessage = async (ev) => {
             console.log("ENABLING EDITING");
             FIND("editbutton").style.visibility = 'visible';
         }
-
     }
 
 };
 
-function sendUSB(cmd){
+function sendConnected(cmd){
     bc.postMessage({"send_usb": cmd});
+    bc.postMessage({"send_ble": cmd});
 }
 
 function sendSerial(cmd){
-    bc.postMessage({"send_serial": cmd});
+    if(connected &1) bc.postMessage({"send_serial": cmd});
 }
 
 function UpdateMode() {

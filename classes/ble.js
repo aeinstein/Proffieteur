@@ -45,18 +45,45 @@ class BLE {
     bc;
     sending;
     watchdog_running = false;
+    connected = false;
 
     constructor() {
         this.bc = new BroadcastChannel('proffiediag');
 
-        this.bc.onmessage = async (ev) => {
-            console.log(ev);
+        this.bc.onmessage = (ev) => {
+            if(!this.connected){
+                if(ev.data === "connect_ble") this.connect();
+                return;
+            }
 
-            if (ev.data.send_ble) this.send(ev.data.send_ble);
+            if(ev.data.send_usb) this.send(ev.data.send_usb);
+            if(ev.data.blade_id) this.listPresets();    // refresh presets when blade changed
+            if(ev.data.play_track) this.send("play_track " + ev.data.play_track);
 
             switch (ev.data) {
-                case "connect_ble":
-                    await this.connect();
+                case "disconnect_usb":
+                case "disconnect_all":
+                    this.disconnect();
+                    break;
+
+                case "list_tracks":
+                    this.listTracks();
+                    break;
+
+                case "list_named_styles":
+                    this.listNamedStyles();
+                    break;
+
+                case "list_presets":
+                    this.listPresets();
+                    break;
+
+                case "list_fonts":
+                    this.listFonts();
+                    break;
+
+                case "get_presets":
+                    this.getPresetSettings();
                     break;
             }
         };
@@ -215,6 +242,9 @@ class BLE {
 
             this.device.addEventListener('gattserverdisconnected', this.onDisconnectedBLE);
 
+            this.connected = true;
+            this.send("version");
+
         } catch (e) {
             console.log(e);
             this.bc.postMessage({error: e.message});
@@ -262,6 +292,7 @@ class BLE {
     async onDisconnectedBLE() {
         console.log("BLE DISCONNECTED");
         this.bc.postMessage("ble_disconnected");
+        this.connected = false;
         this.die();
 
 
@@ -330,6 +361,99 @@ class BLE {
                 this.callback_queue = this.callback_queue.slice(1);
             }
         }
+    }
+
+    async getList(cmd) {
+        const s = await this.send(cmd);
+
+        if (s.startsWith("Whut?")) {
+            return [];
+        }
+        const ret = s.split("\n");
+        ret.pop();  // remove empty line at end
+        return ret;
+    }
+
+    async hasCmd(cmd) {
+        const s = await this.send(cmd);
+        return !s.startsWith("Whut?");
+    }
+
+    async hasDir(dir) {
+        const entries = await this.getList("dir " + dir);
+        return !(entries.length === 1 && entries[0] === "No such directory.");
+    }
+
+    async listTracks() {
+        let track_lines = await this.getList("list_tracks");
+        this.bc.postMessage({"tracks": track_lines});
+        localStorage.setItem("TRACKS", JSON.stringify(track_lines));
+
+        let current_track = await this.send("get_track");
+        current_track = current_track.split("\n")[0];
+        this.bc.postMessage({"currentTrack": current_track});
+    }
+
+    async listNamedStyles() {
+        let style_lines = await this.getList("list_named_styles");
+        this.bc.postMessage({"named_styles": style_lines});
+
+
+        for (let i = 0; i < style_lines.length; i++) {
+            let desc = await this.getList("describe_named_style " + style_lines[i]);
+            this.bc.postMessage({"named_style": style_lines[i], desc: desc});
+        }
+    }
+
+    async listFonts() {
+        const has_common = await this.hasDir("common");
+        let font_lines = await this.getList("list_fonts");
+
+        localStorage.setItem("FONTS", JSON.stringify(font_lines));
+
+        if (has_common) {
+            for (let i = 0; i < font_lines.length; i++) {
+                font_lines[i] += ";common";
+            }
+        }
+
+
+        this.bc.postMessage({"fonts": font_lines});
+    }
+
+    async listPresets() {
+        let preset;
+        let presets = [];
+        let preset_string = await this.send("list_presets");
+
+        const lines = preset_string.split("\n");
+
+        for (let l = 0; l < lines.length; l++) {
+            const tmp = lines[l].split("=");
+
+            if (tmp.length > 1) {
+                if (tmp[0] === "FONT") {
+                    if (preset) presets.push(preset);
+                    preset = {}
+                }
+                preset[tmp[0]] = tmp.slice(1).join("=");
+            }
+        }
+
+        if (preset && Object.keys(preset).length > 0) presets.push(preset);
+
+        this.bc.postMessage({"presets": presets });
+
+        let current_preset = await this.send("get_preset");
+        current_preset = current_preset.split("\n")[0];
+        this.bc.postMessage({"currentPreset": current_preset});
+    }
+
+    async getPresetSettings() {
+        await this.listPresets();
+        await this.listTracks();
+        await this.listFonts();
+        await this.listNamedStyles();
     }
 
     SendPW(password) {
