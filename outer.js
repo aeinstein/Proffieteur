@@ -17,6 +17,7 @@ bc.onmessage = (ev)=> {
     if(ev.data.battery) batteryMonitor.setValue(ev.data.battery);
     if(ev.data.serial_data) addMessage("contentSerial", ev.data.serial_data + "\n", ev.data.dir);
     if(ev.data.usb_data) addMessage("contentUSB", ev.data.usb_data + "\n", ev.data.dir);
+    if(ev.data.ble_data) addMessage("contentUSB", ev.data.ble_data + "\n", ev.data.dir);
 
     if(ev.data.version) current_board["version"] = ev.data.version;
 

@@ -56,7 +56,7 @@ class BLE {
                 return;
             }
 
-            if(ev.data.send_usb) this.send(ev.data.send_usb);
+            if(ev.data.send_ble) this.send(ev.data.send_ble);
             if(ev.data.blade_id) this.listPresets();    // refresh presets when blade changed
             if(ev.data.play_track) this.send("play_track " + ev.data.play_track);
 
@@ -91,6 +91,7 @@ class BLE {
 
     send(cmd) {
         let data = new TextEncoder('utf-8').encode(cmd + '\n');
+        this.bc.postMessage({"ble_data": cmd, "dir": "out"});
 
         // needs to fail on timeout
         return new Promise((resolve, reject) => {
