@@ -136,6 +136,8 @@ class Serial {
             this.bc.postMessage({"blade_id": d[1]});
         }
 
+        /*
+        parsed in outer.js
         if(!this.versionLoaded) {
             let matches = data.match("v([0-9])*\.([0-9]*)");
 
@@ -164,6 +166,8 @@ class Serial {
 
             if(data.startsWith("config/")) this.bc.postMessage({"config": data});
         }
+
+         */
 
         if(this.topCalled){
             if(data.indexOf(": ") > 0) {

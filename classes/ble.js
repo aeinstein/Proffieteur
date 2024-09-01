@@ -61,7 +61,7 @@ class BLE {
             if(ev.data.play_track) this.send("play_track " + ev.data.play_track);
 
             switch (ev.data) {
-                case "disconnect_usb":
+                case "disconnect_ble":
                 case "disconnect_all":
                     this.disconnect();
                     break;
@@ -238,13 +238,19 @@ class BLE {
 
             if (this.status) {
                 await this.status.startNotifications();
-                this.status.addEventListener('characteristicvaluechanged', this.OnStatus);
+                this.status.addEventListener('characteristicvaluechanged', (e)=>{
+                    this.OnStatus(e);
+                });
             }
 
-            this.device.addEventListener('gattserverdisconnected', this.onDisconnectedBLE);
+            this.device.addEventListener('gattserverdisconnected', (e)=>{
+                this.onDisconnectedBLE(e);
+            });
 
             this.connected = true;
+            this.bc.postMessage("ble_connected");
             this.send("version");
+            this.runLoop();
 
         } catch (e) {
             console.log(e);
@@ -353,8 +359,12 @@ class BLE {
 
             ret = ret.split("\r").join("");
 
+            const lines = ret.split("\n");
+            for(let i= 0; i< lines.length;i++){
+                this.bc.postMessage({"ble_data": lines[i], "dir": "in"});
+            }
+
             console.log('> ' + ret);
-            this.bc.postMessage({"ble_data": ret, "dir": "in"});
 
             if (this.callback_queue.length) {
                 this.last_callback = Date.now();
@@ -466,33 +476,18 @@ class BLE {
         });
     }
 
+
     async runLoop() {
-        this.bc.postMessage("ble_connected");
+        console.log("runLoop BLE");
+        const voltage = await this.send("battery_voltage");
+        this.bc.postMessage({"battery": voltage});
 
-        let preset;
-        let preset_string;
+        const volume = await this.send("get_volume");
+        this.bc.postMessage({"volume": volume});
 
-        while (true) {
-            preset_string = await Send("list_presets");
-            if (preset_string.split("=").length > 3) break;
-        }
-
-        const lines = preset_string.split("\n");
-
-        for (let l = 0; l < lines.length; l++) {
-            const tmp = lines[l].split("=");
-
-            if (tmp.length > 1) {
-                if (tmp[0] === "FONT") {
-                    if (preset) presets.push(preset);
-                    preset = {}
-                }
-                preset[tmp[0]] = tmp.slice(1).join("=");
-            }
-        }
-
-        if (preset && Object.keys(preset).length > 0) presets.push(preset);
-
-        this.bc.postMessage({"presets": preset});
+        setTimeout(()=>{
+            this.runLoop();
+        }, 5000);
     }
+
 }

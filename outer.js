@@ -10,14 +10,24 @@ bc.onmessage = (ev)=> {
 
     if(ev.data.status) displayStatus(ev.data.status, ev.data.is_error);
 
+    if(ev.data.send) sendConnected(ev.data.send);
+
     if(ev.data.prop) current_board["props"] = ev.data.prop;
     if(ev.data.buttons) current_board["buttons"] = ev.data.buttons;
     if(ev.data.installdate) current_board["installdate"] = ev.data.installdate;
+
     if(ev.data.config) current_board["config"] = ev.data.config;
+
     if(ev.data.battery) batteryMonitor.setValue(ev.data.battery);
+    //if(ev.data.volume)
+
     if(ev.data.serial_data) addMessage("contentSerial", ev.data.serial_data + "\n", ev.data.dir);
     if(ev.data.usb_data) addMessage("contentUSB", ev.data.usb_data + "\n", ev.data.dir);
-    if(ev.data.ble_data) addMessage("contentUSB", ev.data.ble_data + "\n", ev.data.dir);
+
+    if(ev.data.ble_data) {
+        addMessage("contentUSB", ev.data.ble_data + "\n", ev.data.dir);
+        parseData(ev.data.ble_data);
+    }
 
     if(ev.data.version) current_board["version"] = ev.data.version;
 
@@ -83,6 +93,52 @@ bc.onmessage = (ev)=> {
             break;
     }
 };
+
+function parseData(data){
+    console.log("parseData: " + data);
+
+    if(data.indexOf(": ") > 0) {
+        let d = data.split(": ");
+
+        switch(d[0]){
+            case "$Id":
+                current_board["version"] = d[1];
+                break;
+
+            case "prop":
+                current_board["props"] = d[1];
+                //this.bc.postMessage({"prop": d[1]});
+                break;
+
+            case "buttons":
+                current_board["buttons"] = d[1];
+                //this.bc.postMessage({"buttons": d[1]});
+                break;
+
+            case "installed":
+                current_board["installdate"] = d[1];
+                //this.bc.postMessage({"installdate": d[1]});
+                break;
+
+            default:
+                console.warn(d[0] + " not implemented");
+                break;
+        }
+
+    } else {
+        if(data.startsWith("config/")) {
+            current_board["config"] = data;
+            //this.bc.postMessage({"config": data});
+        }
+
+        let matches = data.match("v([0-9])*\.([0-9]*)");
+
+        if(matches){
+            current_board["version"] = matches[1] + "." + matches[2];
+            //this.bc.postMessage({"version": version});
+        }
+    }
+}
 
 function addMessage(dest, txt, dir){
     const console = document.getElementById(dest);

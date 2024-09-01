@@ -352,7 +352,8 @@ function SaveStyle(blade) {
     console.log(ret);
     ret = ret.join(" ");
     presets[current_preset_num]["STYLE" + blade] = ret;
-    bc.postMessage({"send_usb": "set_style" + blade + " " + ret});
+
+    sendConnected("set_style" + blade + " " + ret);
     SetPreset(current_preset_num) //to make sure it takes immediate effect
 }
 
@@ -361,7 +362,7 @@ function SaveName() {
     console.log("SAVE NAME " + name_input.value);
     if (presets[current_preset_num].NAME !== name_input.value) {
         presets[current_preset_num].NAME = name_input.value;
-        bc.postMessage({"send_usb": "set_name " + name_input.value})
+        sendConnected("set_name " + name_input.value);
     }
     const preset_tags = document.getElementsByClassName('preset');
     UpdatePresets();
@@ -376,7 +377,7 @@ function SaveVariation() {
     console.log("SAVE VARIATION " + variation_slider.value);
     if (presets[current_preset_num].VARIATION != variation_slider.value) {
         presets[current_preset_num].VARIATION = variation_slider.value;
-        bc.postMessage({"send_usb": "variation " + variation_slider.value})
+        sendConnected("variation " + variation_slider.value);
     }
     const variation_field = FIND('variation_field');
     if (variation_field.value != variation_slider.value) {
@@ -423,7 +424,7 @@ function SaveFont() {
     console.log("SAVE FONT " + font_select.value);
     if (presets[current_preset_num].FONT !== font_select.value) {
         presets[current_preset_num].FONT = font_select.value;
-        bc.postMessage({"send_usb": "set_font " + font_select.value})
+        sendConnected("set_font " + font_select.value);
         SetPreset(current_preset_num) //to make sure it takes immediate effect
     }
 }
@@ -440,7 +441,7 @@ function SaveTrack() {
     console.log("SAVE TRACK " + track_select.value);
     if (presets[current_preset_num].TRACK !== track_select.value) {
         presets[current_preset_num].TRACK = track_select.value;
-        bc.postMessage({"send_usb": "set_track " + track_select.value});
+        sendConnected("set_track " + track_select.value);
         SetPreset(current_preset_num) //to make sure it takes immediate effect
     }
 }
@@ -505,7 +506,7 @@ function showCurrentTrack(track) {
 
 async function SetPreset(n) {
     //  showCurrentPreset(n);
-    bc.postMessage({"send_usb": "set_preset " + n});
+    sendConnected("set_preset " + n);
     showCurrentPreset(n);
 }
 
@@ -513,7 +514,7 @@ async function StartDrag(n) {
     console.log('DRAG ' + n);
     //  showCurrentPreset(n);
     dragging = n;
-    bc.postMessage({"send_usb": "set_preset " + n});
+    sendConnected("set_preset " + n)
     showCurrentPreset(n);
 }
 
@@ -523,7 +524,7 @@ async function DropEvent(n) {
     if (n === dragging) {
         return;
     }
-    bc.postMessage({"send_usb": "move_preset " + n})
+    sendConnected("move_preset " + n);
     const x = presets[dragging];
     presets = presets.slice(0, dragging).concat(presets.splice(dragging + 1, presets.length));
     presets = presets.slice(0, n).concat([x], presets.slice(n, presets.length));
@@ -533,8 +534,7 @@ async function DropEvent(n) {
 async function AddPreset() {
     const r = confirm("Duplicate current preset?");
     if (r == true) {
-        bc.postMessage({"send_usb": "duplicate_preset "} + presets.length)
-
+        sendConnected("duplicate_preset " + presets.length);
         presets.push(Object.assign({}, presets[current_preset_num]));
         UpdatePresets();
     }
@@ -544,7 +544,7 @@ async function DelPreset() {
     if (current_preset_num >= 0 &&
         current_preset_num < presets.length &&
         presets.length > 1) {
-        bc.postMessage({"send_usb": "delete_preset " + current_preset_num});
+        sendConnected("delete_preset " + current_preset_num);
         presets.splice(current_preset_num, 1);
         current_preset_num = -1;
         SetPreset(0);
@@ -576,7 +576,7 @@ async function UpdateSlider(cmd, slider, label, fn) {
     if (updating_sliders[slider]) return;
 
     updating_sliders[slider] = true;
-    bc.postMessage({"send_usb": cmd + " " + (fn ? fn(value) : value)});
+    sendConnected(cmd + " " + (fn ? fn(value) : value));
 
     updating_sliders[slider] = false;
 }
@@ -637,7 +637,7 @@ async function generateBoolSetting(base_cmd, variable, label) {
 
 function SaveBoolSetting(base_cmd, variable) {
     const value = FIND("bool_setting_" + base_cmd + "_" + variable).checked ? "1" : "0";
-    bc.postMessage({"send_usb": "set_" + base_cmd + " " + variable + " " + value});
+    sendConnected("set_" + base_cmd + " " + variable + " " + value);
 }
 
 async function generateIntSetting(base_cmd, variable, label) {
@@ -652,7 +652,7 @@ async function generateIntSetting(base_cmd, variable, label) {
 
 function SaveIntSetting(base_cmd, variable) {
     const value = FIND("int_setting_" + base_cmd + "_" + variable).value;
-    bc.postMessage({"send_usb": "set_" + base_cmd + " " + variable + " " + value});
+    sendConnected("set_" + base_cmd + " " + variable + " " + value);
 }
 
 async function UpdateSettings() {
@@ -712,7 +712,7 @@ function SaveBladeLength(blade, max_length) {
         length = max_length;
     }
     tag.value = length;
-    bc.postMessage({"send_usb": "set_blade_length " + blade + " " + length});
+    sendConnected("set_blade_length " + blade + " " + length);
 }
 
 function SaveBrightness() {
@@ -722,7 +722,7 @@ function SaveBrightness() {
 
 function SaveClashThreshold() {
     const threshold = FIND("clash_threshold_input").value;
-    bc.postMessage({"send_usb": "set_clash_threshold " + threshold});
+    sendConnected("set_clash_threshold " + threshold);
     const threshold_label = FIND("clash_threshold_number");
     threshold_label.innerHTML = threshold;
 }

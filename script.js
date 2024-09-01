@@ -245,3 +245,7 @@ function buildGUI(container, template, config){
         content.appendChild(newRow);
     }
 }
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
