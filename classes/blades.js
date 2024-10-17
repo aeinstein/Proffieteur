@@ -7,7 +7,6 @@ export class BladeConfig{
 
     constructor() {
         this.bc = new BroadcastChannel('proffiediag');
-
     }
 
     clrBlades(blade_id){
@@ -112,6 +111,15 @@ export class BladeConfig{
         return this.blade_definitions[definition];
     }
 
+    /**
+     * Sets the blade definition and save directory for a specified blade ID and blade number.
+     *
+     * @param {string} blade_id - The unique identifier for the blade.
+     * @param {number} bladeNo - The number corresponding to a specific blade within the blade set.
+     * @param {object} definition - The definition or configuration for the blade.
+     * @param {string} [save_dir] - Optional directory path where the blade settings should be saved. If not provided, it defaults to an empty string.
+     * @return {void}
+     */
     setBlade(blade_id, bladeNo, definition){
         this.blades[blade_id]["blades"][bladeNo] = definition;
         this.store();
@@ -146,7 +154,7 @@ export class BladeConfig{
 
         for(const blade_id in this.blades) {
             if(this.blades[blade_id].blades.length !== this.getMaxBladeNumber()) {
-                displayStatus("BladeID " + blade_id + " must have " + this.getMaxBladeNumber() + " blades", true);
+                displayError("BladeID " + blade_id + " must have " + this.getMaxBladeNumber() + " blades");
                 //continue;
             }
 
@@ -180,7 +188,7 @@ export class BladeConfig{
 
     saveBladeDefinition(bladeName){
         if(bladeName === "") {
-            displayStatus("please provide a name", true);
+            displayError("please provide a name");
             return;
         }
 
@@ -222,12 +230,12 @@ export class BladeConfig{
                 console.log("max led: " + max_led);
 
                 if(first_led <= 0 || first_led > max_led +1 ) {
-                    displayStatus("First led must not exceed blade length", true);
+                    displayError("First led must not exceed blade length");
                     return;
                 }
 
                 if(last_led <= 0 || last_led > max_led +1) {
-                    displayStatus("Last led must not exceed blade length", true);
+                    displayError("Last led must not exceed blade length");
                     return;
                 }
 
@@ -253,7 +261,7 @@ export class BladeConfig{
 
             case "WS281XBladePtr":
                 if(getValue("numLeds") < 0) {
-                    displayStatus("Number of leds < 0??", true);
+                    displayError("Number of leds < 0??");
                     return;
                 }
 

@@ -173,9 +173,7 @@ function sendConnected(cmd){
     bc.postMessage({"send_ble": cmd});
 }
 
-function sendSerial(cmd){
-    if(connected &1) bc.postMessage({"send_serial": cmd});
-}
+
 
 function UpdateMode() {
     FIND('containerControls').style.display = currentMode === 'normal' ? 'initial' : 'none'
@@ -562,10 +560,6 @@ async function PlayTrack(track) {
     bc.postMessage({play_track: track});
 }
 
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 async function UpdateSlider(cmd, slider, label, fn) {
     const slider_tag = FIND(slider);
     const label_tag = FIND(label);
@@ -690,13 +684,14 @@ async function UpdateSettings() {
 
     html += await generateBoolSetting("gesture", "gestureon", "gesture ignition");
     html += await generateBoolSetting("gesture", "swingon", "swing ignition");
-    html += await generateIntSetting("gesture", "swingonspeed", "swing on speed");
     html += await generateBoolSetting("gesture", "twiston", "twist ignition");
     html += await generateBoolSetting("gesture", "thruston", "thrust ignition");
     html += await generateBoolSetting("gesture", "stabon", "stab ignition");
     html += await generateBoolSetting("gesture", "twistoff", "twist off");
     html += await generateBoolSetting("gesture", "powerlock", "power lock");
     html += await generateBoolSetting("gesture", "forcepush", "force push");
+
+    html += await generateIntSetting("gesture", "swingonspeed", "swing on speed");
     html += await generateIntSetting("gesture", "forcepushlen", "force push length");
     html += await generateIntSetting("gesture", "lockupdelay", "lockup delay");
     html += await generateIntSetting("gesture", "clashdetect", "clash detect");
@@ -727,38 +722,6 @@ function SaveClashThreshold() {
     threshold_label.innerHTML = threshold;
 }
 
-function from16bitlinear(val) {
-    val = parseInt(val);
-    val = Math.round(Math.pow(val / 65535.0, 1.0 / 2.2) * 255.0);
-    return Number(1024 + val).toString(16).slice(-2);
-}
-
-function from16bitcolor(val) {
-    val = val.split(",");
-    return "#" + from16bitlinear(val[0]) + from16bitlinear(val[1]) + from16bitlinear(val[2]);
-}
-
-function to16bitlinear(val) {
-    val = parseInt(val, 16);
-    val = Math.round(Math.pow(val / 255.0, 2.2) * 65535);
-    return val;
-}
-
-function to16bitcolor(val) {
-    return to16bitlinear(val.substr(1, 2)) + "," +
-        to16bitlinear(val.substr(3, 2)) + "," +
-        to16bitlinear(val.substr(5, 2));
-}
-
-function concatTypedArrays(a, b) { // a, b TypedArray of same type
-    const c = new (a.constructor)(a.length + b.length);
-    c.set(a, 0);
-    c.set(b, a.length);
-    return c;
-}
-
-
-
 function onConnected(){
     //document.getElementById("txtVersion").innerHTML = parent.current_board["version"];
     document.getElementById("txtButtons").innerHTML = parent.current_board["buttons"];
@@ -767,7 +730,6 @@ function onConnected(){
     document.getElementById("txtInstalled").innerHTML = parent.current_board["installdate"];
     bc.postMessage("get_presets");
 }
-
 
 onConnected();
 

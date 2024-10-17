@@ -173,14 +173,6 @@ function connectBLE(){
     bc.postMessage("connect_ble")
 }
 
-function sendUSB(cmd){
-    bc.postMessage({"send_usb": cmd});
-}
-
-function sendSerial(cmd){
-    bc.postMessage({"send_serial": cmd});
-}
-
 function disconnectAll(){
     bc.postMessage("disconnect_all");
 }

@@ -1,0 +1,132 @@
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" type="text/css" href="../../style/sub.css">
+	<script src="../../inner.js"></script>
+	<script src="settings.js"></script>
+</head>
+<body>
+
+<header>
+	<div style="min-width: 220px; font-size: 13px">
+		Version: <span id="txtVersion">connect Serial</span><br>
+		Config: <span id="txtConfig"></span><br>
+		Props: <span id="txtProp"></span><br>
+		Num. Buttons: <span id="txtButtons"></span><br>
+		Installed: <span id="txtInstalled"></span>
+	</div>
+</header>
+
+<main>
+	<div id="containerSettings" class="scrollable">
+		<div class="header">
+			<span class="title">Settings</span>
+		</div>
+
+		<div style="display: flex;
+			flex-direction: row;
+			flex-wrap: wrap;
+			justify-content: flex-start;
+			align-items: stretch;" id="container">
+			<fieldset id="fldblade">
+				<legend>Blade</legend>
+				<table>
+					<tr>
+						<td>Max. blade length</td>
+						<td><input type="number" maxlength="3" id="max_blade_length"></td>
+					</tr>
+					<tr>
+						<td>Max. blade dimming</td>
+						<td><input type=range min=0 max=100 step=1 class=slider id="blade_dimming"></td>
+					</tr>
+
+					<tr>
+						<td>Clash threshold</td>
+						<td><input type=range min=0.5 max=6.0 step=0.05 class=slider id=clash_threshold_input></td>
+					</tr>
+				</table>
+			</fieldset>
+
+			<fieldset id="fldgestures">
+				<legend>Gestures</legend>
+				<table>
+					<tr>
+						<td>gesture ignition</td>
+						<td><input type="checkbox" id="gestureon"></td>
+					</tr>
+
+					<tr>
+						<td>swing ignition</td>
+						<td><input type="checkbox" id="swingon"></td>
+					</tr>
+
+					<tr>
+						<td>swing on speed</td>
+						<td><input type="number" id="swingonspeed"></td>
+					</tr>
+
+					<tr>
+						<td>twist ignition</td>
+						<td><input type="checkbox" id="twiston"></td>
+					</tr>
+
+					<tr>
+						<td>thrust ignition</td>
+						<td><input type="checkbox" id="thruston"></td>
+					</tr>
+
+
+					<tr>
+						<td>stab ignition</td>
+						<td><input type="checkbox" id="stabon"></td>
+					</tr>
+
+
+
+					<tr>
+						<td>twist off</td>
+						<td><input type="checkbox" id="twistoff"></td>
+					</tr>
+
+
+					<tr>
+						<td>power lock</td>
+						<td><input type="checkbox" id="powerlock"></td>
+					</tr>
+
+
+					<tr>
+						<td>Force push</td>
+						<td><input type="checkbox" id="forcepush"></td>
+					</tr>
+
+
+					<tr>
+						<td>force push length</td>
+						<td><input type="number" id="forcepushlen"></td>
+					</tr>
+
+					<tr>
+						<td>lockup delay</td>
+						<td><input type="number" id="lockupdelay"></td>
+					</tr>
+
+					<tr>
+						<td>clash detect</td>
+						<td><input type="number" id="clashdetect"></td>
+					</tr>
+
+					<tr>
+						<td>max clash strength</td>
+						<td><input type="number" id="maxclash"></td>
+					</tr>
+
+
+
+				</table>
+			</fieldset>
+		</div>
+	</div>
+</main>
+</body>
+</html>

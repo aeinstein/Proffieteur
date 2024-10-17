@@ -16,7 +16,7 @@ window.editBladeID = ()=>{
 
     setValue("newBladeID", getValue("blade_id"));
     setValue("newBladePresets", blade["presets"]);
-    setValue("newBladeSaveFolder", blade["newBladeSaveFolder"]?blade["newBladeSaveFolder"]:"");
+    setValue("newBladeSaveFolder", blade["save_dir"]?blade["save_dir"]:"");
     document.getElementById("newBladeID").readOnly = true;
 }
 
@@ -37,6 +37,8 @@ window.saveNewBladeID = ()=>{
             save_dir: getValue("newBladeSaveFolder")
         });
     }
+
+    bladeConfig.store();
 
     //localStorage.setItem('blades', JSON.stringify(blades));
 
@@ -163,12 +165,13 @@ window.saveAddBlade = ()=>{
 }
 
 function refreshBlades(){
+    console.log("refreshBlades");
     removeAllOptions("currentBlades");
 
     const blade_id = getValue("blade_id");
 
     if(!bladeConfig.hasBladeID(blade_id)) {
-        displayError("You need at least one BladeID", true);
+        displayError("You need at least one BladeID");
         return;
     }
 
@@ -181,6 +184,7 @@ function refreshBlades(){
 }
 
 function refreshBladeIDs(){
+    console.log("refreshBladeIDs");
     removeAllOptions("blade_id");
 
     let bladeFound = false;
@@ -193,18 +197,13 @@ function refreshBladeIDs(){
     if(!bladeFound) addOption("blade_id", 0);
 }
 
-
 function init(){
     bladeConfig = new BladeConfig();
+    window.bladeConfig = bladeConfig;
     document.getElementById("num_blades").value = bladeConfig.getMaxBladeNumber();
     refreshBladeIDs();
     refreshBlades();
 }
-
-function displayError(txt, isError){
-    bc.postMessage({"status": txt, is_error: isError});
-}
-
 
 window.clrBladeID = ()=> {
     const blade_id = document.getElementById('blade_id').value;
@@ -221,4 +220,5 @@ window.clrBlades = ()=> {
 
 window.refreshBlades = refreshBlades;
 window.addEventListener("load", init);
+
 

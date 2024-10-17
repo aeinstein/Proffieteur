@@ -1,0 +1,72 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" type="text/css" href="../../style/sub.css">
+  <script src="../../inner.js"></script>
+</head>
+<body>
+
+<header>
+  <div style="min-width: 220px; font-size: 13px">
+    Version: <span id="txtVersion">connect Serial</span><br>
+    Config: <span id="txtConfig"></span><br>
+    Props: <span id="txtProp"></span><br>
+    Num. Buttons: <span id="txtButtons"></span><br>
+    Installed: <span id="txtInstalled"></span>
+  </div>
+</header>
+
+<main>
+  <div id="containerControls">
+    <div class="scrollable" style="height: 50%">
+      <div class=header>
+        <span class=title>Serial Commands</span>
+        <button class="button" id="topbutton" onclick='openTop()'>&#x2661;</button>
+      </div>
+
+      <div class="content">
+        <div class=control><span class=title onclick='sendSerial(this.innerHTML);'>scanid</span></div>
+        <div class=control><span class=title onclick='sendSerial(this.innerHTML);'>id</span></div>
+        <div class=control><span class=title onclick='sendSerial(this.innerHTML);'>dacbuf</span></div>
+
+        <div class=control><span class=title onclick='sendSerial(this.innerHTML);'>list_named_styles</span></div>
+
+        <div class=control><span class=title onclick='sendSerial(this.innerHTML);'>malloc</span></div>
+        <div class=control><span class=title onclick='sendSerial(this.innerHTML);'>whatison</span></div>
+        <div class=control><span class=title onclick='sendSerial(this.innerHTML);'>volumes</span></div>
+        <div class=control><span class=title onclick='sendSerial(this.innerHTML);'>buffered</span></div>
+        <div class=control><span class=title onclick='sendSerial(this.innerHTML);'>get_ble_config</span></div>
+        <div class=control><span class=title onclick='sendSerial(this.innerHTML);'>reset</span></div>
+        <div class=control><span class=title onclick='sendSerial(this.innerHTML);'>ccmode</span></div>
+        <div class=control><span class=title onclick='sendSerial(this.innerHTML);'>pwd</span></div>
+        <div class=control><span class=title onclick='sendSerial(this.innerHTML);'>beep</span></div>
+        <div class=control><span class=title onclick='sendSerial(this.innerHTML);'>effects</span></div>
+        <div class=control><span class=title onclick='sendSerial(this.innerHTML);'>stm32info</span></div>
+        <div class=control><span class=title onclick='sendSerial(this.innerHTML);'>i2cstate</span></div>
+        <div class=control><span class=title onclick='sendSerial(this.innerHTML);'>portstates</span></div>
+        <div class=control><span class=title onclick='sendSerial(this.innerHTML);'>CLK</span></div>
+        <div class=control><span class=title onclick='sendSerial(this.innerHTML);'>whatispowered</span></div>
+        <div class=control><span class=title onclick='sendSerial(this.innerHTML);'>dmamap</span></div>
+        <div class=control><span class=title onclick='sendSerial(this.innerHTML);'>shutdown</span></div>
+        <hr>
+        <div class=control><span class=title onclick='sendSerial(this.innerHTML);'>monitor swings</span></div>
+        <div class=control><span class=title onclick='sendSerial(this.innerHTML);'>monitor gyro</span></div>
+        <div class=control><span class=title onclick='sendSerial(this.innerHTML);'>monitor samples</span></div>
+        <div class=control><span class=title onclick='sendSerial(this.innerHTML);'>monitor touch</span></div>
+        <div class=control><span class=title onclick='sendSerial(this.innerHTML);'>monitor battery</span></div>
+        <div class=control><span class=title onclick='sendSerial(this.innerHTML);'>monitor pwm</span></div>
+        <div class=control><span class=title onclick='sendSerial(this.innerHTML);'>monitor clash</span></div>
+        <div class=control><span class=title onclick='sendSerial(this.innerHTML);'>monitor temp</span></div>
+        <div class=control><span class=title onclick='sendSerial(this.innerHTML);'>monitor strokes</span></div>
+        <div class=control><span class=title onclick='sendSerial(this.innerHTML);'>monitor serial</span></div>
+        <div class=control><span class=title onclick='sendSerial(this.innerHTML);'>monitor fusion</span></div>
+        <div class=control><span class=title onclick='sendSerial(this.innerHTML);'>monitor variation</span></div>
+      </div>
+    </div>
+  </div>
+</main>
+
+
+
+</body>
+</html>

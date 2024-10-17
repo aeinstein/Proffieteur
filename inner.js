@@ -249,3 +249,42 @@ function buildGUI(container, template, config){
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
+
+function from16bitlinear(val) {
+    val = parseInt(val);
+    val = Math.round(Math.pow(val / 65535.0, 1.0 / 2.2) * 255.0);
+    return Number(1024 + val).toString(16).slice(-2);
+}
+
+function from16bitcolor(val) {
+    val = val.split(",");
+    return "#" + from16bitlinear(val[0]) + from16bitlinear(val[1]) + from16bitlinear(val[2]);
+}
+
+function to16bitlinear(val) {
+    val = parseInt(val, 16);
+    val = Math.round(Math.pow(val / 255.0, 2.2) * 65535);
+    return val;
+}
+
+function to16bitcolor(val) {
+    return to16bitlinear(val.substr(1, 2)) + "," +
+        to16bitlinear(val.substr(3, 2)) + "," +
+        to16bitlinear(val.substr(5, 2));
+}
+
+function concatTypedArrays(a, b) { // a, b TypedArray of same type
+    const c = new (a.constructor)(a.length + b.length);
+    c.set(a, 0);
+    c.set(b, a.length);
+    return c;
+}
+
+function sendUSB(cmd){
+    bc.postMessage({"send_usb": cmd});
+}
+
+function sendSerial(cmd){
+    bc.postMessage({"send_serial": cmd});
+}
+
