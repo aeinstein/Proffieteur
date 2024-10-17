@@ -175,7 +175,7 @@ export class BladeConfig{
 
             if(!this.presets.hasOwnProperty(this.blades[blade_id]["presets"])) this.presets[this.blades[blade_id]["presets"]] = [];
 
-            if(this.blades[blade_id]["save_dir"] !== "") bladeString += "    , " + this.blades[blade_id]["save_dir"];
+            if(this.blades[blade_id]["save_dir"] !== "") bladeString += "    , \"" + this.blades[blade_id]["save_dir"] + "\"";
             bladeString += "  },\n";
         }
 
